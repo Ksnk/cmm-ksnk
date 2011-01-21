@@ -1,0 +1,80 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+//****************************************************************
+//
+// Использует два модуля для генерации множества сообщений из модуля в модуль.
+//
+//**************** выбор пары модулей для тестирования************
+isvr:= 0 ;
+//isvr := 1 ; // вариант со списком модулей
+mod := 1 ;//$100001 ;  {
+mod:=(evalasync('~user("Caption","Генерировать нагрузку ZZ-раз (0=1 раз) в модуль XX(0=Rmo) из YY(0=80h) ($ZZXXYY)",300,200)'));
+// }
+if (mod=0) then writeln('by-by!'); goto fin; fi ;
+
+if (mod =0)||(mod=-1) then mod := 0 ; fi ;
+tcnt := (mod>>16) && $FF; if tcnt=0 then tcnt := 1 ; fi ;
+mod2 := (mod>>8) && $FF; if mod2=0 then mod2 := GetTaskSocket ; else mod2:=mod2*256+$ff fi ;
+mod  := mod && $FF; if mod=0 then 
+  SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+  if recvmess(a,b,c,d,e,mod)<=0 then 
+    writeln('не удалось определить модуль!');
+    goto fin;
+  fi ;
+fi ;
+
+//**************** выбор времени одного акта тестирования*********
+time := 10 ;
+// генерируем сообщение длинное из одного модуля в другой
+len:= 50;
+write('>') ;
+if isvr=0 then 
+
+again:
+lcnt := 0 ;
+
+SendMess((mod*256)+$ff,$AA51,0,       // fill script from disp 0
+    $100,tcnt, // push tcnt 
+  // loop
+   // push $len zeros
+    $100,len-2, $33, $505, $1,$506, $504, $503, -14, //$201,
+    $0100,$ffff,$0100,mod2,$100,len,$5506, // Send len bytes
+    $1,$506, $504, $503, -42, // 1,-,dup,if(loop)
+
+    $FFFF );                            // 2.    finish!  64 bytes total
+  SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+if mod2=GetTaskSocket then 
+listen:
+  if recvmess(a)>0 then write('+'); lcnt:= lcnt+1;  goto listen  
+  fi ;
+fi ;
+
+if mod2=GetTaskSocket then write(lcnt); fi ;
+
+// writeln; delay(time*1000); write('>') ;goto again ;
+else
+// с извращениями!!!!!!!!
+//mod := $01;
+modlist := $41454648 ;
+modlist1:= $20 ;
+a_rept:
+writeln(tcnt,'сообщений из',mod,'в',(modlist && $ff));
+SendMess((mod*256)+$ff,$AA51,0,       // fill script from disp 0
+    $100,tcnt, // push tcnt 
+  // loop
+   // push $len zeros
+    $100,len-2, $33, $505, $1,$506, $504, $503, -14, //$201,
+    $0100,$ffff,$0100,(modlist && $ff)*256+$ff,$100,len,$5506, // Send len bytes
+    $1,$506, $504, $503, -42, // 1,-,dup,if(loop)
+
+    $FFFF );                            // 2.    finish!  64 bytes total
+  SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+modlist := modlist>>8 ;
+
+//  SetMask($B);SendMess($8000,$FF01,2,$D,$40);  recvmess(a,b,c,d,e,dd);
+//delay(500);
+
+if modlist <> 0 then goto a_rept fi ;
+if modlist1 <> 0 then modlist := modlist1;modlist1:=0; goto a_rept fi ;
+fi ;
+fin:

@@ -1,0 +1,64 @@
+mod := $40;
+setmod(mod);
+
+// looking for IO_BETA alive ...
+SendMess(mod*256+$ff,$4403);
+if recvmess(a,cmd,Carrier,IOB)>0 then 
+  if IOB <> 0 then writeln('Oops! port already connected to somebody...');  goto fin; fi ;
+else writeln('Oops! unimproper OS version...'); goto fin;
+fi ;
+// send init modem-control command!
+// read line-state port for I386 procesor 
+{
+writeln('line status register com1', inword ($3f8+0),inword ($3f8+1),inword ($3f8+2),inword ($3f8+3),inword ($3f8+4),inword ($3f8+5),inword ($3f8+6),inword ($3f8+7),
+			  'com2',inword ($2f8+0),inword ($2f8+1),inword ($2f8+2),inword ($2f8+3),inword ($2f8+4),inword ($2f8+5),inword ($2f8+6),inword ($2f8+7));
+}
+write('Port found. Setting up...');
+SendMess(mod*256+$ff,$4401,2);
+delay(1000);
+writeln('Ok');
+//let's send reset string
+goto hangup_done;
+
+// hangup!
+reset:
+// do we need to hangup
+SendMess(mod*256+$ff,$4402,$5441,$0a0d); //at dt 60008 waiting for OK
+if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto hangup_done fi fi;
+//if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto hangup_done fi fi;
+write(' модем не отвечает...') ;
+// resetmodem
+write('hangup...');
+SendMess(mod*256+$ff,$4402,$2b2b,$2b); //at dt 60008
+delay(1000);
+SendMess(mod*256+$ff,$4402,$5441,$3048,$0a0d); //ath0
+if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto hangup_done fi fi;
+//if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto hangup_done fi fi;
+writeln('Oops! Something wrong!!!!');  goto reset ;
+hangup_done:
+{}
+
+//SendMess(mod*256+$ff,$4402,$5441,$205a,$0a0d); //atz
+ //init and call	 										
+write('Initialisation...');
+//SendMess(mod*256+$ff,$4402,$5441,$3045,$304e,$3053,$313d,$26,$3044,$26,$304b,$3458,$0a0d); //ate0n0s0=1&d0
+//                          AT    E0    N0    S0    =1    &   D0    &   k0     x4
+SendMess(mod*256+$ff,$4402,$5441,$3045,$26,$3044,$26,$304b,$0a0d); //ate0n0s0=1&d0
+//                          AT    E0    &   D0    &   k0   
+//SendMess(mod*256+$ff,$4402,$5441,$205a,$0a0d); //atz
+if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto init_done fi fi;
+if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto init_done fi fi;
+if recvmess(a,b,cmd)>0 then if cmd = $4b4f then writeln('ready!'); goto init_done fi fi;
+{}
+init_done:
+
+//SendMess(mod*256+$ff,$4402,$5441,$5444,$3036,$3030,$2039,$0a0d); //at dt 60008
+
+//SendMess(mod*256+$ff,$4402,$5441,$0041,$0a0d); //ata
+
+delay(1000);
+again:
+if recvmess(a,b,c,d,e,f,g,h)>0 then writeln(a,b,c,d,e,f,g,h) fi;
+goto again ;
+
+fin:

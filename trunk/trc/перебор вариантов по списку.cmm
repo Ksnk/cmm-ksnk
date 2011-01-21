@@ -1,0 +1,48 @@
+settimeout(10000);
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+//---------------------
+variant:=evalasync('~user("Caption","1 - установить трассу, 2- проверить рестарты, 3- проверить все",300,200)');
+if variant=-1 then goto fin fi ;
+if variant >=$10 then circle  := 1 ;variant := variant && $f fi  ;
+
+again:
+mastermod := $20 ; 
+masterdisp := $306; 
+mod := mastermod && $ff; 
+
+sssagain:
+
+if variant=1 then 
+  include ot.cmm ;
+fi ;
+if variant=2 then 
+  include checkmod.cmm ;
+fi ;
+if variant=3 then 
+  include check_traces.cmm ;
+fi ;
+if variant=4 then 
+ // include CloseOD.cmm ;
+fi ;
+if variant=5 then 
+  include LinkCsl.cmm ;
+fi ;
+if variant=0 then 
+   include ver.inc; 
+fi ;
+ chknext:
+   masterdisp := masterdisp +4 ; 
+   SetMask($b);  SendMess(mastermod*256,$ff01,$2,masterdisp,$1b0);
+   if recvmess(a,b,c,d,e,f)<=0 then goto fin  fi ;
+   if f=0 then goto fin  fi ;
+   if (f>$100) then goto chknext  fi ;
+   if (f<$20) && (f> $20)  then goto chknext  fi ;
+   if (f>$80)  then goto chknext fi ;
+   if (f=$a1)|| ((f>=$60)&&(f<=$6f)) || ((f>=$11)&&(f<=$1f)) then goto chknext fi ; // исключаем потенциально-виртуальные
+   mod := f ;  goto sssagain;       
+//   sendmess(mod*256+$ff,$6b) ; if recvmess(a)>0 then goto sssagain else goto chknext fi ;
+fin:
+
+if circle = 1 then writeln; i := 0 ; goto again fi ;
+

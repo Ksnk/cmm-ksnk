@@ -1,0 +1,25 @@
+include gotmod.inc;
+addr := $8000;
+
+setmask($b); sendmess(mod*256,$ff01,2,2,0); if recvmess(a,b,c,d,e,SEG)<=0 then goto fin fi ;
+SEG := SEG+$10; 
+if SEG > $8000 then writeln('Íå â ÎÇÓ'); goto fin fi ;
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,addr,4,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,$100,addr,4,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,1,$5501                          //!! delay(1);
+        ,$100,addr,4,$40,$5507            //!! Wrmem(<addr>:4,$40);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+// now check!!!!
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,addr,$100,2*$555,$aa,$5507  //!! Wrmem(<addr>:<2*$555>,$aa);
+        ,$100,addr,$100,2*$2AA,$55,$5507  //!! Wrmem(<addr>:<2*$2AA>,$55);
+        ,$100,addr,$100,2*$555,$90,$5507  //!! Wrmem(<addr>:<2*$555>,$90);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+fin:
+// Hello! Wordl!

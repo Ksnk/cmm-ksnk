@@ -1,0 +1,35 @@
+//
+//  старт исполняемой версии на версию из ОЗУ
+//
+
+include gotmod.inc ;
+xmod := mod; mod := mod && $ff ;
+setmask($b); sendmess(mod*256,$ff01,2,2,0); if recvmess(a,b,c,d,e,SEG)<=0 then goto fin fi ;
+SEG := SEG+$10; 
+if SEG < $8000 then writeln('Уже в ОЗУ'); goto fin fi ;
+if (SEG && $FFF)<$800 then LEN := $c else LEN := 8 fi ;
+RAMADDR := xmod>>8 ;
+if RAMADDR=0 then 
+RAMADDR := $700 ;  { // сюда копируем
+setmask($b); sendmess(mod*256,$ff01,2,2,$1b0); 
+if recvmess(a,b,c,d,e,SEGx)<=0 then goto fin fi ;
+RAMADDR:=SEGx+10; 
+{}
+fi ;
+setmask($b); sendmess(mod*256,$ff01,2,6,$40); if recvmess(a,b,c,d,e,VALUE)<=0 then goto fin fi ;
+VALUE:= VALUE || 8;
+
+writeln('Sending script... ');
+
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,SEG,$0000,$0100,RAMADDR,$0000,$01c0,$5500,// 12.   //CopyMem(F800:0,$300:0,$8000);
+    $0100,RAMADDR,$0000,$5502,                  // 6.    CPUGoto($F800:0);
+    $0040,$0006,VALUE,$5507,            // $8C->40:6
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+writeln('Let''s look');
+
+fin:
+
+

@@ -1,0 +1,68 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля XX, адрес страницы YYYY - вводить $XXYYYY ",300,200)'));
+
+settimeout(10000);
+Addr := mod && $FFFF ;//$8000; 
+mod := mod>>16 ;
+  if mod=0 then 
+    include chkmod.inc;
+  fi;
+writeln('стираем страницу', Addr, 'в модуле', mod);
+{ // стирание флешки средствами сообщений 8830
+writeln('стирание флешки средствами сообщений 8830 ', Addr);
+SendMess(mod*256+$ff,$8830,Addr);
+if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
+{}
+
+{
+ // стирание флешки средствами сообщений AA11
+writeln('стирание флешки средствами сообщений AA11', Addr);
+SendMess(mod*256+$ff,$aa11,Addr);
+if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
+
+{}
+
+{ // стирание флешки средствами встроенного CMM
+writeln('стирание флешки средствами встроенного CMM', Addr);
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,Addr,$5504,                        // 4.    ClearFlash($f000:0);
+    $0100,Addr+$1000,$5504,                        // 4.    ClearFlash($f000:0);
+    $FFFF );                  // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+
+{ // стирание флешки вручную... флешка  49bv1604 (ck5, ck4 , csl8)
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,Addr,$0100,2*$5555,$AA,$5507,
+    $0100,Addr,$0100,2*$2aaa,$55,$5507,
+    $0100,Addr,$0100,2*$5555,$80,$5507,
+    $0100,Addr,$0100,2*$5555,$AA,$5507,
+    $0100,Addr,$0100,2*$2aaa,$55,$5507,
+    $0100,Addr,2*10 ,        $30,$5507,
+    $FFFF );                  // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+{ // верифай для amd29dl80
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,Addr,$0100,2*$555,$AA,$5507,
+    $0100,Addr,$0100,2*$2aa,$55,$5507,
+    $0100,Addr,$0100,2*$555,$90,$5507,
+    $FFFF );                  // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+{} // верифай для amd29lv040b
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,Addr,$0100,2*$555,$AA,$5507,
+    $0100,Addr,$0100,2*$2aa,$55,$5507,
+    $0100,Addr,$0100,2*$555,$90,$5507,
+    $FFFF );                  // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+{ // верифай для amd29lv040b
+setmask($d);Sendmess(mod*256,$ff01,1,2*$555,Addr,$aa);recvmess;
+setmask($d);Sendmess(mod*256,$ff01,1,2*$2AA,Addr,$55);recvmess;
+setmask($d);Sendmess(mod*256,$ff01,1,2*$555,Addr,$90);recvmess;
+
+{}

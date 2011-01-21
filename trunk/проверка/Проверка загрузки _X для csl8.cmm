@@ -1,0 +1,9 @@
+mod := $43 ;
+
+SendMess(mod*256+$ff,$aaaa); //загрузка  файла в PLD
+if recvmess(a,b,Result)=0 then writeln('отсутствует нужный сервис в ќ— или не тот номер модул€...'); goto fin ; fi ; 
+if Result =0 then writeln('не найден _X.prg в списке модулей ') ; 
+else writeln('_X.PRG успешно загружен в PLD');
+fi ;
+
+fin:

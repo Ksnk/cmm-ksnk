@@ -1,0 +1,63 @@
+if oops=1 then writeln(variant,'-проверка странных счетчиков')
+else
+include gotmod.inc;
+nowrite:= 1; 
+//writeln('модуль',mod);
+include ver.inc; 
+
+writeln(' ');
+write('модуль',mod);
+if lover >0 then
+   SetMask(19);  SendMess(mod*256,$ff01);    recvmess (a,b,c,d,e,ff,g,h); traceseg := ((e && $ff) <<8)+(d>>8);
+          // проверка на лишние сообщения
+   SetMask($b) ; SendMess(Mod*256,$ff01,6,$f2,$1b0);   recvmess(a,b,c,d,e,f,f2,f3);
+   if f <> 0 then
+      SetMask($b) ; SendMess(Mod*256,$ff01,2,$f2,$1b0);
+      recvmess(a,b,c,d,e,f); if f <> 0 then write('local mess(',f3,')') else write('.') fi ;
+   else write('.') fi ;
+          // проверка на заполнение пула сообщений
+   SetMask($b) ; SendMess(Mod*256,$ff01,2,$2c,$1b0); recvmess(a,b,c,d,e,MessSeg);
+   SetMask($b) ; SendMess(Mod*256,$ff01,2,2,MessSeg); recvmess(a,b,c,d,e,f);
+   if f > $1000 then write('mess(',f,')') else write('.') fi ;
+// проверка на неправедно убитые сообщения
+    SetMask($b) ; SendMess(Mod*256,$ff01,6,$3c,$1b0);
+    recvmess(a,b,c,d,e,lt1,lt2,lm0);
+    if lt1 = 0 then write('.') else write('losttim1(',lt1,')') fi ;
+    if lt2 = 0 then write('.') else write('losttim1(',lt2,')') fi ;
+    if lm0 = 0 then write('.') else write('losttim1(',lm0,')') fi ;
+// проверка на неправедно убитые сообщения
+    SetMask($b) ; SendMess(Mod*256,$ff01,2,$5C,$1b0);
+    recvmess(a,b,c,d,e,f);
+    if f = 0 then write('.') else write('messKilled(',f,')') fi ;
+// проверка на плохие
+    SetMask($b) ; SendMess(Mod*256,$ff01,2,$54,$40);
+    recvmess(a,b,c,d,e,f);
+    if f = 0 then write('.') else write('Oops!(',f,')') fi ;
+// ----------------------------------------------------------------
+
+
+          if ff = 1 then // УКС
+            SendMess(mod*256+$fe,1028,mod*256+$fe,$27a,2);
+            recvmess(a,b,c,d,e,f);
+            if (f && $2)=2 then
+              writeln('   фоновое тестирование ВКЛЮЧЕНО!!!!!');
+            fi ;
+          fi ;
+
+         // if (ff = 3)||(ff=2) then // found CSL or Бал
+
+            if lover > $3400 then
+              trc_disp := $300;
+            else
+              trc_disp := $42e;
+            fi;
+
+            SetMask($b);  SendMess(mod*256,$ff01,$2,$300,$0,$1234);
+            RecvMess(t1,t2,t3,t4,t5,A2);
+            if A2 <> $1234 then
+              writeln('    Restart!!!!!!!!!')
+            fi;
+//            writeln(t1,t2,t3,t4,t5,A2);
+        //  fi
+        fi
+fi

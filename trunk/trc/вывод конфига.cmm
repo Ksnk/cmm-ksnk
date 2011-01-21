@@ -1,0 +1,22 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+
+mod := $41 ;
+
+len := $9a7a ;
+// проверка - где лежит конфиг
+start := $8000 ;
+setmask($b); sendmess(mod*256,$ff01,2,2,start); recvmess(a,b,c,d,e,sign);
+if sign = $6f74 then goto gotit; fi; 
+start := $9000 ;
+setmask($b); sendmess(mod*256,$ff01,2,2,start); recvmess(a,b,c,d,e,sign); 
+if sign = $6f74 then goto gotit; fi; 
+goto oops; 
+
+gotit:
+writeln(mod,start,'------------------------->>>-------------------------------');
+
+include gdump.inc;
+
+oops:
+writeln(mod,start,'-------------------------<<<-------------------------------');

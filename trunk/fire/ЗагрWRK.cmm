@@ -1,0 +1,45 @@
+// Перезапись версии по выбору оператора
+// работает для локального проключения
+
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile ('.\Hashes\Common.xml');
+Client := GetTaskSocket>>8 ;
+
+mod := 0 ; 
+if Client >=$1e then 
+  SetMask($B);SendMess($8000,$FF01,8,$6,$40);
+  if recvmess(a,b,c,d,e,a1,a2,a3,a4) then mod := a4>>8 ;a1 := a1 && $ff fi ;
+fi ;
+if (mod =0)||(ForseChouseMod=1) then
+  modx:=(evalasync('~user("Caption","номер модуля",300,200)')); 
+  if (modx<>-1)&&(modx<>0) then mod := modx  ;
+  SetMask($B);SendMess(mod*256,$FF01,8,$6,$40);
+  if recvmess(a,b,c,d,e,a1,a2,a3,a4) then mod := a4>>8 ;a1 := a1 && $ff else mod := 0 fi ;
+  fi ;
+fi;
+if mod = 0 then 
+  goto fin
+fi ;
+
+//goto justgo;
+SetMask($B);SendMess(mod*256,$FF01,2,$2,$0); recvmess(a,b,c,d,e,SEG);
+if SEG < $2000 then 
+writeln('рестартуем ОС');
+SetMask($10); SendMess(Mod*256,$FF01,0,0,$ffff);
+delay(3000);
+fi ;
+
+startArea := $2000;//$2000 ;
+
+writeln('Loading file:os_ck4.wrk at',StartArea);LoadFile('Q:\Cmms\Fire\os_ck4.wrk',Mod*256,StartArea)  ;
+justgo:
+SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
+writeln('Let''s look');
+
+Delay(3000);
+
+
+fin:
+
+
+

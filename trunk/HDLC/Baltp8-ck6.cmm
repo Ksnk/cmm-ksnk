@@ -1,0 +1,34 @@
+include gotmod.inc
+
+setmod(mod);
+writeln('Hello word!');
+out($100d,00); // транзит
+out($100e,$80); // транзит
+
+
+outword($1008,$200); //
+outword($100a,$140); //
+outword($1008,$140); //
+outword($100a,$200); //
+
+outword($1008,$100); //
+outword($100a,$100); //
+
+//{
+for i from $100 to $17f do
+out($1000+i,$aa); 
+outword($1008,$200+i); //
+outword($100a,$200+i); //
+
+od ;
+{}
+j := 0 ;
+for i from $100 to $17f do
+  write(in($1000+i)); 
+  if j>14 then 
+    writeln;
+    j := 0 ;
+  else 
+    j := j+1; 
+  fi ;
+od ;

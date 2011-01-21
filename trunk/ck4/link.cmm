@@ -1,0 +1,33 @@
+// передача данных во фреймерный тракт
+//
+//  блок 1 проключение трактов СК во фреймерные тракты СЦ
+//
+modcsl :=$40;
+mod:=$20;
+
+
+modcslto:=(modcsl<<8)+$fe;
+//-------------------------------------------
+// проключение СК4 на ЦСЛ8
+for t from 0 to 7 do
+writeln(''); write(t,'::');
+    oTR:=t;
+    iTR:=t+8;
+settimeout(100);
+for i from 0 to 31 do  // (8-15) --> (0-7)
+
+    if i=16 then
+               writeln(''); write('   ::');
+    fi;
+
+  oCH:=i;      ampl :=$0;
+  iCH:=i;
+
+     x1 := (oTR << 5) || oCH;
+     x2 := (iTR << 5) || iCH;
+     sendmess(modcslto, $0407, x1, x2, 1,ampl);
+     recvmess(a);
+
+write(i);
+od;
+od;

@@ -1,0 +1,25 @@
+//*
+include gotmod.inc
+setmod(mod); 
+
+// clear
+//writeln('clear page...');sendmess(mod*256+$ff,$6653,$bb00>>2,0,2,$1111);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+
+// writerec
+//writeln('writing record...');sendmess(mod*256+$ff,$6651,8,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+
+
+// readrec
+//writeln('reading record...');sendmess(mod*256+$ff,$6650,0,0,4);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+//writeln('reading record...');sendmess(mod*256+$ff,$6650,($bb00>>2)-1,0,4);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+// calc CRC
+//writeln('testing CRC...');sendmess(mod*256+$ff,$6652,0,0,$120>>1);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+
+// swap pages
+writeln('writing record...');sendmess(mod*256+$ff,$6651,$1,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+writeln('writing record...');sendmess(mod*256+$ff,$6651,$5,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+writeln('writing record...');sendmess(mod*256+$ff,$6651,$9,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+writeln('writing record...');sendmess(mod*256+$ff,$6651,$3fc8,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);
+
+// swap pages
+//writeln('writing record...');sendmess(mod*256+$ff,$6654,$8,0,2,$1111,$2233,$4455,$6677,$8899);recvmess(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8); writeln(a,b,c,d,e,f,aa,a2,a3,a4,a5,a6,a7,a8);

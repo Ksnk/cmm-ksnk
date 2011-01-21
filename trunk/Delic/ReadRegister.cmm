@@ -1,0 +1,26 @@
+Register := $d042 ;
+mod := $30 ;
+Setmod(MOd);
+Delic := $A00 ;
+
+writeln('register ',register, ' delic ' , delic);
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,Delic+$41,$550A, // read port 
+    $0503,-10, // jump if not 0 5 words back
+    $0100, Register  	,$100, delic+ $0  ,$5509, // out (delic+0, 0);
+    $0100, $1 		,$100, delic+ $42, $5509, // out (delic+0, 0);
+    $0100, $2 	,	$100, delic+ $40, 	 $550B, // outb (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+ 
+//out(Delic+0, Register && $FF);
+//out(Delic+1, Register>>8);
+//out(Delic+$42, 1);
+//out(Delic+$40, 02);
+
+
+again1:
+//if in(Delic+$61)>$7f then out(Delic+$61,0) fi ;
+
+ 

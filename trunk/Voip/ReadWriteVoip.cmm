@@ -1,0 +1,13 @@
+mod := $70 ;
+Delic := $1000 ;
+
+Address := $0 ;
+Value := $55; 
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,Address,$100,$100e,$550B    //!! out($100e,<Address>);
+        ,$100,Value,$100,$100f,$550B      //!! out($100f,<Value>);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+fin:

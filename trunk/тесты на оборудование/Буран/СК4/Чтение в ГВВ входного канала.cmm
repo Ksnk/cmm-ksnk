@@ -1,0 +1,35 @@
+include info.inc;
+writeln('                   Тестирование модуля СК4 ');
+writeln('-----------------------------------------------------------');
+writeln('           Стойка -',stative,'плата -',board, 'модуль -',mod);
+writeln('-----------------------------------------------------------');
+writeln('-----------------------------------------------------------');
+writeln('считывает данные из ГВВ по указанному пакету,тракту и time slot`у ');
+writeln('-----------------------------------------------------------');
+//  чтение в ГВВ входного канала 
+
+
+SetHashFile('.\Hashes\Common.xml');
+SetHashFile('.\Hashes\Test.xml');
+
+writeln('Введите пакет,тракт и time slot для чтения');
+
+p:=(evalasync('~user("Caption","Ввод номера пакета ",300,200)'));
+tr:=(evalasync('~user("Caption","Ввод номера тракта ",300,200)'));
+ch:=(evalasync('~user("Caption","Ввод time slot`а ",300,200)'));
+
+settimeout(60000);
+
+mod:=mod*256+$fe;
+
+for k from 0 to 31 do
+sendmess(mod, $0407, p-1, (tr*32) +ch, 0,0);
+recvmess(a,b,c,d);
+
+delay(1000);
+
+sendmess(mod,$046b, p);
+recvmess(a,b,c,a1,a2,a3,a4,a5,a6,a7,a8);
+writeln('Полученные данные :',a1,' ',a2,' ',a3,' ',a4,' ',a5,' ',a6,' ',a7,' ',a8);
+
+od;

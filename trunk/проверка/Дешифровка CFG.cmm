@@ -1,0 +1,150 @@
+include gotmod.inc;
+
+SendMess(mod*256+$ff,$AA0b,$3030); recvmess(a,b,c,nnlen,nnseg);
+asmod := mod ; // looking for same section ;
+
+cpos := $100;
+fsect:
+ if cpos > nnlen then goto fin  fi ;
+ setmask($b); SendMess(mod*256,$ff01,4,cpos,nnseg); recvmess(a,b,c,d,e,len,Sec); 
+ if (Sec=0)||(len=0) then goto found; fi ;
+ if Sec <>asmod then cpos:= cpos+len ; goto fsect fi;
+// section found
+found:
+evalwrite('нашли секцию $~cd(d[0],h) по адресу ~cd(d[4],h):~cd(d[8],h)  длиной ~cd(d[12],h). decoding...',Sec,nnseg,cpos,len); writeln;
+ccpos := cpos+4 ;
+evalwrite('[$~cd(d[0],h)]',Sec); writeln;
+readnext:
+ if ccpos >= cpos+len then goto fin fi ;
+ setmask($b); SendMess(mod*256,$ff01,4,ccpos,nnseg); recvmess(a,b,c,d,e,code,par);  
+ if code=1 then  
+    writeln('  pic');
+    ccpos := ccpos+4; goto readnext 
+ fi ;
+ if code=2 then 
+    evalwrite('  route_dpram ~cd(d[0]),~cd(d[4])',par>>8,par && $ff); writeln;
+    ccpos := ccpos+4; goto readnext 
+ fi ;
+ if code=3 then 
+    evalwrite('  route_as ~cd(d[0]),~cd(d[4])',par>>8,par && $ff); writeln;
+    ccpos := ccpos+4; goto readnext 
+ fi ;
+ if code=4 then 
+    evalwrite('  route_as  ~cd(d[4]),~cd(d[0])',par>>8,par && $ff);writeln;
+    ccpos := ccpos+4; goto readnext 
+ fi ;
+ if code=5 then 
+    evalwrite('  MTP_route ~cd(d[0]),~cd(d[4])',par>>8,par && $ff);writeln;
+    ccpos := ccpos+4; goto readnext 
+ fi ;
+ if code=6 then writeln('  UKS_STD');ccpos := ccpos+2; goto readnext fi ;
+ if code=7 then 
+    setmask($b); SendMess(mod*256,$ff01,8,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4); 
+    write('  concentr');ccpos := ccpos+3 ;
+    if  (c1 && $ff) <>0 then evalwrite('~cd(d[0])',c1 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c1 >> 8) <>0 then evalwrite(',~cd(d[0])',c1 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 && $ff) <>0 then evalwrite(',~cd(d[0])',c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 >> 8) <>0 then evalwrite(',~cd(d[0])',c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 && $ff) <>0 then evalwrite(',~cd(d[0])',c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 >> 8) <>0 then evalwrite(',~cd(d[0])',c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 && $ff) <>0 then evalwrite(',~cd(d[0])',c4 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c4 >> 8) <>0 then evalwrite(',~cd(d[0])',c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    writeln;
+    goto readnext 
+ fi ;
+ if code=8 then 
+    setmask($b); SendMess(mod*256,$ff01,4,ccpos+1,nnseg); recvmess(a,b,c,d,e,c1,c2); 
+    writeln('  route_mtp',c1>>8,',',c2);
+    ccpos := ccpos+5; goto readnext 
+ fi ;
+ if code=10 then 
+    writeln('  route_oks',par && $ff);
+    ccpos := ccpos+3; goto readnext 
+ fi ;
+ if code=11 then 
+    setmask($b); SendMess(mod*256,$ff01,2,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1); 
+    writeln('  modem ',c1 && $ff);
+    ccpos := ccpos+3; goto readnext 
+ fi ;
+ if code=12 then 
+    setmask($b); SendMess(mod*256,$ff01,18,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4,c5,c6,c7,c8,c9); 
+    evalwrite('  db 12 ~cd(d[0]),~cd(d[4])',c1 && $ff,c1>>8); ccpos := ccpos+4; if c1=$0202 then writeln;goto readnext else ccpos := ccpos+1 fi ;
+    if  (c2 && $ff) <>0 then evalwrite(',~cd(d[0])',c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 >> 8) <>0 then evalwrite(',~cd(d[0])',c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 && $ff) <>0 then evalwrite(',~cd(d[0])',c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 >> 8) <>0 then evalwrite(',~cd(d[0])',c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 && $ff) <>0 then evalwrite(',~cd(d[0])',c4 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c4 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c5 && $ff) <>0 then evalwrite(',~cd(d[0])',c5 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c5 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c5 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c6 && $ff) <>0 then evalwrite(',~cd(d[0])',c6 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c6 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c6 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c7 && $ff) <>0 then evalwrite(',~cd(d[0])',c7 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c7 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c7 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c8 && $ff) <>0 then evalwrite(',~cd(d[0])',c8 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c8 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c8 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c9 && $ff) <>0 then evalwrite(',~cd(d[0])',c9 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c9 >> 8) <>0 then evalwrite(',~cd(d[0])'  ,c9 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    goto readnext 
+ fi ;
+ if code=13 then writeln('  NO_START_TO!!!!!!!');ccpos := ccpos+2; goto readnext fi ;
+ if code=15 then 
+    write('  DATA xxx,'); ccpos := ccpos+(par && $ff); 
+    setmask($b); SendMess(mod*256,$ff01,2,ccpos+3,nnseg); recvmess(a,b,c,d,e,c1); 
+    writeln(c1);
+    ccpos := ccpos+5; goto readnext 
+ fi ;
+ if code=16 then writeln('  LAMP_MASTER!!!!!!!');ccpos := ccpos+2; goto readnext fi ;
+ if code=17 then 
+    setmask($b); SendMess(mod*256,$ff01,4,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2); 
+    writeln('  db 17(virt)',c1,'обрабатываетс€',c2);
+    ccpos := ccpos+6; goto readnext 
+ fi ;
+ if code=18 then 
+    setmask($b); SendMess(mod*256,$ff01,8,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4); 
+    write('  db 18');ccpos := ccpos+3 ;
+    if  (c1 && $ff) <>0 then write (c1 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c1 >> 8) <>0 then write (c1 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 && $ff) <>0 then write (c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 >> 8) <>0 then write (c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 && $ff) <>0 then write (c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 >> 8) <>0 then write (c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 && $ff) <>0 then write (c4 && $ff);ccpos:=ccpos+1 else writeln; goto readnext fi ;
+    if  (c4 >> 8) <>0 then write (c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    writeln;
+    goto readnext 
+ fi ;
+ if code=19 then // peb22554
+    setmask($b); SendMess(mod*256,$ff01,8,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4); 
+    write('  peb22554');ccpos := ccpos+2 ;
+    if  (c1 && $ff) <>0 then evalwrite('~cd(d[0],h)',c1 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c1 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c1 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c4 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    writeln;
+    goto readnext 
+ fi ;
+ if code=21 then // IP
+    setmask($b); SendMess(mod*256,$ff01,8,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4); 
+    write('  TCP-IP');ccpos := ccpos+3 ;
+    if  (c1 && $ff) <>0 then evalwrite('~cd(d[0],d)',c1 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c1 >> 8) <>0 then evalwrite('.~cd(d[0],d)',c1 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 && $ff) <>0 then evalwrite('.~cd(d[0],d)',c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c2 >> 8) <>0 then evalwrite('.~cd(d[0],d)',c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c3 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c4 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    if  (c4 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    writeln;
+    goto readnext 
+ fi ;
+ if code = 0 then goto fin ;fi ;
+ writeln('db ',code);ccpos := ccpos+2;
+ goto readnext ;
+
+fin:
+  

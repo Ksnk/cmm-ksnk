@@ -1,0 +1,130 @@
+
+//Тест интерфейсов для Деликов
+//входные параметры
+// номер делика
+// номер IOM-тракта
+//
+//
+//
+//
+
+writeln('CFTrunc= ',CFTrunc);
+writeln('Module= ',Module);
+Write('CFChannel: ');Writeln(CFChannel);
+
+/*
+IOM2channel:=CFChannel>>1;
+
+if CFTrunc=4
+then Delic:=3
+fi;
+if CFTrunc=5
+then Delic:=2;
+fi;
+if CFTrunc=6
+then Delic:=1;
+fi;
+if CFTrunc=7
+then Delic:=0;
+fi;
+*/
+
+Module:=$30;
+IOM2channel:=4;
+DELIC:=3;
+
+
+
+
+modos:=Module*256;
+modto:=Module*256+$fe;
+modff:=modos+$ff;
+//определение адреса искомого делика
+// по данным Делика
+
+// посылка сигнала в ОС об необработке сигнала по определенной индикации
+// для определенного канала   блокировка канала
+
+SendMess(modff,$8b55,DELIC,$41,0);//IOM2channel);
+
+//SendMess($30ff,$8b55,Delik,Ind,Gen);
+//деактивация делика
+delay(1000);
+
+writeln('IOM2channel=',IOM2channel);
+writeln('DELIC=',DELIC);
+SetMask($ff);
+
+SendMess(modto,4000,DELIC);
+//деактивация делика
+delay(1000);
+
+SendMess(modto, 1088, 1, $0023, $0100, $0000 + IOM2channel);
+delay(1000);
+
+//замыкание первой петли делика
+
+SendMess(modto, 1088, 1, $0023, $0100, $0a00 + IOM2channel);
+delay(4500);
+
+// пересылка данных в передатчик тестируемого IOM2channel
+
+addr:=$8040;
+data:=$e011;
+
+SendMess(modto,4000,DELIC);
+
+for k from 1 to 8 do
+
+sendmess(modto,1071,addr+IOM2channel*4,data);
+recvmess(t0,t1, a0,a1,a2,a3);
+writeln(t1, a0,a1,a2,a3);
+od;
+
+sendmess(modto,1070,addr-$40+IOM2channel*4);
+recvmess(t0,t1, a0,a1,a2,a3);
+writeln(t1, a0,a1,a2,a3);
+
+
+
+
+
+for k from 1 to 16 do
+
+sendmess(modto,1070,$8000+k);
+recvmess(t0,t1, a0,a1,a2,a3);
+writeln('k= ',k,':  ',t1, a0,a1,a2,a3);
+od;
+
+
+
+
+
+
+
+if data<>a0
+then writeln(' ╬°шсър т шэЄхЁЇхщёх ', IOM2channel ,' ърэрыр');
+else writeln(' ╤юёЄю эшх ърэрыр  ', IOM2channel ,' Ёрсюўхх т ', DELIC,'─хышъх');
+fi;
+// размыкание шлейфа
+
+SendMess(modto,4000,DELIC);
+//деактивация делика
+delay(1000);
+
+SendMess(modto, 1088, 1, $0023, $0100, $0000 + IOM2channel);
+delay(1000);
+
+//размыкание первой петли делика
+
+SendMess(modto, 1088, 1, $0023, $0100, $0800 + IOM2channel);
+delay(1000);
+
+
+//команда разблокировки канала
+
+//SendMess(modos,codos2,DELIC,IOM2channel);
+
+
+
+SendMess($30ff,$8b55,DELIC,$FF,0);

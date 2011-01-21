@@ -1,0 +1,37 @@
+include gotmod.inc;
+
+// send ;
+// формируется MessNum сообщений с командой CMD и вторым словом - Номер в обратном порядке
+DestAddr := $0 ; // обратный адрес для отправки собщения 0 -  по адресу скрипта
+MessNum := $1 ; // количество сообщений в пучке
+CMD := $3232 ; // команда, которая будет посылаться
+Time := 5000 ; // время между запусками вспышек
+N := 32 ; // количество вспышек 0 - бесконечно (1,2) - 1, (N)= N-1
+
+again:
+CMD := CMD+1; 
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $100, MessNum,
+    $504, $0100,CMD,  
+    $505,$505,$0100,DestAddr,4,$5506, // Send "StartDebug"
+
+    $0001,$0506,$504,               // 4.    Delay-=1; dup
+    $0503,-14*2,		            // 10.    jump if not 0 for 5 word back			
+    $FFFF );                        // !!.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+if DestAddr = 0 then 
+CC := MessNum ;
+CCC := 0;
+getmess:
+if recvmess(a,b,c,d,e,f)>0 then  
+  CCC := CCC+1 ;
+  if C=CC then write('.')  else
+  writeln('wait ',CC, 'found ',C,' (',a,b,c,')');  fi ;CC := C-1 ; goto getmess 
+fi ;
+writeln(CCC,'messages');
+else
+  write('.');
+fi ;
+if N > 1 then N := N-1; fi; 
+if N <> 1 then  delay(Time) ;goto again; fi ;

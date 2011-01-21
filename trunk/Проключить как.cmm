@@ -1,0 +1,26 @@
+// сделать видимым модуль mod, клиенту РМО "Client",
+// который подключен через Router, подключенный через модуль AsMod
+
+Client := GetTaskSocket>>8 ;
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","Проключить ZZ в модуле XX как YY - вводить $ZZXXYY (ZZ==0 )",300,200)'));
+if (mod =0)||(mod=-1) then
+  writeln('bye bye!');
+else
+
+if mod > $FFFF then Client := mod >> 16; fi ;
+Mmod := mod &&$FF ; mod := (mod>>8)&& $FF; 
+
+again:
+
+ writeln('проключаем ',mod,'через',Mmod,'-й');// неведома зверушка
+
+SetMask(15+8); SendMess(mod*256,$FF01, Mmod*256+Client);
+//SetMask(15+8); SendMess(mod*256,$FF01, Mmod*256+$0);
+
+// восстановление проключения в случае пропажы
+justwait:  delay(5000); sendmess(mod*256+$ff,$6b);if recvmess(a)=0 then goto again else goto justwait ;fi ;
+
+fi;

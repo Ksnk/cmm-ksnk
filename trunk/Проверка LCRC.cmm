@@ -1,0 +1,6 @@
+mod := $f ;
+
+mod := $70 ;SendMess(mod*256+$ff,$aa0c,$2,0,$200,1);
+recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);
+//mod := $20 ;SendMess(mod*256+$ff,$aa0c,$FFFe,0,$8000,1);
+//recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);

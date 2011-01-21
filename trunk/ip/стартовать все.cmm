@@ -1,0 +1,22 @@
+include gotmod.inc;
+//goto justgo;
+trace := $400; // сегмент начала трассы
+IO_IP_TRACE := $a4;
+// ******************************************************************************
+// открываем трассу сообщений, если надо
+setmask($b); sendmess(mod*256,$ff01,2,4,trace); recvmess(a,b,c,d,e,sig);
+if (sig=$aaa2)||(sig=$aaa3) then // трасса установлена!
+else
+setmask($d); sendmess(mod*256,$ff01,6,0,trace,8,$1000,$aaa3); recvmess(a,b,c,d,e,sig);
+fi ;
+// ****************************************************************************** 
+// инициируем начало трассы, если надо
+setmask($b); sendmess(mod*256,$ff01,2,IO_IP_TRACE,$1b0); recvmess(a,b,c,d,e,sig);
+if sig=trace then // трасса установлена!
+else
+setmask($d); sendmess(mod*256,$ff01,2,IO_IP_TRACE,$1b0,trace); recvmess(a,b,c,d,e,sig);
+fi ;
+// ******************************************************************************
+// посылаем сообщение на старт драйвера
+justgo:
+Sendmess(mod*256+$ff,$f001);

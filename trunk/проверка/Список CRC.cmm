@@ -1,0 +1,33 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+  include gotmod.inc ;
+
+Addr := $400;Addr2 := 0; lenx := $10000 ;
+step := $100 ;
+len := $00 ;
+crcloop:
+//   SendMess(mod*256+$ff,$aa0c,len,0,Addr,1); recvmess(a,b,c,d); Write (len-$100,': Partial CRC ',c);
+//   if Addr2 <> 0 then SendMess(mod*256+$ff,$aa0c,len,0,Addr2,1); recvmess(a,b,c2,d); 
+   SendMess(mod*256+$ff,$aa0c,step+len,0,Addr,1); recvmess(a,b,c,d); Write (len,': Partial CRC ',c);
+   if Addr2 <> 0 then SendMess(mod*256+$ff,$aa0c,$100,0,Addr2+(len>>4),1); recvmess(a,b,c2,d); 
+     if c = c2 then writeln ('+'); 
+     else write('!!',c2); 
+        for i from 0 to (step/16) do 
+         if agot = 0 then 
+         SendMess(mod*256+$ff,$aa0c,$10+(i*16),0,Addr+(len>>4),1); recvmess(a,b,c,d); 
+         SendMess(mod*256+$ff,$aa0c,$10+(i*16),0,Addr2+(len>>4),1); recvmess(a,b,c2,d); 
+         if  c<>c2 then 
+            EvalWrite('>~cd(d[0],h):~cd(d[4],h)-~cd(d[8],h)',i,c,c2); agot := 1;
+         fi ; 
+         fi ;
+        od ;
+        writeln;
+       
+     fi ;
+   else writeln; 
+   fi ;
+   len := len + step ;
+   if len >= lenx then goto fin fi ;
+  goto crcloop ;
+
+fin:

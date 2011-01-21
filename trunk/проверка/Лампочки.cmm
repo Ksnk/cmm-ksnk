@@ -1,0 +1,13 @@
+include gotmod.inc ;
+
+for i from 0 to 7 do
+writeln('lamp - ',i);
+sendmess(mod*256+$ff,$bb03,i,0); // 0 - show
+delay(1000);
+sendmess(mod*256+$ff,$bb03,i,1); // 0 - hide
+delay(1000);
+sendmess(mod*256+$ff,$bb03,i,2); // 0 - switch
+delay(1000);
+sendmess(mod*256+$ff,$bb03,i,2); // 0 - switch
+delay(3000);
+od;

@@ -1,0 +1,18 @@
+include gotmod.inc
+// 
+if mod > $100 then mod := mod && $ff ;close := 1 fi ;
+//-------------------------------------------------
+settimeout( 6000 );
+modto:= (mod<<8)+ $fe;
+
+for i from 1 to $fd do
+obj := (mod<<8) +$fe-i;
+if close = 0 then 
+SendMess( modto, 1030, obj, 1,1,  $f0 );
+else
+SendMess( modto, 1030, obj, 1,1,  $e0 );
+fi ;
+WriteLn(obj);
+if  RecvMess(a)=0 then goto fin1 fi;
+od;
+fin1:

@@ -1,0 +1,2 @@
+include gotmod.inc;
+sendmess(mod*256+$ff,$8c83);

@@ -1,0 +1,13 @@
+mod1 := $50;
+mod2 := $30;
+
+again:
+sendmess(mod2*256+$ff,$6b); if recvmess(a)>0 then else goto fin fi ;
+//make restart
+write('.');
+setmask($f); SendMess(mod1*256,$ff01);
+delay(5000);
+goto again ;
+
+fin:
+sendmess(mod2*256+$ff,$6b); if recvmess(a)>0 then goto again  fi ;

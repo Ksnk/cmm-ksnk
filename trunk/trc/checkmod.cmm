@@ -1,0 +1,21 @@
+if oops=1 then writeln(variant,'-ѕроверка рестартов')
+else
+include gotmod.inc
+if (mod <> 0)&&(mod<>-1) then
+// провер€ем до первого рестарта
+setmask($b);sendmess(mod*256,$ff01,2,0,$30);
+evalwrite('~cd(d[0],h)',mod);
+settimeout(1000);
+if recvmess(a,b,c,d,e,f)>0 then 
+  if f = $1234 then write('.') else
+    if f = $BCDE then  write('-') else
+      if f = $EDCB then  write('-') else
+      write('x'); fi ; fi
+  fi ;
+else 
+  write('?');
+fi ;
+settimeout(10000);
+//delay(1000);
+fi ;
+FI ;

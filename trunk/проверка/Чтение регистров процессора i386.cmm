@@ -1,0 +1,28 @@
+// chipselect unit
+include gotmod.inc
+//mod := $43;
+setmod (mod);
+writeln('REMAPCFG 22,f022',inword($022));
+S := $f400 ;write('CS0');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f408 ;write('CS1');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f410 ;write('CS2');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f418 ;write('CS3');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f420 ;write('CS4');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f428 ;write('CS5');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10)); fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f430 ;write('CS6');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f438 ;write('UCS');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6);write('(',AL,AH,ML,MH,')') ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  write(' mask ',(MH && $3FFc)>>2,((MH && 3)<<6) + (Ml >> 10));fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+
+
+S := $f820 ;writeln('p123cfg+pincfg', inword(S+0),inword(S+2),inword(S+4),inword(S+6) );
+S := $f860 ;writeln('p1-pin.ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f868 ;writeln('p2-pin,ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f870 ;writeln('p3-pin,ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f830 ;writeln('(DMA,INT,TMR,SIO)cfg', inword(S+0),inword(S+2),inword(S+4),inword(S+6));
+
+
+S := $f4c4 ;writeln('WDTCNT', inword(S),inword(S+2) );
+
+S := $f4c4 ;writeln('$21,$a1', in($21),in($a1) );
+// корректировка
+//S := $ff02 ; setmask($16); SendMess(mod*256,$ff01,S+0,$200);
+//inword($8050);

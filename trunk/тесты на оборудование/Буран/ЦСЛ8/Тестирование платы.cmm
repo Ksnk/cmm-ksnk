@@ -1,0 +1,162 @@
+include info.inc;
+writeln('           Состояние систем контроля и контрольных регистров ');
+writeln('-----------------------------------------------------------');
+writeln('           Стойка -',stative,'плата -',board, 'модуль -',mod);
+writeln('-----------------------------------------------------------');
+writeln('-----------------------------------------------------------');
+writeln('                      вывод информации о модуле ');
+writeln('-----------------------------------------------------------');
+
+Show := 0 ;
+
+SetMask(19);SendMess(Mod*256,$FF01); if recvmess(a,b,c,d,e,type)<=0 then writeln('Отсутствует модуль ', mod); goto fin fi ;
+type := type && $FF;
+if (type = 15) then writeln('Тестируем плату C4 проекта Буран') ; goto chknext fi ;
+if (type = 18) then writeln('Тестируем плату ЦСЛ8 проекта Буран') ; goto chknext fi ;
+if (type = 20) then writeln('Тестируем плату C4 - транзитка') ; goto chknext fi ;
+if (type = 21) then writeln('Тестируем плату ЦСЛ8- транзитка') ; goto chknext fi ;
+
+writeln('Некорректная база данных, невозможный для данного теста тип платы', type);
+goto fin;
+
+chknext:
+
+include ver.inc;
+
+
+if (type = 15)||(type=20) then // os_ck4 или os_ck4trn
+  writeln ;
+  write('опрос системы "Контроль резервного СК"...');
+  SendMess(256*mod+$ff,$8801);
+  RecvMess(fromaddr,command,selfstate,jumper,over);
+  writeln('!');
+
+  if Command = $77FF then
+      if SelfState = 1 then
+        writeln('  СК находится в активном сстоянии.');
+      else
+        writeln('  СК находится режиме контроля.');
+      fi ;
+      if jumper = 0 then
+        writeln('  ... размещен в правой секции.');
+        if over = 1 then
+          writeln('  ... левый модуль присутствует.');
+        else
+          writeln('  ... левый модуль отсутствует.');
+        fi ;
+      else
+        writeln('  ... размещен в левой секции.');
+        if over = 1 then
+          writeln('  ... правый модуль присутствует.');
+        else
+          writeln('  ... правый модуль отсутствует.');
+        fi ;
+      fi ;
+
+  else
+    writeln('неверная версия системного процесса! '); goto fin;
+  fi;
+fi ;
+
+writeln ;write('чтение регистров состояния ...');
+setmod(mod);b :=in($1001);
+//setmask($12);sendmess(mod*256,$ff01,$1001); recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);
+writeln('!'); write ('  регистр 1001 -') ;
+// анализ регистра 1001
+if (b&& $F0) = $C0 then write('  версия платы - "CK4"'); goto chknext0 fi ;
+if (b&& $F0) = $80 then write('  версия платы - "ЦСЛ8"'); goto chknext0 fi ;
+
+write('  версия платы - не определена (', B ,')');
+
+chknext0:
+writeln('  местоположение - ',b&& $0F) ;
+
+if (type = 18)||(type=21) then //os_csl8 / trn
+
+writeln ('  регистр 1003 -') ; b := in($1003);
+write('   ');if (B && $01) =0 then writeln('RCLK-0,') else writeln('RCLK-1,') fi ;
+write('   ');if (B && $04) =0 then writeln('одна кадр. метка') else writeln('4 кадр. метки') fi ;
+write('   ');if (B && $10) =0 then writeln('частота синхронизации от CHNLSYN_СК4 - отсутствует') else writeln('частота синхронизации от CHNLSYN_СК4 - есть') fi ;
+write('   ');if (B && $20) =0 then writeln('кадровая метка от CHNLSYN_СК4 - отсутствует') else writeln('кадровая метка от CHNLSYN_СК4 - есть') fi ;
+write('   ');if (B && $40) =0 then writeln('активный канал синхронизации: CK0') else writeln('активный канал синхронизации: CK1') fi ;
+write('   ');if (B && $80) =0 then writeln('выбор частоты для МТ9045- 2048 МГц') else writeln('выбор частоты для МТ9045:  8кГц. ') fi ;
+
+writeln ('  регистр 1004 - версия прошивки Олега -', in($1004)); // 1004
+else
+writeln ('  регистр 100A - версия прошивки Олега -', in($100A)); // 1004
+fi ;
+
+writeln ;write('Запрос информации о ФПО...');
+SetMask($b) ;sendmess(mod*256,$ff01,2,6,$40); recvmess(a,b,c,d,e,SYS); writeln('(',SYS && $FF,') !' );
+if (SYS && $40) <> 0 then
+  writeln('  Нет разрешения на запуск ФПО')
+else
+  writeln('  Разрешение на запуск ФПО получено');
+  SetMask($b) ;sendmess(mod*256,$ff01,2,$2fc,$1b0); recvmess(a,b,c,d,e,TOSEG);
+  if TOSEG = 0 then
+    writeln('  Не запущен объект ТО, система инициализируется ?!?')
+  else
+    SetMask($b) ;sendmess(mod*256,$ff01,2,$27e,TOSEG); recvmess(a,b,c,d,e,TOST);
+    if TOST = 5 then writeln('  ФПО успешно стартовало.')
+    else writeln('  ФПО не старовало!!!! Сотояние TO', TOST)
+    fi
+  fi ;
+fi ;
+//*******************************************netinfo
+
+
+displ := $300;
+
+// сетевая информация
+//     recvmess(a,b,c,d,e,Alive,MessRecv,f,iobCRC,g,iobErr);
+CHECK_COUNT:=0;
+displ := displ  ; channum := 0 ;
+                                            include sign_chan.inc ;
+chan01 :=chan; disp01 :=disp; messs01 :=MessSent; mess01 :=MessRecv; messE01:=iobErr; Err01 :=iobCRC; include sign_chan.inc ;
+chan02 :=chan; disp02 :=disp; messs02 :=MessSent; mess02 :=MessRecv; messE02:=iobErr; Err02 :=iobCRC; include sign_chan.inc ;
+chan03 :=chan; disp03 :=disp; messs03 :=MessSent; mess03 :=MessRecv; messE03:=iobErr; Err03 :=iobCRC; include sign_chan.inc ;
+chan04 :=chan; disp04 :=disp; messs04 :=MessSent; mess04 :=MessRecv; messE04:=iobErr; Err04 :=iobCRC; include sign_chan.inc ;
+chan05 :=chan; disp05 :=disp; messs05 :=MessSent; mess05 :=MessRecv; messE05:=iobErr; Err05 :=iobCRC; include sign_chan.inc ;
+chan06 :=chan; disp06 :=disp; messs06 :=MessSent; mess06 :=MessRecv; messE06:=iobErr; Err06 :=iobCRC; include sign_chan.inc ;
+chan07 :=chan; disp07 :=disp; messs07 :=MessSent; mess07 :=MessRecv; messE07:=iobErr; Err07 :=iobCRC; include sign_chan.inc ;
+chan08 :=chan; disp08 :=disp; messs08 :=MessSent; mess08 :=MessRecv; messE08:=iobErr; Err08 :=iobCRC; include sign_chan.inc ;
+chan09 :=chan; disp09 :=disp; messs09 :=MessSent; mess09 :=MessRecv; messE09:=iobErr; Err09 :=iobCRC; include sign_chan.inc ;
+chan0a :=chan; disp0a :=disp; messs0a :=MessSent; mess0a :=MessRecv; messE0a:=iobErr; Err0a :=iobCRC; include sign_chan.inc ;
+chan0b :=chan; disp0b :=disp; messs0b :=MessSent; mess0b :=MessRecv; messE0b:=iobErr; Err0b :=iobCRC; include sign_chan.inc ;
+chan0c :=chan; disp0c :=disp; messs0c :=MessSent; mess0c :=MessRecv; messE0c:=iobErr; Err0c :=iobCRC; include sign_chan.inc ;
+chan0d :=chan; disp0d :=disp; messs0d :=MessSent; mess0d :=MessRecv; messE0d:=iobErr; Err0d :=iobCRC; include sign_chan.inc ;
+chan0e :=chan; disp0e :=disp; messs0e :=MessSent; mess0e :=MessRecv; messE0e:=iobErr; Err0e :=iobCRC; include sign_chan.inc ;
+chan0f :=chan; disp0f :=disp; messs0f :=MessSent; mess0f :=MessRecv; messE0f:=iobErr; Err0f :=iobCRC; include sign_chan.inc ;
+chan0g :=chan; disp0g :=disp; messs0g :=MessSent; mess0g :=MessRecv; messE0g:=iobErr; Err0g :=iobCRC; include sign_chan.inc ;
+
+writeln (' начинаем проверку каналов 120 секунд...');
+pointn := 1 ;
+again:
+//Alive,DPC,SLS,MessRecv,MessSent
+                                                                        chan :=chan01; disp :=disp01;MessRecv:=mess01; MessSent :=messs01; iobErr:=messE01; iobCRC:=Err01;   include check.inc;
+messs01 :=MessSent; mess01 :=MessRecv; messE01:=iobErr; Err01 :=iobCRC; chan :=chan02; disp :=disp02;MessRecv:=mess02; MessSent :=messs02; iobErr:=messE02; iobCRC:=Err02;   include check.inc;
+messs02 :=MessSent; mess02 :=MessRecv; messE02:=iobErr; Err02 :=iobCRC; chan :=chan03; disp :=disp03;MessRecv:=mess03; MessSent :=messs03; iobErr:=messE03; iobCRC:=Err03;   include check.inc;
+messs03 :=MessSent; mess03 :=MessRecv; messE03:=iobErr; Err03 :=iobCRC; chan :=chan04; disp :=disp04;MessRecv:=mess04; MessSent :=messs04; iobErr:=messE04; iobCRC:=Err04;   include check.inc;
+messs04 :=MessSent; mess04 :=MessRecv; messE04:=iobErr; Err04 :=iobCRC; chan :=chan05; disp :=disp05;MessRecv:=mess05; MessSent :=messs05; iobErr:=messE05; iobCRC:=Err05;   include check.inc;
+messs05 :=MessSent; mess05 :=MessRecv; messE05:=iobErr; Err05 :=iobCRC; chan :=chan06; disp :=disp06;MessRecv:=mess06; MessSent :=messs06; iobErr:=messE06; iobCRC:=Err06;   include check.inc;
+messs06 :=MessSent; mess06 :=MessRecv; messE06:=iobErr; Err06 :=iobCRC; chan :=chan07; disp :=disp07;MessRecv:=mess07; MessSent :=messs07; iobErr:=messE07; iobCRC:=Err07;   include check.inc;
+messs07 :=MessSent; mess07 :=MessRecv; messE07:=iobErr; Err07 :=iobCRC; chan :=chan08; disp :=disp08;MessRecv:=mess08; MessSent :=messs08; iobErr:=messE08; iobCRC:=Err08;   include check.inc;
+messs08 :=MessSent; mess08 :=MessRecv; messE08:=iobErr; Err08 :=iobCRC; chan :=chan09; disp :=disp09;MessRecv:=mess09; MessSent :=messs09; iobErr:=messE09; iobCRC:=Err09;   include check.inc;
+messs09 :=MessSent; mess09 :=MessRecv; messE09:=iobErr; Err09 :=iobCRC; chan :=chan0a; disp :=disp0a;MessRecv:=mess0a; MessSent :=messs0a; iobErr:=messE0a; iobCRC:=Err0a;   include check.inc;
+messs0a :=MessSent; mess0a :=MessRecv; messE0a:=iobErr; Err0a :=iobCRC; chan :=chan0b; disp :=disp0b;MessRecv:=mess0b; MessSent :=messs0b; iobErr:=messE0b; iobCRC:=Err0b;   include check.inc;
+messs0b :=MessSent; mess0b :=MessRecv; messE0b:=iobErr; Err0b :=iobCRC; chan :=chan0c; disp :=disp0c;MessRecv:=mess0c; MessSent :=messs0c; iobErr:=messE0c; iobCRC:=Err0c;   include check.inc;
+messs0c :=MessSent; mess0c :=MessRecv; messE0c:=iobErr; Err0c :=iobCRC; chan :=chan0d; disp :=disp0d;MessRecv:=mess0d; MessSent :=messs0d; iobErr:=messE0d; iobCRC:=Err0d;   include check.inc;
+messs0d :=MessSent; mess0d :=MessRecv; messE0d:=iobErr; Err0d :=iobCRC; chan :=chan0e; disp :=disp0e;MessRecv:=mess0e; MessSent :=messs0e; iobErr:=messE0e; iobCRC:=Err0e;   include check.inc;
+messs0e :=MessSent; mess0e :=MessRecv; messE0e:=iobErr; Err0e :=iobCRC; chan :=chan0f; disp :=disp0f;MessRecv:=mess0f; MessSent :=messs0f; iobErr:=messE0f; iobCRC:=Err0f;   include check.inc;
+messs0f :=MessSent; mess0f :=MessRecv; messE0f:=iobErr; Err0f :=iobCRC; chan :=chan0g; disp :=disp0g;MessRecv:=mess0g; MessSent :=messs0g; iobErr:=messE0g; iobCRC:=Err0g;   include check.inc;
+messs0g :=MessSent; mess0g :=MessRecv; messE0g:=iobErr; Err0g :=iobCRC;
+
+if Show=1 then writeln('||'); fi ;
+ if pointn > 20 then writeln (' '); pointn := 1 ; else pointn := pointn+1 ; fi ;
+if CHECK_COUNT > 10 then goto fin fi ;CHECK_COUNT:= CHECK_COUNT+1 ;
+delay(10000);
+goto again ;
+fin:
+
+
+

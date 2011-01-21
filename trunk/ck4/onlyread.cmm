@@ -1,0 +1,53 @@
+// передача данных во фреймерный тракт
+
+//
+//  блок приема данных в физ.тракт
+//
+
+mod:=$20;
+setmod(mod);
+d:=$6001;
+
+
+tr  :=26;
+writeln('tract - ',tr);
+for p from 0 to 3 do
+writeln;
+write(p,'::');
+slot:=p;
+for i from 0 to 31 do
+  include readp.inc;
+  write (val1);
+  slot:=slot+4;
+od;
+od;
+
+tr  :=1;
+
+writeln('  ');
+
+writeln('tract - ',tr);
+
+for p from 0 to 3 do
+writeln;
+write(p,'::');
+slot:=p;
+for i from 0 to 31 do
+  include readp.inc;
+  write (val1);
+  slot:=slot+4;
+od;
+od;
+
+
+
+
+
+
+
+
+
+
+
+
+

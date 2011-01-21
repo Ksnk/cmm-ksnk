@@ -1,0 +1,141 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+//---------------------
+masterdisp := $306 ;
+
+mastermod:=(evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)'));
+mod := mastermod ;
+
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0)||(mod=-1) then
+     SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+     recvmess(a,b,c,d,e,mod)
+fi;
+
+mod := mod && $ff ;
+
+mastermod := mod ;
+
+//goto again;
+
+settrc:
+
+write(mod);
+
+trc_disp:= $300;
+//atseg := $6100 ;
+include TRC_INIT.inc ;
+if ats <>0 then AtSeg := ats ; fi ;
+
+//goto no_correct;
+goto not_set; // . если не нужно устанавливать ничего!
+
+// correct DataLength
+ SetMask($b); SendMess(mod*256,$ff01,2,2,$1b0);
+ if recvmess(a,b,c,d,e,f)>0 then // writeln(f);
+   AtSeg := f+$10; // correct AtSeg
+   len4 := ((f-$1b0)+2)*8;
+ fi ;
+// correct MessSeg
+ SetMask($b); SendMess(mod*256,$ff01,2,$2c,$1b0); if recvmess(a,b,c,d,e,f)>0 then if START6>0 then START6:= f ; fi ; fi ;
+// correct ToData
+ SetMask($b); SendMess(mod*256,$ff01,2,$2fc,$1b0); if recvmess(a,b,c,d,e,f)>0 then if START5>0 then START5:= f ; fi ; fi ;
+
+no_correct:
+// setup trace to 0:300
+         SetMask($d);  SendMess(mod*256,$ff01,$30,trc_disp,$0,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+{
+// setup trace to 40:0
+         SetMask($d);  SendMess(mod*256,$ff01,$30,trc_disp,$40,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+{}
+// setup trace to 4001:0
+         SetMask($d);  SendMess(mod*256,$ff01,$30,$4001,$0,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+not_set: ;
+//mastermod := $4 ; master disp := $306 ;
+ cchknext:
+   masterdisp := masterdisp +4 ; // write(f,masterdisp );
+   SetMask($b);  SendMess(mastermod*256,$ff01,$2,masterdisp,$1b0);
+   if recvmess(a,b,c,d,e,f)<=0 then goto ffin  fi ;
+   if f=0 then goto ffin  fi ;
+   if (f>$100) then goto cchknext  fi ;
+   if (f<$20) && (f> $20)  then goto cchknext  fi ;
+   if (f>$80)  then goto cchknext fi ;
+
+   mod := f ;
+   if (mod >=$60) && (mod<=$6f)then  goto cchknext fi ;
+   sendmess(mod*256+$ff,$6b) ; if recvmess(a)>0 then goto settrc else write(mod) ;goto cchknext fi ;
+
+ffin:
+;
+
+//--------------------
+again:
+masterdisp := $306 ;
+mod := mastermod ;
+
+writeln;
+
+ssagain:
+
+mod := mod && $ff ;
+//write(mod);
+trc_disp:= $300;
+         SetMask($b);  SendMess(mod*256,$ff01,$2,trc_disp,$0);
+          RecvMess(a,b,c,d,e,f);   if f=$1234 then write('..') else write('-X') fi ;
+//mastermod := $4 ; master disp := $306 ;
+ chknext:
+   masterdisp := masterdisp +4 ; // write(f,masterdisp );
+   SetMask($b);  SendMess(mastermod*256,$ff01,$2,masterdisp,$1b0);
+   if recvmess(a,b,c,d,e,f)<=0 then goto fin  fi ;
+   if f=0 then goto fin  fi ;
+   if (f>$100) then goto chknext  fi ;
+   if (f<$20) && (f> $20)  then goto chknext  fi ;
+   if (f>$80)  then goto chknext fi ;
+
+   mod := f ;
+   if (mod >=$60) && (mod<=$6f)then goto chknext fi ;
+   sendmess(mod*256+$ff,$6b) ;
+   if recvmess(a)>0 then goto ssagain else write('--') ;
+    goto chknext
+   fi ;
+fin:
+delay(10000);recvmess(a);
+goto again;
+;

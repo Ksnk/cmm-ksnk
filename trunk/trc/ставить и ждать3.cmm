@@ -1,0 +1,59 @@
+include gotmod.inc;
+start_again:
+trc_disp:= $300;
+
+include TRC_INIT.inc ;
+
+writeln('Выставляем трассу и ждем, пока модуль',mod,' не рестартует...');
+
+//goto no_correct;
+ SetMask($b); SendMess(mod*256,$ff01,2,2,$1b0);
+if recvmess(a,b,c,d,e,f)>0 then
+// correct trc_disp
+  if AtSeg <=f then AtSeg := f+$10 fi ;
+// correct Len4 - BaseLen
+  len4 := ((f-$1b0)+2)*8;
+fi ;
+no_correct:
+
+         SetMask($d);  SendMess(mod*256,$ff01,$30,trc_disp,$0,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+writeln('ждем модуль --------------------', Mod);
+eee := 0 ;
+eeee := 0;
+agagaga:
+
+delay(5000);
+SetMask($b); SendMess(mod*256,$ff01,2,trc_disp,$0);
+if recvmess(a,b,c,d,e,f)>0 then
+if f=$1234 then write('.'); eee := eee+1 ;if eee> 47 then  eee := 0 ;eeee:= eeee+1;  writeln('+',5*eeee,'мин '); fi ; goto agagaga fi ;
+else goto agagaga
+fi ;
+
+// stop this module from restart
+{
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,$f7f0,$100,$100,$5502,                  // 6.    CPUGoto($F800:0);
+    $0040,$0006,$0019,$5507,            // $8C->40:6
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+writeln('restarting him to clear effects...');
+delay(4000);
+}
+
+include rgresu.inc
+
+fin:
+
+goto start_again;

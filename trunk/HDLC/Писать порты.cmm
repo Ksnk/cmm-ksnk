@@ -1,0 +1,11 @@
+include gotmod.inc;
+
+start := $1100 ;
+ setmod(mod);
+// i := $101;
+again:
+for i from 32 to $7f do
+  out(start+i,i);
+od ;
+//goto again;
+  

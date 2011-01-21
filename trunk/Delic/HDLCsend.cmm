@@ -1,0 +1,28 @@
+mod := $30 ;
+Delic := $E00 ;
+setmod(mod);
+//Register := $d168 ; value :=3 ; include WriteRegister.cmm ;
+val := $40 ;
+
+out(Delic+$0, val); val := val+1 ;
+out(Delic+$1, val); val := val+1 ;
+out(Delic+$2, val); val := val+1 ;
+out(Delic+$3, val); val := val+1 ;
+out(Delic+$4, val); val := val+1 ;
+out(Delic+$5, val); val := val+1 ;
+out(Delic+$6, val); val := val+1 ;
+out(Delic+$7, val); val := val+1 ;
+out(Delic+$8, val); val := val+1 ;
+out(Delic+$9, val); val := val+1 ;
+out(Delic+$a, val); val := val+1 ;
+out(Delic+$b, val); val := val+1 ;
+out(Delic+$c, val); val := val+1 ;
+out(Delic+$d, val); val := val+1 ;
+out(Delic+$e, val); val := val+1 ;
+out(Delic+$f, val); 
+
+out(Delic+$42, $0); 
+out(Delic+$43, $10); 
+out(Delic+$40, $1e);
+
+

@@ -1,0 +1,6 @@
+include gotmod.inc ;
+
+Src := $a0 ; 
+
+SendMess(mod*256+$ff,$9999,Src,8,$300);
+writeln('еперь - смотреть дамп по адресу ', Src,'00:0000');

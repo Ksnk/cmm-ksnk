@@ -1,0 +1,3 @@
+Mod := $04 ; // поиск Укс и изготовление шаблона проверки каналов
+Show := 2 ;IgnoreDead:= 1 ;
+include netinfo.cmm; 

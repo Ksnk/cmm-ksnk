@@ -1,0 +1,97 @@
+
+AMod := $07 ;  // ведущий модуль, имеющий информацию об остальных модулях станции
+include TRC_INIT.inc ;
+
+// Разметка каналов
+displ := $300;
+
+mod := AMod ;
+
+again:
+
+  displ := displ +4 ; channum := 0 ;
+
+  setmask($b);sendmess(AMod*256,$FF01,4,displ,$1b0);
+  recvmess(a,b,c,d,e,queue, mmm);
+
+  mmm := mmm && $ff;
+  if queue= 0 then goto fin; fi ;
+  if ((mmm>0  ) && (mmm<$10))||
+     ((mmm>$1f) && (mmm<$7f))
+  then
+     mod := mmm ;
+     include ver.inc;
+
+// корректировка фонового тестирования
+     if lover >0 then
+       ff := 0 ;
+       if (lover<$3131) && (mod < 10) then ff := 1
+       else
+         SetMask(19);
+         SendMess(mod*256,$ff01);
+         recvmess (a,b,c,d,e,ff);
+       fi ;
+/*
+       if ff = 1 then // УКС
+         SendMess(mod*256+$fe,1028,mod*256+$fe,$27a,2);
+         recvmess(a,b,c,d,e,f);
+         if ((f && $2)=2) || (f=0) then
+           SendMess(mod*256+$fe,1029,mod*256+$fe,$27a,2,$81);
+           recvmess(a,b,c,d,e,f);
+           writeln('фоновое тестирование отключено ');
+         fi ;
+       fi ;
+*/
+     fi ;
+
+// открытие трассы в модуле
+     if lover >0 then
+//  SetMask($d);  SendMess(module*256,$ff01,$10,$0,$3300,0,0,0,0,0,0,0,0);
+//  RecvMess(t1,t2,t3,t4,t5,A2);
+       //if (ff = 3)||(ff=2) then // found CSL or Бал
+         write('открываем трассу');
+       // корректировка начала стека и шапки стека
+         if ff= 1 then
+             START1 := $100 ;
+             START2 := $1A0
+         else
+             START1 := $40 ;
+             START2 := $C0;
+             len2:= $300
+         fi ;
+       // корректировка начала пула сообщений
+         SetMask($b);  SendMess(mod*256,$ff01,$2,$2c,$1b0);
+         recvmess(a,b,c,d,e,START4);
+
+       // корректировка начала пула сообщений
+         if ff=3 then writeln('ЦСЛ') else if ff=2 then writeln('БАЛ') else writeln('УКС') fi fi ;
+         if lover > $3400 then
+           trc_disp := $300;
+         else
+           trc_disp := $42e;
+         fi;
+
+         SetMask($d);  SendMess(mod*256,$ff01,$30,trc_disp,$0,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+
+//       fi
+     fi
+  else
+ //    writeln(mmm);
+  fi ;
+
+goto again ;
+
+fin:
+

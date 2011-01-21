@@ -1,0 +1,14 @@
+mod := $65;
+too:= -6 ;
+
+// 61 mod
+for i from $08 to $fd do 
+  sendmess(mod*256+i,too); delay(100);
+od ;
+{
+mod := $71;
+// 71 mod
+for i from $46 to $fd do 
+  sendmess(mod*256+i,too); delay(100);
+od ;
+}

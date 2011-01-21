@@ -1,0 +1,11 @@
+mod := $0f ;
+
+StartArea := $4001;
+//Register := $d168 ; value :=3 ; include WriteRegister.cmm ;
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $01f4,$5504,                        // 4.    ClearFlash($f000:0);
+    $01fc,$5504,                        // 4.    ClearFlash($f000:0);
+    $0100,startArea,$0000,$01F8,$0000,$0180,$5505,// 12.   WriteMem(0300:0,C000:0,$800);
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+

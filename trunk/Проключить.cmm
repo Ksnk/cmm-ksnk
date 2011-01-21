@@ -1,0 +1,6 @@
+Mmod := 4 ;
+for Client from $11 to $14 do 
+for mod from $70 to $77 do 
+SetMask(15+8); SendMess(mod*256,$FF01, Mmod*256+Client);
+od;
+od;

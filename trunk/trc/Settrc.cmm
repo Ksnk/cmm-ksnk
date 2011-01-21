@@ -1,0 +1,33 @@
+if oops=1 then
+  if v=0 then  writeln(variant,'-установка трассы TRACE') fi ;
+  if v=1 then  writeln(variant,'-остановка трассы TRACE') fi ;
+  if v=2 then  writeln(variant,'-проверка на рестарт...') fi ;
+  if v=3 then  writeln(variant,'-закрытие посмертной трассы...') fi ;
+else
+include gotmod.inc
+if (mod=4)||(mod=5) then
+IO_BETA_TRACE := $A4; // for csl8trn
+else
+IO_BETA_TRACE := $A8; // for csl8trn
+fi ;
+//IO_BETA_TRACE := $A6; // for csl8
+
+TRACE_SEG := $c80 ;
+if v = 0 then //open trc
+setmask($d); sendmess(mod*256,$ff01,8,0,TRACE_SEG,8,$4000,$aaa2,0); recvmess(a);
+setmask($d); 
+sendmess(mod*256,$ff01,2,IO_BETA_TRACE,$1b0,TRACE_SEG); recvmess(a);
+fi ;
+if v = 1 then // close trc
+setmask($d); sendmess(mod*256,$ff01,2,4,TRACE_SEG,$aaaa); recvmess(a);
+fi ;
+if v = 2 then // check restart
+setmask($b); sendmess(mod*256,$ff01,2,IO_BETA_TRACE,$1b0); recvmess(a,b,c,d,e,ttt);
+if ttt=TRACE_SEG then write('.') else write(mod) fi ;
+fi ;
+if v = 3 then // check restart
+  setmask($b); sendmess(mod*256,$ff01,6,0,$30); if recvmess(a,b,c,d,e,a1,s1,a2)>0 then
+    if a1<>a2 then setmask($d); sendmess(mod*256,$ff01,2,0,$30,$eeee); recvmess(a);fi;fi;
+fi ;
+
+fi ;

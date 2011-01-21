@@ -1,0 +1,5 @@
+//include gotmod.inc ;
+
+//sendmess($41ff,$1111,$1111)
+sendmess($9108,$2233,$4455)
+

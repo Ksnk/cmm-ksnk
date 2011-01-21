@@ -1,0 +1,40 @@
+//
+//  Открыть трассу после рестарта!
+//
+
+Mod := $51; {
+SetMask($B);SendMess($8000,$FF01,2,$D,$40);recvmess(a,b,c,d,e,mod);{}
+
+trc_disp:= $b000;
+
+include TRC_INIT.inc ;
+
+         SetMask($d);  SendMess(mod*256,$ff01,$30,trc_disp,$0,$1234,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+                           ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2);
+
+
+writeln('Sending script... ');
+
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,$ffff,$0000,$5502,            // 6.    рестарт($ffff:0);
+    $010b,$0000,$0030,$0000,$0100,$0030,$5500,// 12.   CopyMem(F800:0,$300:0,$8000);
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+writeln('Let''s look');
+
+Delay(3000);
+
+
+fin:

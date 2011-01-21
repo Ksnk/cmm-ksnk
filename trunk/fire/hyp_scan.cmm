@@ -1,0 +1,34 @@
+//ForseChouseMod := 1;   // обязать скрипт спрашивать номер модуля
+//ForseLoados := 1;      // прожигать с контролем работы локальной версии.
+ForseAutoDef:= 1;      // автоматически определять тип платы.
+//STACK := $1200 ;
+FirstMod := 0 ;
+
+// получение списка модулей
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile ('.\Hashes\Common.xml');
+// so scan foк module
+  if (GetTaskSocket>=$1e00) then 
+       SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+       recvmess(a,b,c,d,e,mod)
+  else goto fin
+  fi;
+
+mod_loop:
+  if mod <> 0 then 
+    if FirstMod=0 then FirstMod:= nod ;
+    else if FirstMod = mod then goto fin fi ;
+    fi ;	
+    include hyper.cmm
+  fi ;
+  writeln('wait for new mod...',mod);
+wait_formod:
+    modx:=mod ;
+    SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+    recvmess(a,b,c,d,e,modx);
+    if modx=0 then goto  wait_formod fi ;
+    if modx=mod then delay(5000); write('.'); goto wait_formod fi ;
+    writeln(modx);
+  mod := modx ; goto mod_loop ;
+
+fin:

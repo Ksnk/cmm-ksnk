@@ -1,0 +1,22 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+  mod:=evalasync('~user("Caption","1- проверка бита Сеть в LN и ND. 2 - открыть трассу событий для всех LN,ND",300,200)');
+  setmask($f);
+  //writeln('mod=',mod);
+  if (mod =0)||(mod=-1) then writeln ('bye-bye'); goto fin fi ;
+
+VARIANT := mod && $f ; 
+
+for J from $60 to $61 do 
+for LN from j*$100+$3e to j*$100+$43 do 
+  include checkln.inc
+od ;
+od ;
+
+for J from $72 to $77 do 
+for LN from j*$100+$07 to j*$100+$0e do 
+  include checkln.inc
+od ;
+od  ;
+
+fin:

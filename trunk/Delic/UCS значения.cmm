@@ -1,0 +1,27 @@
+mod := $20 ;
+
+//writeln('register ',register, ' delic ' , delic);
+
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,$f438,$5508, // read port 
+    $0100,$f43A,$5508, // read port 
+    $0100,$f43C,$5508, // read port 
+    $0100,$f43E,$5508, // read port 
+	
+    $0000, 4, $5506,   // sendmess
+ 
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+recvmess(a,b,c,d,e,f,g); writeln(a,b,c,d,e,f,g);
+
+// write it back
+{
+SendMess((Mod*256)+$ff,$AA51,0,         	// fill script from disp 0
+
+      $0100,$0700,$0100,$f438,$5509, 	// read port 
+       $FFFF );                            			// 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    	// Run the script
+
+{}

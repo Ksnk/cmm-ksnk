@@ -1,0 +1,11 @@
+mod := $21 ;
+Setmod(MOd);
+
+
+/*
+mod:=$21;
+Setmod(mod);
+*/
+OUT($f862,$5F);
+OUT($f864,$5F);
+out($f820,$0F);

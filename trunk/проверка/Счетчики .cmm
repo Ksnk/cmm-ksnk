@@ -1,0 +1,54 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)'));
+
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0)||(mod=-1) then
+  include chkmod.inc ;
+fi;
+// получаем информацию о версии ОС и номере платы
+OS_DATA := $1b0 ;
+
+SetMask(19);SendMess(Mod*256,$FF01);
+if recvmess(a,b,c,d,e,type)>0 then
+ type := type && $FF;
+ writeln('found mod ',mod,' type ', type);
+
+LostTim_disp := 0 ;
+// вариант для ck4-3.219
+if type = $f then       LostTim_disp := $3c ; KilledMess_disp := $5c ; FLASH_disp:= $5C;fi ;
+if type = $12 then      LostTim_disp := $3c ; KilledMess_disp := $5c ; FLASH_disp:= $5C;fi ;
+if type = $2 then       LostTim_disp := $3c ; KilledMess_disp := $76 ; FLASH_disp:= $54; fi ;
+if type = $13 then      LostTim_disp := $3c ; KilledMess_disp := $76 ; FLASH_disp:= $54; fi ;
+if LostTim_disp=0 then  LostTim_disp := $3c ; KilledMess_disp := $7c ; FLASH_disp:= $54;fi ;
+
+cnt:=1 ;
+loop_again:
+// потеряные таймеры
+settimeout(100);recvmess(a);
+settimeout(3000);
+setmask($b);SendMess(mod*256,$ff01,6,LostTim_disp,OS_DATA); 
+if(recvmess(a,b,c,d,e,_EL1,_EL2,_LOSTM)>0) then
+if (EL1<>_EL1) then write('lost tim1:',El1-_El1); EL1 := _EL1 fi ;
+if (EL2<>_EL2) then write('lost tim2:',El2-_El2); EL1 := _EL2 fi ;
+if (LostM<>_lostm) then write('lost mess:',_lostm-lostm); lostm:= _lostm fi ;
+fi ;
+// убитые сообщения
+setmask($b);SendMess(mod*256,$ff01,2,KilledMess_disp,OS_DATA); 
+if(recvmess(a,b,c,d,e,_KILLEDM)>0)then
+setmask($b);SendMess(mod*256,$ff01,4,FLASH_disp,OS_DATA); 
+if(recvmess(a,b,c,d,e,_ERF,_WRF)>0) then 
+if (KILLEDM<>_KILLEDM) then write('KILLEDM:',_KILLEDM-KILLEDM); KILLEDM:= _KILLEDM fi ;
+if (ERF<>_ERF) then write('ERF:',ERF-_ERF); ERF:= _ERF fi ;
+if (WRF<>_WRF) then write('WRF:',WRF-_WRF); WRF:= _WRF fi ;
+
+cnt := cnt+1 ; if cnt>40 then writeln(' '); cnt := 1 else write('.') fi ; 
+fi;
+fi ;
+delay(10000);
+goto loop_again;
+else
+  writeln('Oops no modules found');
+fi;

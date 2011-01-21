@@ -1,0 +1,3 @@
+SetMask(15+8);
+SendMess($5000,$FF01,$311e);
+SendMess($3000,$FF01,$311e);

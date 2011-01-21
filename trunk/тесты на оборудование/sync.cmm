@@ -1,0 +1,10 @@
+Mod := $72;
+
+TOSock := (Mod << 8) || $FE;
+SyncCmd := 3365;
+
+
+for i from 1 to 2*$ccc do 
+SendMess(TOSock, SyncCmd, $1114,$2233); delay(10);
+od ;
+

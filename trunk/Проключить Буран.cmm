@@ -1,0 +1,31 @@
+Client := GetTaskSocket>>8 ;
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+settimeout(1000);
+SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+if Client>=$1e then 
+if recvmess(a,b,c,d,e,modx)<=0 then 
+  SetMask(15+8); SendMess($8000,$FF01, $1f00+Client); delay(100);
+  SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+  if recvmess(a,b,c,d,e,modx)<=0 then modx:=0; fi ;
+fi fi ;
+if modx=0 then modx:=evalasync('~user("Caption","номер модуля ",300,200)'); fi ;
+settimeout(4000);
+writeln('found mod ',modx);
+Mmod := modx;
+
+mody := $20214041; 
+mody:=(evalasync('~user("Caption","Проключить клиента в модулях AABBCCDD через modx - вводить $AABBCCDD",300,200)'));
+if (mody =0)||(mody=-1) then
+  writeln('bye bye!');
+else
+
+again:
+if mody<>0 then 
+  mod := mody && $ff; 
+  if mod <> modx then SetMask(15+8); SendMess(mod*256,$FF01, Mmod*256+Client); fi ;
+  mody := mody>>8;
+  goto again;
+fi ;
+fi ;
+

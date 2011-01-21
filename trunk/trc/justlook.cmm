@@ -1,0 +1,18 @@
+// для стации e872 - Магнитогорск
+
+mod := $07 ; writeln('so module -',mod);
+start := $40  ; len := $10 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $1b0 ; len := $600 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $f800 ; len := $20 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+
+mod := $20 ; writeln('so module -',mod);
+start := $40  ; len := $10 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $1b0 ; len := $600 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $f800 ; len := $20 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+
+mod := $40 ; writeln('so module -',mod);
+start := $40  ; len := $10 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $1b0 ; len := $600 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+start := $f800 ; len := $20 ;writeln('---- dump from ', START,'-----'); include gdump.inc;
+
+fin:;

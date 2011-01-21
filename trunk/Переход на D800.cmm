@@ -1,0 +1,7 @@
+include gotmod.inc ;
+//mod := $70 ;
+
+SetMask($10);
+//SendMess(mod*256,$ff01,0,$100,$d7f0);
+SendMess(mod*256,$ff01,0,$100,$f7f0);
+//SendMess(mod*256,$ff01,0,$100,$de25);

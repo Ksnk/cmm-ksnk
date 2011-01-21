@@ -1,0 +1,9 @@
+// пометить все страницы флеш памяти
+include gotmod.inc;
+
+again:
+SetMask($D);
+SendMess(mod*256,$FF01,1,$3a,$1b0,$ff);recvmess(a,b,c,d,e);{}
+recvmess(a,b,c,d,e);{}
+//sendmess(mod*256,$ff01,1,$a0,$1b0,$ff);
+delay(2000); goto again ;

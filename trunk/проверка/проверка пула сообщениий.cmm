@@ -1,0 +1,49 @@
+include gotmod.inc; 
+if mod> $100 then mess := mod>>8; mod := mod&& $ff fi ;
+//include chktrace.inc
+
+   SetMask($b); SendMess(mod*256,$ff01,2,0,ats); recvmess(a,b,c,d,e,f) ;
+   if f = $4321 then
+     len := $18; 
+     for i from 0 to 5 do
+       SetMask($b); SendMess(mod*256,$ff01,6,len*2+$a,ats);
+       if recvmess(a,b,c,d,e,ee,ats0,len0)>0 then 
+         ats := ats+((len*2+$10)>>4) ; //writeln(ats0,len0,ats,len) ;
+         len := len0; 
+       fi ;
+     od ;
+     mess := ats ; 
+   fi ;
+
+writeln('модуль',mod,'пул сообщений :', mess);
+
+
+disp := $b ; 
+// целостность...
+
+  SetMask($B);SendMess(mod *256,$FF01,6,disp-2,mess);
+  recvmess(a,b,c,d,e,len0,len1,disp1);
+  fcnt := 0 ;allcnt:= 0 ;
+again:
+  if len1< $8000 then 
+     writeln(disp,':',disp1,len1);
+  else
+     if len <100 then 
+       evalwrite('~cd(d[0],h): ~cd(d[8],h)->~cd(d[4],h)[~cd(b[24],h)](~cd(d[12],h),...) -->~cd(d[16],h)[~cd(d[20],d)]',disp,bb,cc,(dd>>8)+((ee && $ff)<<8),aa,$10000-len3,dd );
+     else
+       evalwrite('~cd(d[0],h): [~cd(d[4],d)]...',disp,$10000-len3);
+     fi ;writeln;
+  fi ;
+  allcnt := allcnt+1 ;
+  if len1>$8000 then disp := disp+$10000-len1 else fcnt := fcnt+1;disp := disp +len1 fi ;
+  
+  disp := disp +4;
+
+  SetMask($B);SendMess(mod *256,$FF01,16,disp-2,mess);
+  recvmess(a,b,c,d,e,len2,len3,disp3,aa,bb,cc,dd,ee);
+  if len1<>len2 then writeln(disp,':fault',len1,len2) ; goto fin fi ;
+  if len3=$ffff then goto fin fi ;
+  disp1 := disp3; len1 := len3 ; goto again ; 
+
+fin:
+  writeln (fcnt,allcnt);

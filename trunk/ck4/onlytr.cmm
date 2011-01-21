@@ -1,0 +1,23 @@
+mod:=$20;
+setmod(mod);
+d:=$6000;
+slot:=0;
+
+tr  :=26;           //  физический 0 - первый фреймер 1 - 2 фреймер
+incr:=0;
+data:=$54;        // передаваемые данные
+for j from 0 to 1 do
+
+for i from 1 to 127 do
+      datack4:=d+i*incr+data+tr;
+      include writep.inc;
+      slot:=slot+1;
+
+od;
+      slot:=0;
+      tr:=tr+1;
+
+od;
+
+
+

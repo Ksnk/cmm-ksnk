@@ -1,0 +1,3 @@
+for i from $70 to $77 do
+   setmod(i); writeln(i,in($20ef));
+od;

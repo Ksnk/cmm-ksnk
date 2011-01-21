@@ -1,0 +1,42 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)'));
+
+
+again:
+setmask($f);
+SendMess(mod*256+$ff,$8902);
+if recvmess(a,code,p1,p2,p3,t1,t2)>0 then
+
+write(mod,':',code , p1,p2,p3 , ' at ', t1,t2);
+if code =  $0d07 then write('инициализация закончена') fi ;
+if code =  $0d08 then write('рестарт верхнего модуля') fi ;
+if code =  $0d0c then write('авария тракта') fi ;
+if code =  $0d0d then write('восстановление тракта') fi ;
+if code =  $0d10 then write('блокировка линии') fi ;
+if code =  $0d11 then write('разблокировка линии') fi ;
+if code =  $0d12 then write('Потеря проключения') fi ;
+if code =  $0d13 then write('смена выбора опорного тракта') fi ;
+if code =  $0d1f then write('потерян модуль') fi ;
+if code =  $0d21 then write('нет живых модулей по TP') fi ;
+if code =  $0d29 then write('потеря таймаута') fi ;
+
+if code =  $3c80 then write('trccns_StackOverflow') fi ;
+if code =  $3c81 then write('процесс остановлен') fi ;
+if code =  $3c82 then write('trccns_UKS') fi ;
+if code =  $3c84 then write('trccns_Restart') fi ;
+if code =  $3c85 then write('trccns_GotoPoint') fi ;
+if code =  $3c86 then write('trccns_RestsrtNext') fi ;
+if code =  $3c87 then write('Сторож остановлен') fi ;
+if code =  $3c92 then write('trccns_Critical') fi ;
+if code =  $DDDD then write('flash_clear') fi ;
+
+
+writeln(' ');
+fi ;
+//if mod = $20 then mod := $50; goto again fi ;
+//if mod = $42 then mod := $43; goto again  fi ;
+//if mod = $50 then mod := $20; goto again  fi ;
+
+goto again ;

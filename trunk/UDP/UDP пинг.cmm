@@ -1,0 +1,11 @@
+include gotmod.inc
+num:=1;
+again:
+// послать по UDP данные 
+sendmess(mod*256+$ff,$8C81, // +11
+		(8+12)*256,  // Length - hi endian
+		$0a00,$039e, 8888,  // IP - Port
+		num*256,$41ff,$41ff,$ff00,$00FF,$00);
+num := num+1;
+delay(300);
+goto again;

@@ -1,0 +1,44 @@
+//ForseChouseMod := 1;   // обязать скрипт спрашивать номер модуля
+ForseLoados := 1;      // прожигать с контролем работы локальной версии.
+ForseAutoDef:= 1;      // автоматически определять тип платы.
+//STACK := $1200 ;
+
+// получение списка модулей
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile ('.\Hashes\Common.xml');
+
+i := 0 ;
+getlist:
+  modx:=(evalasync('~user("Caption","список модулей $DDCCBBAA",300,200)')); 
+  if (modx <> -1)then   
+    i := i+1 ;
+    if i=1 then mod_01 := modx fi; 
+    if i=2 then mod_02 := modx fi; 
+    if i=3 then mod_03 := modx fi; 
+    if i=4 then mod_04 := modx fi; 
+    if i=5 then mod_05 := modx fi; 
+    if i=6 then mod_06 := modx fi; 
+    if i=7 then mod_07 := modx fi; 
+    if (modx<0)||(modx>$1000000) then goto getlist ; fi
+  fi ;
+
+i := 1 ;
+asmod := mod_01 ;
+
+mod_loop:
+  mod := asmod && $ff ; asmod := asmod>>8 ;
+  if mod <> 0 then 
+    include hyper.cmm
+  fi ;
+if asmod=0 then i := i+1 ;
+   if i=7 then asmod := mod_07  fi ;
+   if i=6 then asmod := mod_06  fi ;
+   if i=5 then asmod := mod_05  fi ;
+   if i=4 then asmod := mod_04  fi ;
+   if i=3 then asmod := mod_03  fi ;
+   if i=2 then asmod := mod_02  fi ;
+   if i=1 then asmod := mod_01  fi ;
+   if asmod <>0 then goto mod_loop fi ;
+else
+   goto mod_loop
+fi;

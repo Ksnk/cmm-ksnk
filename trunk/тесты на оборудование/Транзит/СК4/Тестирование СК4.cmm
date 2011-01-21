@@ -1,0 +1,70 @@
+include info.inc;
+writeln('           Состояние систем контроля и контрольных регистров ');
+writeln('-----------------------------------------------------------');
+writeln('           Стойка -',stative,'плата -',board, 'модуль -',mod);
+writeln('-----------------------------------------------------------');
+writeln('-----------------------------------------------------------');
+writeln('                      вывод информации о модуле ');
+writeln('-----------------------------------------------------------');
+
+ writeln ;write('опрос системы "Контроль резервного СК"...');
+SendMess(256*mod+$ff,$8801);
+RecvMess(fromaddr,command,selfstate,jumper,over);
+writeln('!');
+
+if Command = $77FF then
+    if SelfState = 1 then
+      writeln('  СК находится в активном сстоянии.');
+    else
+      writeln('  СК находится режиме контроля.');
+    fi ;	
+    if jumper = 0 then
+      writeln('  ... размещен в правой секции.');
+      if over = 1 then
+        writeln('  ... левый модуль присутствует.');
+      else
+        writeln('  ... левый модуль отсутствует.');
+      fi ;
+    else
+      writeln('  ... размещен в левой секции.');
+      if over = 1 then
+        writeln('  ... правый модуль присутствует.');
+      else
+        writeln('  ... правый модуль отсутствует.');
+      fi ;
+    fi ;
+
+else
+  writeln('неверная версия системного процесса! '); goto fin;
+fi;
+
+ writeln ;write('чтение регистров местоположения...');
+setmod(mod);b :=in($1001);
+//setmask($12);sendmess(mod*256,$ff01,$1001); recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);
+writeln('!');
+// анализ регистра 1001
+if (b&& $F0) = $C0 then write('  версия платы - "CK-транзитный"') 
+else write('  версия платы - не определена (', B ,')') 
+fi ;
+writeln('  местоположение - ',b&& $0F) ;
+
+writeln ;write('Запрос информации о ФПО...');
+SetMask($b) ;sendmess(mod*256,$ff01,2,6,$40); recvmess(a,b,c,d,e,SYS); writeln('(',SYS && $FF,') !' );
+if (SYS && $40) <> 0 then 
+  writeln('  Нет разрешения на запуск ФПО')
+else
+  writeln('  Разрешение на запуск ФПО получено');
+  SetMask($b) ;sendmess(mod*256,$ff01,2,$2fc,$1b0); recvmess(a,b,c,d,e,TOSEG); 
+  if TOSEG = 0 then 
+    writeln('  Не запущен объект ТО, система инициализируется ?!?')
+  else
+    SetMask($b) ;sendmess(mod*256,$ff01,2,$27e,TOSEG); recvmess(a,b,c,d,e,TOST); 
+    if TOST = 5 then writeln('  ФПО успешно стартовало.')
+    else writeln('  ФПО не старовало!!!! Сотояние TO', TOST)	 
+    fi 	
+  fi ;
+fi ;
+
+{
+}
+fin:

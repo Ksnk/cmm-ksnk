@@ -1,0 +1,13 @@
+include gotmod.inc
+
+addr := $1000 ;
+if mod > $ff then addr := mod >> 8 ; mod := mod && $FF fi ;
+Setmod(MOd);
+
+for i from 0 to 15 do 
+port := addr + 16*i ; write( addr + 16*i,':') ;
+for j from 0 to 15 do
+port := addr + 16*i+j; write(in(port));
+od; writeln; od; 
+
+fin:

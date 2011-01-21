@@ -1,0 +1,20 @@
+mod := $7e;
+// установить хук на вектор Vector
+
+//SendMess(mod*256,$3501)
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+  SendMess(mod*256+$ff,$3503,par); delay(500);
+
+par:=(evalasync('~user("Caption","номер вектора для хука a2 = 162",300,200)'));
+//par := (par / 10)*16+par-(par / 10)*10 ;
+if par>0 then
+  writeln('Ставим хук на вектор!!', Par);
+  SendMess(mod*256+$ff,$3501,par);
+
+  evalasync('~user("Caption","нажми на ввод для снятия хука",300,200)');
+
+  SendMess(mod*256+$ff,$3502,par);
+fi ;
+writeln('Yepp!!', Par);

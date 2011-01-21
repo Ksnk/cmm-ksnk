@@ -1,0 +1,140 @@
+
+include gotmod.inc ;
+
+SetMod(mod);
+
+if (in($f42a)=0) then 
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,$180,$100,$f42a,$5509       //!! outword ($f42a,$0180);
+        ,0,$100,$f428,$5509               //!! outword ($f428,$0000);
+        ,$100,$3ff,$100,$f42e,$5509       //!! outword ($f42e,$03ff);
+        ,$100,$fc01,$100,$f42c,$5509      //!! outword ($f42c,$fc01);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+fi ;
+
+again:
+modop:=(evalasync('~user("Caption",
+  "nothing-0|restart-1|initNetConfig-2|SysInit-3|reserint-4|start_drv-5|listen-10 ",300,200)'));
+
+if modop=-1 then goto fin fi ;
+
+if modop>256 then mod := modop>>8; fi ;
+//if mod = 0 then goto fin fi ;
+op := modop && $ff ;
+SetMask(19);
+SendMess(Mod*256,$FF01);
+if recvmess(a,b,c,d,e,type)>0 then  type := type && $FF fi ;
+
+writeln('mod-',mod,' op-',op,' type ', type);
+if  modop=-1 then goto fin fi ;
+
+if op=0 then 
+fi ;
+
+if op=5 then 
+  sendmess((Mod*256)+$ff,$f001); // start drv initialisation
+fi ;
+
+if op=1 then 
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$ff,$100,$1002,$550B             //!! out ($1002,$ff);
+        ,$550C                            //!! nop;
+        ,0,$100,$1002,$550B               //!! out ($1002,$00);
+        ,$550C                            //!! nop;
+        ,$80,$100,REG,$550B               //!! out (<REG>,$80);
+        ,$550C                            //!! nop;
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+fi ;
+
+if op=2 then  // sysinit
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,0,$100,$8080,$5509               //!! outword ($8080,$00);
+        ,$101,$100,$8082,$5509            //!! outword ($8082,$100);
+        ,$100,$ffff,$100,$8084,$5509      //!! outword ($8084,$ffff);
+        ,$ff,$100,$8086,$5509             //!! outword ($8086,$ff);
+        ,$108,$100,$8088,$5509            //!! outword ($8088,$800);
+        ,$dc,$100,$808a,$5509             //!! outword ($808a,$DC);
+        ,0,$100,$808c,$5509               //!! outword ($808c,$0);
+        ,$100,$a8c0,$100,$808e,$5509      //!! outword ($808e,$a8c0);
+        ,$100,$fdc8,$100,$8090,$5509      //!! outword ($8090,$fdc8);
+);SendMess((Mod*256)+$ff,$AA51,86         //!! 
+        ,$100,$a00f,$100,$8092,$5509      //!! outword ($8092,$a00f);
+        ,$100,$9002,$100,$8094,$5509      //!! outword ($8094,$9002);
+        ,$90,$100,$8096,$5509             //!! outword ($8096,$90);
+        ,$00,$100,$8009,$5509             //!! outword ($8009,$ff);
+        ,$1,$100,$80a1,$5509              //!! outword ($80a1,$01);
+        ,$1,$180,$550B                    //!! out     ($8000,$1);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+//goto fin;
+fi ;
+if op=3 then 
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$1,$100,$80a1,$5509              //!! outword ($80a1,$01);
+        ,$2,$180,$550B                    //!! out     ($8000,$02);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+fi ;
+
+if op=4 then 
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$ff,$100,$8008,$550B             //!! out ($8008,$ff);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+fi ;
+
+if op=10 then 
+// tcp - listen!
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,$d204,$100,$80ae,$5509      //!! outword ($80ae,$d204);
+        ,$8,$180,$5509                    //!! outword ($8000,$08);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+delay(500);
+fi ;
+
+// быстрый вывод значения портов
+Start := $8000; len := $f;
+writeln ('module ',mod, 'at',Start);
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,$81e0,$550A                 //!! in($81e0)
+        ,$100,$81e1,$550A                 //!! in($81e1)
+        ,$100,$81e2,$550A                 //!! in($81e2)
+        ,$100,$81f0,$550A                 //!! in($81f0)
+        ,$100,$81f1,$550A                 //!! in($81f1)
+        ,$25                              //!! drop 5 ;
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+delay(500);
+for i from (start>>4) to (start>>4)+len do
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,i*$10+$0,$5508              //!! inword(<i*$10+$0>)
+        ,$100,i*$10+$2,$5508              //!! inword(<i*$10+$2>)
+        ,$100,i*$10+$4,$5508              //!! inword(<i*$10+$4>)
+        ,$100,i*$10+$6,$5508              //!! inword(<i*$10+$6>)
+        ,$100,i*$10+$8,$5508              //!! inword(<i*$10+$8>)
+        ,$100,i*$10+$a,$5508              //!! inword(<i*$10+$a>)
+        ,$100,i*$10+$c,$5508              //!! inword(<i*$10+$c>)
+        ,$100,i*$10+$e,$5508              //!! inword(<i*$10+$e>)
+        ,0,$8,$5506                       //!! Send(0,*,*,*,*,*,*,*,*);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8); 
+ if i < $10 then write(' ') fi ;
+ write  (i*$10,':|');
+ write  (a1&&$ff,a1/256  );
+ write  (a2&&$ff,a2/256  );
+ write  (a3&&$ff,a3/256  );
+ write  (a4&&$ff,a4/256  );
+ write  (a5&&$ff,a5/256  );
+ write  (a6&&$ff,a6/256  );
+ write  (a7&&$ff,a7/256  );
+ writeln(a8&&$ff,a8/256  );
+
+od;
+goto again;
+fin:

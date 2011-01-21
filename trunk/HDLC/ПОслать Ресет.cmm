@@ -1,0 +1,11 @@
+include gotmod.inc
+
+Delic := $2010 ;
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100, $8910   ,  $100, delic+ $4  ,$5509, // out (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+
+

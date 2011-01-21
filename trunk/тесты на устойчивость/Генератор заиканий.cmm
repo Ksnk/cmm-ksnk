@@ -1,0 +1,20 @@
+include gotmod.inc 
+
+_Delay := 2000 ; // длительность заикания
+
+N := 0 ; // количество "заиканий". Если 0 - бесконечный цикл
+Time := 1000 ; // время между запусками заикания
+
+again:
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0100,_Delay,                   // 0.    Load Delay
+    $0001,$0506,$504,               // 4.    Delay-=1; dup
+    $0503,-10,		            // 10.    jump if not 0 for 5 word back			
+    $FFFF );                        // !!.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+delay(Time);
+
+if N > 1 then N := N-1; fi; 
+if N <> 1 then goto again; fi ;
+
