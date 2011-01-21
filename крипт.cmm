@@ -1,0 +1,25 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+include gotmod.inc ;
+
+modx:=(evalasync('~user("Caption","Отобразить физ.адрес ZZZ000H  на страницу YY00:0 длиной LL(1H=4к)(вводить $LLZZZYY)",300,200)'));
+//$XXLLZZZYY
+if (modx =0)||(modx=-1) then
+  writeln('bye bye!');
+else
+
+Where := modx && $ff; modx := modx >> 8; 
+Src := modx && $fff; modx := modx >> 12; 
+Len := modx && $ff; modx := modx >> 8; if Len=0 then Len := $10 fi ;
+
+//writeln('mod=',mod);
+if (mod =0) then
+     SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+     recvmess(a,b,c,d,e,mod)
+fi;
+
+//Mod := $77;
+//Where := $60 ;            // dst  l  src
+SendMess(mod*256+$ff,$9999,Where,Len,Src);
+fi ;
+ 

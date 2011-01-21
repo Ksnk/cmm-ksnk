@@ -1,0 +1,242 @@
+// только для версии после 17:18 06.01.2005!!!!!!!!!!!!!!!!!!!!
+
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+PortA := $1100; 
+
+again:
+modop:=(evalasync('~user("Caption","Модуль+[enable часы 01|прочитать время 02|init часы 03|читать регистры 04|serial number 5|Читать время(mess)-6|Установить время(mess)-7]|Часы АЛАРМ-8 ",300,200)'));
+if modop=-1 then goto fin fi ;
+if modop>256 then mod := modop>>8; fi ;
+if mod = 0 then goto fin fi ;
+op := modop && $ff ;
+SetMask(19);
+SendMess(Mod*256,$FF01);
+
+if recvmess(a,b,c,d,e,type)>0 then  type := type && $FF fi ;
+
+writeln('mod-',mod,' op-',op,' type ', type);
+if modop=0 || modop=-1 then goto fin fi ;
+SetMod(mod);
+
+if op=9 then 
+  SendMess(mod*256+$ff,$8923);
+  if recvmess(a,b,c,d,e,AS)<=0 then AS:=0 fi ; writeln(b,'->',c);
+fi; 
+
+if op=8 then 
+  SetMask($b);SendMess(mod*256,$ff01,2,$22,$40);
+  if recvmess(a,b,c,d,e,AS)<=0 then AS:=0 fi ;// writeln(a,b,c,d,e,TL,TH);
+  if AS = 0 then
+    writeln('module has no alarm clock!!!!');
+  else
+    SetMask($b);SendMess(mod*256,$ff01,4,0,AS);
+    recvmess(a,b,c,d,e,AL,AH);// writeln(a,b,c,d,e,TL,TH);
+    SetMask($b);SendMess(mod*256,$ff01,4,10,$1b0);
+    recvmess(a,b,c,d,e,TL,TH);// writeln(a,b,c,d,e,TL,TH);
+
+    RT := (TL-AL)+$10000*(TH-AH);
+//    RMS := RT-RT/100
+    writeln('Время - ', RT,'(',TH,AH,':',TL,AL,')'); 
+    EvalWrite ('Время в модуле: ~cd(d[12]):~cd(d[8]):~cd(d[4])(~cd(d[0]))',0,0,RT/100,RT/(60*60));writeln;
+    
+  fi ;
+fi; 
+
+if op=7 then 
+  M:=(evalasync('~user("Caption","Установить время DDЧЧММ",300,200)'));
+  MD := M/10000; M := M-MD*10000 ;// write(MD);//010155
+  MH := M/100; MM := M-MH*100 ;// write(MH); 
+//  MM:=(evalasync('~user("Caption","Установить минуты",300,200)'));
+  if (modop<>-1)&&(M<>-1) then 
+//    writeln('h:',MH,'m:',MM,'c:0')	;
+    SendMess(mod*256+$ff,$8921,MH,MM,0,MD);
+	  EvalWrite('Устанавливаем время: ~cd(d[0]) ~cd(d[12]):~cd(d[8]):~cd(d[4])',MD,0,MM,MH);writeln;
+    delay(1000);	
+    SendMess(mod*256+$ff,$8922);
+    if recvmess(a,b,c,d,e,k)>0 then 
+      if b=$8921 then
+        EvalWrite ('Время в модуле:  ~cd(d[0]) ~cd(d[12]):~cd(d[8]):~cd(d[4])',k,e,d,c);writeln;
+      else
+        writeln('fault!!!,a,b,c,d,e,f,g,h');
+      fi ;
+    else writeln('Fault!!!');
+    fi ;	
+  fi ;
+fi ;
+
+if op=6 then 
+SendMess(mod*256+$ff,$8922);recvmess(a,b,c,d,e,k);//writeln(a,b,c,d,e,f,g,h);
+EvalWrite ('Время в модуле: ~cd(d[0]) ~cd(d[12]):~cd(d[8]):~cd(d[4])',k,e,d,c);writeln;
+fi ;
+
+if op=3 then 
+if type=$13 then
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    0,$4a,$5509,  // write 0 to register 4A
+    $30,$4b,$5509,  // write 0 to register 4A
+    $20,$a,$5509,  // write 0 to register 4A
+    2,$b,$5509,  // write 0 to register 4A
+
+    $0000, 1, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+else
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    0,$4a,$550e,PortA,  // write 0 to register 4A
+    $30,$4b,$550e,PortA,  // write 0 to register 4A
+    $20,$a,$550e,PortA,  // write 0 to register 4A
+    2,$b,$550e,PortA,  // write 0 to register 4A
+
+    $0000, 1, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+fi ;
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8,a9); writeln(a,a1,a2,a3,a4,a5,a6,a7,a8,a9);
+fi ;
+
+if op=4 then 
+if type=$13 then
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    $4a,$550A,  // read register 4A
+    $4b,$550A,  // read register 4A
+    $a,$550A,   // read register 4A
+    $b,$550A,   // read register 4A
+    $c,$550A,   // read register 4A
+    $d,$550A,   // read register 4A
+
+    $0000, 1+6, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+else
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    $4a,$550f,PortA,  // read register 4A
+    $4b,$550f,PortA,  // read register 4A
+    $a,$550f,PortA,   // read register 4A
+    $b,$550f,PortA,   // read register 4A
+    $c,$550f,PortA,   // read register 4A
+    $d,$550f,PortA,   // read register 4A
+
+    $0000, 1+6, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+fi ;
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8,a9); writeln(a,a1,'4A=',a2,'4B=',a3,'A=',a4,'B=',a5,'C=',a6,'D=',a7);
+fi ;
+if op=5 then 
+if type=$13 then
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    $40,$550A,  // read register 4A
+    $41,$550A,  // read register 4A
+    $42,$550A,   // read register 4A
+    $43,$550A,   // read register 4A
+    $44,$550A,   // read register 4A
+    $45,$550A,   // read register 4A
+    $46,$550A,   // read register 4A
+    $47,$550A,   // read register 4A
+
+    $0000, 1+8, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+else
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$4569, // just to sign	 
+    $40,$550f,PortA,  // read register 4A
+    $41,$550f,PortA,  // read register 4A
+    $42,$550f,PortA,   // read register 4A
+    $43,$550f,PortA,   // read register 4A
+    $44,$550f,PortA,   // read register 4A
+    $45,$550f,PortA,   // read register 4A
+    $46,$550f,PortA,   // read register 4A
+    $47,$550f,PortA,   // read register 4A
+
+    $0000, 1+8, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+    $FFFF );                            // 2.    finish!  64 bytes total
+fi ;
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+recvmess(D,DD,a0,a1,a2,a3,a4,a5,a6,a7); writeln('SN=',a0,a1,a2,a3,a4,a5,a6,a7);
+fi ;
+
+if op=1 then 
+if type=$13 then
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,$4568, // just to sign	 
+    $B,$550A, // read B register 
+    0,$B,$5509, // read B register // write 0 to register
+    $0000, 1+1, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+     $FFFF );                            // 2.    finish!  64 bytes total
+else
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,$4568, // just to sign	 
+    $B,$550f,PortA, // read B register 
+    0,$B,$550e,PortA, // read B register // write 0 to register
+    $0000, 1+1, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+     $FFFF );                            // 2.    finish!  64 bytes total
+fi ;
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8,a9); writeln(a,a1,a2,a3,a4,a5,a6,a7,a8,a9);
+fi ;
+
+if op=2 then 
+
+if type=$13 then
+// читать значение счетчика! RTC для ЦСЛ30
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,$4567,     // just to sign	 
+    00,$550A,  // read seconds 
+    $01,$550A, // read sec alarm
+    $02,$550A, // read minutes  
+    $03,$550A, // read minutes alarm
+    $04,$550A, // read hours
+    $05,$550A, // read hours alarm
+    $06,$550A, // read Day of the Week
+    $07,$550A, // read Day of the month
+    $08,$550A, // read Day of the Year
+//    $09,$550f,PortA, // read Day of the month
+//    $0111,$08,$550a, $0100,PortD,$550b, // read month
+//    $0111,$09,$550a, $0100,PortD,$550b, // read year
+//    $0111,$48,$550a, $0100,PortD,$550b, // read Century
+//    $0111,$49,$550a, $0100,PortD,$550b, // read DateAlarm
+    $0000, 10, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+     $FFFF );                            // 2.    finish!  64 bytes total
+else
+// читать значение счетчика! RTC
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,$4567,     // just to sign	 
+    00,$550f,PortA,  // read seconds 
+    $01,$550f,PortA, // read sec alarm
+    $02,$550f,PortA, // read minutes  
+    $03,$550f,PortA, // read minutes alarm
+    $04,$550f,PortA, // read hours
+    $05,$550f,PortA, // read hours alarm
+    $06,$550f,PortA, // read Day of the Week
+    $07,$550f,PortA, // read Day of the month
+    $08,$550f,PortA, // read Day of the Year
+//    $09,$550f,PortA, // read Day of the month
+//    $0111,$08,$550a, $0100,PortD,$550b, // read month
+//    $0111,$09,$550a, $0100,PortD,$550b, // read year
+//    $0111,$48,$550a, $0100,PortD,$550b, // read Century
+//    $0111,$49,$550a, $0100,PortD,$550b, // read DateAlarm
+    $0000, 10, $5506,   // sendmess 6+1 - Максимальная длина!!!!!!!!!!!
+ 
+     $FFFF );                            // 2.    finish!  64 bytes total
+fi ;
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10); writeln(a,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+fi ;
+delay(1000);
+goto again ;
+fin:
+
+

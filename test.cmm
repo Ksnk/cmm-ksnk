@@ -1,0 +1,22 @@
+mod := $20 ;
+        muxbase1 :=$1008;
+        muxbase2 :=$100A;
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,0                                //!! Push   0 ;
+                                          //!! lab:
+        ,$504                             //!! dup
+        ,$100,start+(16*i)                //!! Push <start+(16*i)> ;
+        ,$507                             //!! add
+        ,$100,muxbase1,$5509              //!! OutWord(<muxbase1>,*);
+        ,$100,muxbase2,$5508              //!! InWord(<muxbase2>)
+        ,$505                             //!! rot ;
+        ,16                               //!! push 16
+        ,$506                             //!! sub ;
+        ,$504                             //!! dup ;
+        ,$0503,-32                        //!! jumpif lab
+                                          //!! drop ;
+        ,$100,$eeee                       //!! push $eeee;
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+

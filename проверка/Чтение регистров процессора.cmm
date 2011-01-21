@@ -1,0 +1,84 @@
+// chipselect unit
+include gotmod.inc ;
+
+SetMask(11+8);sendmess(mod*256,$ff01);
+if recvmess(a,b,c,d,e,f)<=0 then goto fin fi ;
+//writeln(a,b,c,d,e,f);
+e := f && $ff ; writeln('found plate :',e,f);
+i386:=0;
+if e=11 then i386:=1 fi ;
+if e=15 then i386:=1 fi ;
+if e=17 then i386:=1 fi ;
+if e=18 then i386:=1 fi ;
+//if e=19 then i386:=1 fi ;
+if e=20 then i386:=1 fi ;
+if e=21 then i386:=1 fi ;
+setmod (mod);
+//goto fin ;
+// get info!
+if i386=1 then 
+writeln('REMAPGFG - 22,f022',inword($022));
+
+S := $f400 ;write('CS0');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f408 ;write('CS1');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f410 ;write('CS2');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f418 ;write('CS3');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f420 ;write('CS4');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f428 ;write('CS5');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f430 ;write('CS6');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi; writeln('.');
+S := $f438 ;write('UCS');Al:= inword(S+0); AH:=inword(S+2); ML:=inword(S+4);MH:=inword(S+6) ;if ML && 1 then  if AL && $80 then   write('RDY') fi ; if AL && $100 then write('MEM from ',AH, Al && $800,'0000');  else write('IO') ;    write('startfrom',AH>>2,(AH && 3)<<6 + (Al >> 8));  fi ; if AL && $400 then write('CASMM') fi ; if AL && $200 then write('BS16') fi ; write('WS', AL && $1F) ;else   write( 'not enabled' );fi {; out($f438,1)};writeln('.');
+{}
+S := $f400 ;write('CS0');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f408 ;write('CS1');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f410 ;write('CS2');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f418 ;write('CS3');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f420 ;write('CS4');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f428 ;write('CS5');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f430 ;write('CS6');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+S := $f438 ;write('UCS');write(inword(S+0),inword(S+2),inword(S+4),inword(S+6)); writeln('.');
+
+{}
+ 
+S := $f820 ;writeln('p123cfg+pincfg', inword(S+0),inword(S+2),inword(S+4),inword(S+6) );
+S := $f860 ;writeln('p1-pin.ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f868 ;writeln('p2-pin,ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f870 ;writeln('p3-pin,ltch,dir', inword(S+0),inword(S+2),inword(S+4) );
+S := $f830 ;writeln('(DMA,INT,TMR,SIO)cfg', inword(S+0),inword(S+2),inword(S+4),inword(S+6));
+
+
+S := $f4c4 ;writeln('WDTCNT', inword(S),inword(S+2) );
+S := $22 ;writeln('REMAPCFG', inword(S) );
+S := $f832 ;writeln('INTCFG', inword(S) );
+
+S := $f4c4 ;writeln('$21,$a1', inword($20),inword($a0) );
+else
+S := $ff00 ;writeln('SCUCON/TCUCON/EOI/imask/POLL/POLLST', inword(S+$14),inword(S+$12),inword(S+2),inword(S+8),inword(S+4),inword(S+6) );
+//S :=$ff00 ;     writeln('timer unit /t0con/t1con/t2con (en/inh/int/riu/ x/x/x/x/ x/x/mc/rtg/ p/ext/alt/cont)',inword(S+$36),inword(S+$3e),inword(S+$46) );
+S :=$ff60 ;     writeln('S0 - CMP/CNT/CON/STS',inword(S+0),inword(S+2),inword(S+4),inword(S+6));
+S :=$ff70 ;     writeln('S1 - CMP/CNT/CON/STS',inword(S+0),inword(S+2),inword(S+4),inword(S+6));
+
+S := $ff80 ;writeln('CS0', inword(S+0),inword(S+2));
+S := $ff84 ;writeln('CS1', inword(S+0),inword(S+2));
+S := $ff88 ;writeln('CS2', inword(S+0),inword(S+2));
+S := $ff8c ;writeln('CS3', inword(S+0),inword(S+2));
+S := $ff90 ;writeln('CS4', inword(S+0),inword(S+2));
+S := $ff94 ;writeln('CS5', inword(S+0),inword(S+2));
+S := $ff98 ;writeln('CS6', inword(S+0),inword(S+2));
+S := $ff9c ;writeln('CS7', inword(S+0),inword(S+2));
+S := $ffA0 ;writeln('LCS', inword(S+0),inword(S+2));
+S := $ffA4 ;writeln('UCS', inword(S+0),inword(S+2));
+fi ;
+
+
+fin:
+
+S := $1001 ;write('1001', inword(S+0));// out(s+0,Al && $F0);
+
+//S := $f408 ;write('CS1');writeln(Al:= inword(S+0); out(s+0,Al && $F0);
+{
+S := $f410 ;write('CS2');
+    setmask($16);SendMess(mod*256,$ff01,S+0,$0001); recvmess(a);
+    setmask($16);SendMess(mod*256,$ff01,S+2,$0020); recvmess(a);
+    setmask($16);SendMess(mod*256,$ff01,S+4,$fc01); recvmess(a);
+    setmask($16);SendMess(mod*256,$ff01,S+6,$001f); recvmess(a); // 7 - 200h размер 
+{}

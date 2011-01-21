@@ -1,0 +1,187 @@
+include gotmod.inc
+Show := 1 ;ShowCnt := 0 ;IgnoreDead := 0 ;
+include ver.inc;
+
+displ := $300-4;
+    SetHashFile('.\Hashes\Common.xml');
+    SetHashFile ('.\Hashes\MyHash.xml');
+
+Evalwrite('mod :=~cd(d[0])',mod);
+writeln('; ');
+
+// сетевая информация
+     recvmess(a,b,c,d,e,Alive,MessRecv,f,iobCRC,g,iobErr);
+
+displ := displ  ; channum := 0 ;
+                                            include sign_chan.inc ;
+chan01 :=chan; disp01 :=disp; messs01 :=MessSent; mess01 :=MessRecv; messE01:=iobErr; Err01 :=iobCRC; include sign_chan.inc ;
+chan02 :=chan; disp02 :=disp; messs02 :=MessSent; mess02 :=MessRecv; messE02:=iobErr; Err02 :=iobCRC; include sign_chan.inc ;
+chan03 :=chan; disp03 :=disp; messs03 :=MessSent; mess03 :=MessRecv; messE03:=iobErr; Err03 :=iobCRC; include sign_chan.inc ;
+chan04 :=chan; disp04 :=disp; messs04 :=MessSent; mess04 :=MessRecv; messE04:=iobErr; Err04 :=iobCRC; include sign_chan.inc ;
+chan05 :=chan; disp05 :=disp; messs05 :=MessSent; mess05 :=MessRecv; messE05:=iobErr; Err05 :=iobCRC; include sign_chan.inc ;
+chan06 :=chan; disp06 :=disp; messs06 :=MessSent; mess06 :=MessRecv; messE06:=iobErr; Err06 :=iobCRC; include sign_chan.inc ;
+chan07 :=chan; disp07 :=disp; messs07 :=MessSent; mess07 :=MessRecv; messE07:=iobErr; Err07 :=iobCRC; include sign_chan.inc ;
+chan08 :=chan; disp08 :=disp; messs08 :=MessSent; mess08 :=MessRecv; messE08:=iobErr; Err08 :=iobCRC; include sign_chan.inc ;
+chan09 :=chan; disp09 :=disp; messs09 :=MessSent; mess09 :=MessRecv; messE09:=iobErr; Err09 :=iobCRC; include sign_chan.inc ;
+chan10 :=chan; disp10 :=disp; messs10 :=MessSent; mess10 :=MessRecv; messE10:=iobErr; Err10 :=iobCRC; include sign_chan.inc ;
+chan11 :=chan; disp11 :=disp; messs11 :=MessSent; mess11 :=MessRecv; messE11:=iobErr; Err11 :=iobCRC; include sign_chan.inc ;
+chan12 :=chan; disp12 :=disp; messs12 :=MessSent; mess12 :=MessRecv; messE12:=iobErr; Err12 :=iobCRC; include sign_chan.inc ;
+chan13 :=chan; disp13 :=disp; messs13 :=MessSent; mess13 :=MessRecv; messE13:=iobErr; Err13 :=iobCRC; include sign_chan.inc ;
+chan14 :=chan; disp14 :=disp; messs14 :=MessSent; mess14 :=MessRecv; messE14:=iobErr; Err14 :=iobCRC; include sign_chan.inc ;
+chan15 :=chan; disp15 :=disp; messs15 :=MessSent; mess15 :=MessRecv; messE15:=iobErr; Err15 :=iobCRC; include sign_chan.inc ;
+chan16 :=chan; disp16 :=disp; messs16 :=MessSent; mess16 :=MessRecv; messE16:=iobErr; Err16 :=iobCRC; include sign_chan.inc ;
+chan17 :=chan; disp17 :=disp; messs17 :=MessSent; mess17 :=MessRecv; messE17:=iobErr; Err17 :=iobCRC; include sign_chan.inc ;
+chan18 :=chan; disp18 :=disp; messs18 :=MessSent; mess18 :=MessRecv; messE18:=iobErr; Err18 :=iobCRC; include sign_chan.inc ;
+chan19 :=chan; disp19 :=disp; messs19 :=MessSent; mess19 :=MessRecv; messE19:=iobErr; Err19 :=iobCRC; include sign_chan.inc ;
+chan20 :=chan; disp20 :=disp; messs20 :=MessSent; mess20 :=MessRecv; messE20:=iobErr; Err20 :=iobCRC; include sign_chan.inc ;
+chan21 :=chan; disp21 :=disp; messs21 :=MessSent; mess21 :=MessRecv; messE21:=iobErr; Err21 :=iobCRC; include sign_chan.inc ;
+chan22 :=chan; disp22 :=disp; messs22 :=MessSent; mess22 :=MessRecv; messE22:=iobErr; Err22 :=iobCRC; include sign_chan.inc ;
+chan23 :=chan; disp23 :=disp; messs23 :=MessSent; mess23 :=MessRecv; messE23:=iobErr; Err23 :=iobCRC; include sign_chan.inc ;
+chan24 :=chan; disp24 :=disp; messs24 :=MessSent; mess24 :=MessRecv; messE24:=iobErr; Err24 :=iobCRC; include sign_chan.inc ;
+chan25 :=chan; disp25 :=disp; messs25 :=MessSent; mess25 :=MessRecv; messE25:=iobErr; Err25 :=iobCRC; include sign_chan.inc ;
+chan26 :=chan; disp26 :=disp; messs26 :=MessSent; mess26 :=MessRecv; messE26:=iobErr; Err26 :=iobCRC; include sign_chan.inc ;
+chan27 :=chan; disp27 :=disp; messs27 :=MessSent; mess27 :=MessRecv; messE27:=iobErr; Err27 :=iobCRC; include sign_chan.inc ;
+chan28 :=chan; disp28 :=disp; messs28 :=MessSent; mess28 :=MessRecv; messE28:=iobErr; Err28 :=iobCRC; include sign_chan.inc ;
+chan29 :=chan; disp29 :=disp; messs29 :=MessSent; mess29 :=MessRecv; messE29:=iobErr; Err29 :=iobCRC; include sign_chan.inc ;
+chan30 :=chan; disp30 :=disp; messs30 :=MessSent; mess30 :=MessRecv; messE30:=iobErr; Err30 :=iobCRC; include sign_chan.inc ;
+chan31 :=chan; disp31 :=disp; messs31 :=MessSent; mess31 :=MessRecv; messE31:=iobErr; Err31 :=iobCRC; include sign_chan.inc ;
+chan32 :=chan; disp32 :=disp; messs32 :=MessSent; mess32 :=MessRecv; messE32:=iobErr; Err32 :=iobCRC; include sign_chan.inc ;
+chan33 :=chan; disp33 :=disp; messs33 :=MessSent; mess33 :=MessRecv; messE33:=iobErr; Err33 :=iobCRC; include sign_chan.inc ;
+chan34 :=chan; disp34 :=disp; messs34 :=MessSent; mess34 :=MessRecv; messE34:=iobErr; Err34 :=iobCRC; include sign_chan.inc ;
+chan35 :=chan; disp35 :=disp; messs35 :=MessSent; mess35 :=MessRecv; messE35:=iobErr; Err35 :=iobCRC; include sign_chan.inc ;
+chan36 :=chan; disp36 :=disp; messs36 :=MessSent; mess36 :=MessRecv; messE36:=iobErr; Err36 :=iobCRC; include sign_chan.inc ;
+chan37 :=chan; disp37 :=disp; messs37 :=MessSent; mess37 :=MessRecv; messE37:=iobErr; Err37 :=iobCRC; include sign_chan.inc ;
+chan38 :=chan; disp38 :=disp; messs38 :=MessSent; mess38 :=MessRecv; messE38:=iobErr; Err38 :=iobCRC; include sign_chan.inc ;
+chan39 :=chan; disp39 :=disp; messs39 :=MessSent; mess39 :=MessRecv; messE39:=iobErr; Err39 :=iobCRC; include sign_chan.inc ;
+chan40 :=chan; disp40 :=disp; messs40 :=MessSent; mess40 :=MessRecv; messE40:=iobErr; Err40 :=iobCRC; include sign_chan.inc ;
+chan41 :=chan; disp41 :=disp; messs41 :=MessSent; mess41 :=MessRecv; messE41:=iobErr; Err41 :=iobCRC; include sign_chan.inc ;
+chan42 :=chan; disp42 :=disp; messs42 :=MessSent; mess42 :=MessRecv; messE42:=iobErr; Err42 :=iobCRC; include sign_chan.inc ;
+chan43 :=chan; disp43 :=disp; messs43 :=MessSent; mess43 :=MessRecv; messE43:=iobErr; Err43 :=iobCRC; include sign_chan.inc ;
+chan44 :=chan; disp44 :=disp; messs44 :=MessSent; mess44 :=MessRecv; messE44:=iobErr; Err44 :=iobCRC; include sign_chan.inc ;
+chan45 :=chan; disp45 :=disp; messs45 :=MessSent; mess45 :=MessRecv; messE45:=iobErr; Err45 :=iobCRC; include sign_chan.inc ;
+chan46 :=chan; disp46 :=disp; messs46 :=MessSent; mess46 :=MessRecv; messE46:=iobErr; Err46 :=iobCRC; include sign_chan.inc ;
+chan47 :=chan; disp47 :=disp; messs47 :=MessSent; mess47 :=MessRecv; messE47:=iobErr; Err47 :=iobCRC; include sign_chan.inc ;
+chan48 :=chan; disp48 :=disp; messs48 :=MessSent; mess48 :=MessRecv; messE48:=iobErr; Err48 :=iobCRC; include sign_chan.inc ;
+chan49 :=chan; disp49 :=disp; messs49 :=MessSent; mess49 :=MessRecv; messE49:=iobErr; Err49 :=iobCRC; include sign_chan.inc ;
+chan50 :=chan; disp50 :=disp; messs50 :=MessSent; mess50 :=MessRecv; messE50:=iobErr; Err50 :=iobCRC; include sign_chan.inc ;
+chan51 :=chan; disp51 :=disp; messs51 :=MessSent; mess51 :=MessRecv; messE51:=iobErr; Err51 :=iobCRC; include sign_chan.inc ;
+chan52 :=chan; disp52 :=disp; messs52 :=MessSent; mess52 :=MessRecv; messE52:=iobErr; Err52 :=iobCRC; include sign_chan.inc ;
+chan53 :=chan; disp53 :=disp; messs53 :=MessSent; mess53 :=MessRecv; messE53:=iobErr; Err53 :=iobCRC; include sign_chan.inc ;
+chan54 :=chan; disp54 :=disp; messs54 :=MessSent; mess54 :=MessRecv; messE54:=iobErr; Err54 :=iobCRC; include sign_chan.inc ;
+chan55 :=chan; disp55 :=disp; messs55 :=MessSent; mess55 :=MessRecv; messE55:=iobErr; Err55 :=iobCRC; include sign_chan.inc ;
+chan56 :=chan; disp56 :=disp; messs56 :=MessSent; mess56 :=MessRecv; messE56:=iobErr; Err56 :=iobCRC; include sign_chan.inc ;
+chan57 :=chan; disp57 :=disp; messs57 :=MessSent; mess57 :=MessRecv; messE57:=iobErr; Err57 :=iobCRC; include sign_chan.inc ;
+chan58 :=chan; disp58 :=disp; messs58 :=MessSent; mess58 :=MessRecv; messE58:=iobErr; Err58 :=iobCRC; include sign_chan.inc ;
+chan59 :=chan; disp59 :=disp; messs59 :=MessSent; mess59 :=MessRecv; messE59:=iobErr; Err59 :=iobCRC; include sign_chan.inc ;
+chan60 :=chan; disp60 :=disp; messs60 :=MessSent; mess60 :=MessRecv; messE60:=iobErr; Err60 :=iobCRC; include sign_chan.inc ;
+chan61 :=chan; disp61 :=disp; messs61 :=MessSent; mess61 :=MessRecv; messE61:=iobErr; Err61 :=iobCRC; include sign_chan.inc ;
+chan62 :=chan; disp62 :=disp; messs62 :=MessSent; mess62 :=MessRecv; messE62:=iobErr; Err62 :=iobCRC; include sign_chan.inc ;
+chan63 :=chan; disp63 :=disp; messs63 :=MessSent; mess63 :=MessRecv; messE63:=iobErr; Err63 :=iobCRC; include sign_chan.inc ;
+chan64 :=chan; disp64 :=disp; messs64 :=MessSent; mess64 :=MessRecv; messE64:=iobErr; Err64 :=iobCRC; include sign_chan.inc ;
+chan65 :=chan; disp65 :=disp; messs65 :=MessSent; mess65 :=MessRecv; messE65:=iobErr; Err65 :=iobCRC; include sign_chan.inc ;
+chan66 :=chan; disp66 :=disp; messs66 :=MessSent; mess66 :=MessRecv; messE66:=iobErr; Err66 :=iobCRC; include sign_chan.inc ;
+chan67 :=chan; disp67 :=disp; messs67 :=MessSent; mess67 :=MessRecv; messE67:=iobErr; Err67 :=iobCRC; include sign_chan.inc ;
+chan68 :=chan; disp68 :=disp; messs68 :=MessSent; mess68 :=MessRecv; messE68:=iobErr; Err68 :=iobCRC; include sign_chan.inc ;
+chan69 :=chan; disp69 :=disp; messs69 :=MessSent; mess69 :=MessRecv; messE69:=iobErr; Err69 :=iobCRC; include sign_chan.inc ;
+
+writeln (' начинаем проверку каналов ');
+pointn := 1 ;
+again:
+//Alive,DPC,SLS,MessRecv,MessSent
+                                                                        chan :=chan01; disp :=disp01;MessRecv:=mess01; MessSent :=messs01; iobErr:=messE01; iobCRC:=Err01;   include check.inc;
+messs01 :=MessSent; mess01 :=MessRecv; messE01:=iobErr; Err01 :=iobCRC; chan :=chan02; disp :=disp02;MessRecv:=mess02; MessSent :=messs02; iobErr:=messE02; iobCRC:=Err02;   include check.inc;
+messs02 :=MessSent; mess02 :=MessRecv; messE02:=iobErr; Err02 :=iobCRC; chan :=chan03; disp :=disp03;MessRecv:=mess03; MessSent :=messs03; iobErr:=messE03; iobCRC:=Err03;   include check.inc;
+messs03 :=MessSent; mess03 :=MessRecv; messE03:=iobErr; Err03 :=iobCRC; chan :=chan04; disp :=disp04;MessRecv:=mess04; MessSent :=messs04; iobErr:=messE04; iobCRC:=Err04;   include check.inc;
+messs04 :=MessSent; mess04 :=MessRecv; messE04:=iobErr; Err04 :=iobCRC; chan :=chan05; disp :=disp05;MessRecv:=mess05; MessSent :=messs05; iobErr:=messE05; iobCRC:=Err05;   include check.inc;
+messs05 :=MessSent; mess05 :=MessRecv; messE05:=iobErr; Err05 :=iobCRC; chan :=chan06; disp :=disp06;MessRecv:=mess06; MessSent :=messs06; iobErr:=messE06; iobCRC:=Err06;   include check.inc;
+messs06 :=MessSent; mess06 :=MessRecv; messE06:=iobErr; Err06 :=iobCRC; chan :=chan07; disp :=disp07;MessRecv:=mess07; MessSent :=messs07; iobErr:=messE07; iobCRC:=Err07;   include check.inc;
+messs07 :=MessSent; mess07 :=MessRecv; messE07:=iobErr; Err07 :=iobCRC; chan :=chan08; disp :=disp08;MessRecv:=mess08; MessSent :=messs08; iobErr:=messE08; iobCRC:=Err08;   include check.inc;
+messs08 :=MessSent; mess08 :=MessRecv; messE08:=iobErr; Err08 :=iobCRC; chan :=chan09; disp :=disp09;MessRecv:=mess09; MessSent :=messs09; iobErr:=messE09; iobCRC:=Err09;   include check.inc;
+messs09 :=MessSent; mess09 :=MessRecv; messE09:=iobErr; Err09 :=iobCRC; chan :=chan10; disp :=disp10;MessRecv:=mess10; MessSent :=messs10; iobErr:=messE10; iobCRC:=Err10;   include check.inc;
+messs10 :=MessSent; mess10 :=MessRecv; messE10:=iobErr; Err10 :=iobCRC; chan :=chan11; disp :=disp11;MessRecv:=mess11; MessSent :=messs11; iobErr:=messE11; iobCRC:=Err11;   include check.inc;
+messs11 :=MessSent; mess11 :=MessRecv; messE11:=iobErr; Err11 :=iobCRC; chan :=chan12; disp :=disp12;MessRecv:=mess12; MessSent :=messs12; iobErr:=messE12; iobCRC:=Err12;   include check.inc;
+messs12 :=MessSent; mess12 :=MessRecv; messE12:=iobErr; Err12 :=iobCRC; chan :=chan13; disp :=disp13;MessRecv:=mess13; MessSent :=messs13; iobErr:=messE13; iobCRC:=Err13;   include check.inc;
+messs13 :=MessSent; mess13 :=MessRecv; messE13:=iobErr; Err13 :=iobCRC; chan :=chan14; disp :=disp14;MessRecv:=mess14; MessSent :=messs14; iobErr:=messE14; iobCRC:=Err14;   include check.inc;
+messs14 :=MessSent; mess14 :=MessRecv; messE14:=iobErr; Err14 :=iobCRC; chan :=chan15; disp :=disp15;MessRecv:=mess15; MessSent :=messs15; iobErr:=messE15; iobCRC:=Err15;   include check.inc;
+messs15 :=MessSent; mess15 :=MessRecv; messE15:=iobErr; Err15 :=iobCRC; chan :=chan16; disp :=disp16;MessRecv:=mess16; MessSent :=messs16; iobErr:=messE16; iobCRC:=Err16;   include check.inc;
+messs16 :=MessSent; mess16 :=MessRecv; messE16:=iobErr; Err16 :=iobCRC; chan :=chan17; disp :=disp17;MessRecv:=mess17; MessSent :=messs17; iobErr:=messE17; iobCRC:=Err17;   include check.inc;
+messs17 :=MessSent; mess17 :=MessRecv; messE17:=iobErr; Err17 :=iobCRC; chan :=chan18; disp :=disp18;MessRecv:=mess18; MessSent :=messs18; iobErr:=messE18; iobCRC:=Err18;   include check.inc;
+messs18 :=MessSent; mess18 :=MessRecv; messE18:=iobErr; Err18 :=iobCRC; chan :=chan19; disp :=disp19;MessRecv:=mess19; MessSent :=messs19; iobErr:=messE19; iobCRC:=Err19;   include check.inc;
+messs19 :=MessSent; mess19 :=MessRecv; messE19:=iobErr; Err19 :=iobCRC; chan :=chan20; disp :=disp20;MessRecv:=mess20; MessSent :=messs20; iobErr:=messE20; iobCRC:=Err20;   include check.inc;
+messs20 :=MessSent; mess20 :=MessRecv; messE20:=iobErr; Err20 :=iobCRC; chan :=chan21; disp :=disp21;MessRecv:=mess21; MessSent :=messs21; iobErr:=messE21; iobCRC:=Err21;   include check.inc;
+messs21 :=MessSent; mess21 :=MessRecv; messE21:=iobErr; Err21 :=iobCRC; chan :=chan22; disp :=disp22;MessRecv:=mess22; MessSent :=messs22; iobErr:=messE22; iobCRC:=Err22;   include check.inc;
+messs22 :=MessSent; mess22 :=MessRecv; messE22:=iobErr; Err22 :=iobCRC; chan :=chan23; disp :=disp23;MessRecv:=mess23; MessSent :=messs23; iobErr:=messE23; iobCRC:=Err23;   include check.inc;
+messs23 :=MessSent; mess23 :=MessRecv; messE23:=iobErr; Err23 :=iobCRC; chan :=chan24; disp :=disp24;MessRecv:=mess24; MessSent :=messs24; iobErr:=messE24; iobCRC:=Err24;   include check.inc;
+messs24 :=MessSent; mess24 :=MessRecv; messE24:=iobErr; Err24 :=iobCRC; chan :=chan25; disp :=disp25;MessRecv:=mess25; MessSent :=messs25; iobErr:=messE25; iobCRC:=Err25;   include check.inc;
+messs25 :=MessSent; mess25 :=MessRecv; messE25:=iobErr; Err25 :=iobCRC; chan :=chan26; disp :=disp26;MessRecv:=mess26; MessSent :=messs26; iobErr:=messE26; iobCRC:=Err26;   include check.inc;
+messs26 :=MessSent; mess26 :=MessRecv; messE26:=iobErr; Err26 :=iobCRC; chan :=chan27; disp :=disp27;MessRecv:=mess27; MessSent :=messs27; iobErr:=messE27; iobCRC:=Err27;   include check.inc;
+messs27 :=MessSent; mess27 :=MessRecv; messE27:=iobErr; Err27 :=iobCRC; chan :=chan28; disp :=disp28;MessRecv:=mess28; MessSent :=messs28; iobErr:=messE28; iobCRC:=Err28;   include check.inc;
+messs28 :=MessSent; mess28 :=MessRecv; messE28:=iobErr; Err28 :=iobCRC; chan :=chan29; disp :=disp29;MessRecv:=mess29; MessSent :=messs29; iobErr:=messE29; iobCRC:=Err29;   include check.inc;
+messs29 :=MessSent; mess29 :=MessRecv; messE29:=iobErr; Err29 :=iobCRC; chan :=chan30; disp :=disp30;MessRecv:=mess30; MessSent :=messs30; iobErr:=messE30; iobCRC:=Err30;   include check.inc;
+messs30 :=MessSent; mess30 :=MessRecv; messE30:=iobErr; Err30 :=iobCRC; chan :=chan31; disp :=disp31;MessRecv:=mess31; MessSent :=messs31; iobErr:=messE31; iobCRC:=Err31;   include check.inc;
+messs31 :=MessSent; mess31 :=MessRecv; messE31:=iobErr; Err31 :=iobCRC; chan :=chan32; disp :=disp32;MessRecv:=mess32; MessSent :=messs32; iobErr:=messE32; iobCRC:=Err32;   include check.inc;
+messs32 :=MessSent; mess32 :=MessRecv; messE32:=iobErr; Err32 :=iobCRC; chan :=chan33; disp :=disp33;MessRecv:=mess33; MessSent :=messs33; iobErr:=messE33; iobCRC:=Err33;   include check.inc;
+messs33 :=MessSent; mess33 :=MessRecv; messE33:=iobErr; Err33 :=iobCRC; chan :=chan34; disp :=disp34;MessRecv:=mess34; MessSent :=messs34; iobErr:=messE34; iobCRC:=Err34;   include check.inc;
+messs34 :=MessSent; mess34 :=MessRecv; messE34:=iobErr; Err34 :=iobCRC; chan :=chan35; disp :=disp35;MessRecv:=mess35; MessSent :=messs35; iobErr:=messE35; iobCRC:=Err35;   include check.inc;
+messs35 :=MessSent; mess35 :=MessRecv; messE35:=iobErr; Err35 :=iobCRC; chan :=chan36; disp :=disp36;MessRecv:=mess36; MessSent :=messs36; iobErr:=messE36; iobCRC:=Err36;   include check.inc;
+messs36 :=MessSent; mess36 :=MessRecv; messE36:=iobErr; Err36 :=iobCRC; chan :=chan37; disp :=disp37;MessRecv:=mess37; MessSent :=messs37; iobErr:=messE37; iobCRC:=Err37;   include check.inc;
+messs37 :=MessSent; mess37 :=MessRecv; messE37:=iobErr; Err37 :=iobCRC; chan :=chan38; disp :=disp38;MessRecv:=mess38; MessSent :=messs38; iobErr:=messE38; iobCRC:=Err38;   include check.inc;
+messs38 :=MessSent; mess38 :=MessRecv; messE38:=iobErr; Err38 :=iobCRC; chan :=chan39; disp :=disp39;MessRecv:=mess39; MessSent :=messs39; iobErr:=messE39; iobCRC:=Err39;   include check.inc;
+messs39 :=MessSent; mess39 :=MessRecv; messE39:=iobErr; Err39 :=iobCRC; chan :=chan40; disp :=disp40;MessRecv:=mess40; MessSent :=messs40; iobErr:=messE40; iobCRC:=Err40;   include check.inc;
+messs40 :=MessSent; mess40 :=MessRecv; messE40:=iobErr; Err40 :=iobCRC; chan :=chan41; disp :=disp41;MessRecv:=mess41; MessSent :=messs41; iobErr:=messE41; iobCRC:=Err41;   include check.inc;
+messs41 :=MessSent; mess41 :=MessRecv; messE41:=iobErr; Err41 :=iobCRC; chan :=chan42; disp :=disp42;MessRecv:=mess42; MessSent :=messs42; iobErr:=messE42; iobCRC:=Err42;   include check.inc;
+messs42 :=MessSent; mess42 :=MessRecv; messE42:=iobErr; Err42 :=iobCRC; chan :=chan43; disp :=disp43;MessRecv:=mess43; MessSent :=messs43; iobErr:=messE43; iobCRC:=Err43;   include check.inc;
+messs43 :=MessSent; mess43 :=MessRecv; messE43:=iobErr; Err43 :=iobCRC; chan :=chan44; disp :=disp44;MessRecv:=mess44; MessSent :=messs44; iobErr:=messE44; iobCRC:=Err44;   include check.inc;
+messs44 :=MessSent; mess44 :=MessRecv; messE44:=iobErr; Err44 :=iobCRC; chan :=chan45; disp :=disp45;MessRecv:=mess45; MessSent :=messs45; iobErr:=messE45; iobCRC:=Err45;   include check.inc;
+messs45 :=MessSent; mess45 :=MessRecv; messE45:=iobErr; Err45 :=iobCRC; chan :=chan46; disp :=disp46;MessRecv:=mess46; MessSent :=messs46; iobErr:=messE46; iobCRC:=Err46;   include check.inc;
+messs46 :=MessSent; mess46 :=MessRecv; messE46:=iobErr; Err46 :=iobCRC; chan :=chan47; disp :=disp47;MessRecv:=mess47; MessSent :=messs47; iobErr:=messE47; iobCRC:=Err47;   include check.inc;
+messs47 :=MessSent; mess47 :=MessRecv; messE47:=iobErr; Err47 :=iobCRC; chan :=chan48; disp :=disp48;MessRecv:=mess48; MessSent :=messs48; iobErr:=messE48; iobCRC:=Err48;   include check.inc;
+messs48 :=MessSent; mess48 :=MessRecv; messE48:=iobErr; Err48 :=iobCRC; chan :=chan49; disp :=disp49;MessRecv:=mess49; MessSent :=messs49; iobErr:=messE49; iobCRC:=Err49;   include check.inc;
+messs49 :=MessSent; mess49 :=MessRecv; messE49:=iobErr; Err49 :=iobCRC; chan :=chan50; disp :=disp50;MessRecv:=mess50; MessSent :=messs50; iobErr:=messE50; iobCRC:=Err50;   include check.inc;
+messs50 :=MessSent; mess50 :=MessRecv; messE50:=iobErr; Err50 :=iobCRC; chan :=chan51; disp :=disp51;MessRecv:=mess51; MessSent :=messs51; iobErr:=messE51; iobCRC:=Err51;   include check.inc;
+messs51 :=MessSent; mess51 :=MessRecv; messE51:=iobErr; Err51 :=iobCRC; chan :=chan52; disp :=disp52;MessRecv:=mess52; MessSent :=messs52; iobErr:=messE52; iobCRC:=Err52;   include check.inc;
+messs52 :=MessSent; mess52 :=MessRecv; messE52:=iobErr; Err52 :=iobCRC; chan :=chan53; disp :=disp53;MessRecv:=mess53; MessSent :=messs53; iobErr:=messE53; iobCRC:=Err53;   include check.inc;
+messs53 :=MessSent; mess53 :=MessRecv; messE53:=iobErr; Err53 :=iobCRC; chan :=chan54; disp :=disp54;MessRecv:=mess54; MessSent :=messs54; iobErr:=messE54; iobCRC:=Err54;   include check.inc;
+messs54 :=MessSent; mess54 :=MessRecv; messE54:=iobErr; Err54 :=iobCRC; chan :=chan55; disp :=disp55;MessRecv:=mess55; MessSent :=messs55; iobErr:=messE55; iobCRC:=Err55;   include check.inc;
+messs55 :=MessSent; mess55 :=MessRecv; messE55:=iobErr; Err55 :=iobCRC; chan :=chan56; disp :=disp56;MessRecv:=mess56; MessSent :=messs56; iobErr:=messE56; iobCRC:=Err56;   include check.inc;
+messs56 :=MessSent; mess56 :=MessRecv; messE56:=iobErr; Err56 :=iobCRC; chan :=chan57; disp :=disp57;MessRecv:=mess57; MessSent :=messs57; iobErr:=messE57; iobCRC:=Err57;   include check.inc;
+messs57 :=MessSent; mess57 :=MessRecv; messE57:=iobErr; Err57 :=iobCRC; chan :=chan58; disp :=disp58;MessRecv:=mess58; MessSent :=messs58; iobErr:=messE58; iobCRC:=Err58;   include check.inc;
+messs58 :=MessSent; mess58 :=MessRecv; messE58:=iobErr; Err58 :=iobCRC; chan :=chan59; disp :=disp59;MessRecv:=mess59; MessSent :=messs59; iobErr:=messE59; iobCRC:=Err59;   include check.inc;
+messs59 :=MessSent; mess59 :=MessRecv; messE59:=iobErr; Err59 :=iobCRC; chan :=chan60; disp :=disp60;MessRecv:=mess60; MessSent :=messs60; iobErr:=messE60; iobCRC:=Err60;   include check.inc;
+messs60 :=MessSent; mess60 :=MessRecv; messE60:=iobErr; Err60 :=iobCRC; chan :=chan61; disp :=disp61;MessRecv:=mess61; MessSent :=messs61; iobErr:=messE61; iobCRC:=Err61;   include check.inc;
+messs61 :=MessSent; mess61 :=MessRecv; messE61:=iobErr; Err61 :=iobCRC; chan :=chan62; disp :=disp62;MessRecv:=mess62; MessSent :=messs62; iobErr:=messE62; iobCRC:=Err62;   include check.inc;
+messs62 :=MessSent; mess62 :=MessRecv; messE62:=iobErr; Err62 :=iobCRC; chan :=chan63; disp :=disp63;MessRecv:=mess63; MessSent :=messs63; iobErr:=messE63; iobCRC:=Err63;   include check.inc;
+messs63 :=MessSent; mess63 :=MessRecv; messE63:=iobErr; Err63 :=iobCRC; chan :=chan64; disp :=disp64;MessRecv:=mess64; MessSent :=messs64; iobErr:=messE64; iobCRC:=Err64;   include check.inc;
+messs64 :=MessSent; mess64 :=MessRecv; messE64:=iobErr; Err64 :=iobCRC; chan :=chan65; disp :=disp65;MessRecv:=mess65; MessSent :=messs65; iobErr:=messE65; iobCRC:=Err65;   include check.inc;
+messs65 :=MessSent; mess65 :=MessRecv; messE65:=iobErr; Err65 :=iobCRC; chan :=chan66; disp :=disp66;MessRecv:=mess66; MessSent :=messs66; iobErr:=messE66; iobCRC:=Err66;   include check.inc;
+messs66 :=MessSent; mess66 :=MessRecv; messE66:=iobErr; Err66 :=iobCRC; chan :=chan67; disp :=disp67;MessRecv:=mess67; MessSent :=messs67; iobErr:=messE67; iobCRC:=Err67;   include check.inc;
+messs67 :=MessSent; mess67 :=MessRecv; messE67:=iobErr; Err67 :=iobCRC; chan :=chan68; disp :=disp68;MessRecv:=mess68; MessSent :=messs68; iobErr:=messE68; iobCRC:=Err68;   include check.inc;
+messs68 :=MessSent; mess68 :=MessRecv; messE68:=iobErr; Err68 :=iobCRC; chan :=chan69; disp :=disp69;MessRecv:=mess69; MessSent :=messs69; iobErr:=messE69; iobCRC:=Err69;   include check.inc;
+messs69 :=MessSent; mess69 :=MessRecv; messE69:=iobErr; Err69 :=iobCRC;
+
+if Show=1 then writeln('||') else write('|') fi ;
+ if pointn > 20 then writeln (' '); pointn := 1 ; else pointn := pointn+1 ; fi ;
+ if ShowCnt > 50 then writeln ;ShowCnt:= 0; fi ;
+delay(10000);
+goto again ;
+fin:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

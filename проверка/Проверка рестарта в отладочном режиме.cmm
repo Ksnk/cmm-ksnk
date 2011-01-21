@@ -1,0 +1,36 @@
+//    $0100,4444,$0100,$80ff,1,$5506,
+//mod := $21 ;
+include gotmod.inc ;
+setmask($b);sendmess(mod*256,$ff01,2,2,0); recvmess(a,b,c,d,e,SIG);
+if SIG > $f700 then ADDR := $01f8 else ADDR := $01f4 fi ;
+
+//{
+writeln(' просто рестарт модуля в отладочном режиме. Старт по верисии из ПЗУ');
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    ADDR,$0000,$5502,                  // 6.    CPUGoto($F800:0);
+    $0040,$0006,$008C,$5507,            // $8C->40:6
+//    $100,$32f4,$32,$01, $5507,
+//    $0100,4444,$0100,$0,2,$5506, // SendMess
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+
+{
+// рестарт модуля в отладочном режиме. Старт по верисии из ОЗУ 
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    	
+    $01f8,$0000,$0103,$0000,$0180,$5500,// copy mem
+    $0103,$0000,$5502,                  // 6.    CPUGoto($F800:0);
+    $100,$32f4,$32,$01, $5507,
+//    $0100,4444,$0100,$0,2,$5506, // SendMess
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}
+
+recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);
+{
+again:
+sendmess(mod*256+$ff,4444);
+delay(5000);
+goto again;
+}

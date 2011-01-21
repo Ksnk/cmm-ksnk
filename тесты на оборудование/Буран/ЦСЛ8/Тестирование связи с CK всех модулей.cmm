@@ -1,0 +1,206 @@
+writeln('                   Тестирование модуля БАЛ');
+writeln('-----------------------------------------------------------');
+writeln('              Стойка -',stative,'плата -',board, 'модуль -',mod);
+writeln('-----------------------------------------------------------');
+writeln('-----------------------------------------------------------');
+writeln('                тестируем передачу данных по маршруту');
+writeln('                            CK->ЦСЛ');
+writeln('                            ЦСЛ->СК');
+writeln('                        для всех модулей');
+writeln('-----------------------------------------------------------');
+
+
+writeln('  ');
+//19 июля 2002
+
+//Программа пердназначена для теста тракта между балом и СК4ом путем запуска
+//со статива станции.
+//Путем запроса из базы данных происходит тестирование тракта по которому
+//подключен модуль. Тестирование происходит следущим образом:
+//проключаем СК4 на нужный тракт,затем подключенный по этому тракту модуль
+//переводим в режим возврата получаемых данных обратно в СК4. Считываем данные
+//из
+//приемника СК4. Если данные которые мы послали и получили совпали,то тест прошел
+//успешно.
+
+
+
+SetHashFile('.\Hashes\Common.xml');
+SetHashFile('.\Hashes\test.xml');
+
+
+p:=1;
+data:=$1111;
+ch:=23;
+settimeout(10000);
+
+link:=0;
+
+//writeln('Всё указано в 16-ой системе');
+
+//writeln('----------------');
+//writeln('тестируем модули');
+//writeln('----------------');
+//for tr from 0 to 32 do
+
+
+
+colvo:=Evaluate('~na_chaloCOUNT(~cd(d[0]),result)',link);
+
+
+
+for i from 1 to colvo do
+
+модуль:=0;
+yks:=0;
+indikator:=0;
+
+
+link:=Evaluate('~na_chalo(~cd(d[0]),LinkID)',link);
+//writeln(link);
+
+
+module1:=Evaluate('~poisk_Module1(~cd(d[0]),Module1)',link);
+//writeln('Module1',module1);
+
+
+module2:=Evaluate('~poisk_Module2(~cd(d[0]),Module2)',link);
+//writeln('Module2',module2);
+
+//writeln(link,module1,module2);
+
+
+type2:=Evaluate('~findmodule2type(~cd(d[0]),AK_ModType)',module2);
+
+if ((type2>=1) && (type2<=4)) then модуль:=module2*$100+$fe; fi;
+
+type2:=Evaluate('~findmodule2type(~cd(d[0]),AK_ModType)',module1);
+
+if ((type2>=8) && (type2<=9)) then uks :=module1*$100+$fe; fi;
+
+if (uks>0) && (модуль>0) then indikator:=1; fi;
+
+if indikator=1 then tr:=Evaluate('~poisk_tr(~cd(d[0]),Tract1)',link); fi;
+
+if indikator=1 then
+
+   //  отключение фоновых тестов
+   //
+   sendmess(uks, 1028, uks, $027a, 2);
+   recvmess( a, b, c, d, e, reg);
+   sendmess(uks, 1030, uks, $027a, 2, 0);
+   recvmess( a, b, c, d, e, f);
+
+   sendmess(uks,$0407,(tr*32)+ch,p+1,0,0);
+   recvmess(a,b,c,d);
+   sendmess(uks,$0407,p-1,(tr*32)+ch,0,0);
+   recvmess(a,b,c,d);
+
+   sendmess(модуль,$0407,ch,ch,0,0);
+   recvmess(z);
+
+   sendmess(uks,$046c,p,data,data,data,data,data,data,data,data);
+   recvmess(a,b,c,a1,a2,a3,a4,a5,a6,a7,a8);
+
+   sendmess(uks,$046b,p);
+   recvmess(a,b,c,x1,x2,x3,x4,x5,x6,x7,x8);
+
+   if (x1<>0) && (a1=x1) && (a2=x2) && (a3=x4) && (a4=x4) && (a5=x5) && (a6=x6) && (a7=x7) && (a8=x8) then
+      writeln('По тракту:',tr,'к СК4:',(uks)>>8,'подключен БАЛ:',(модуль)>>8,' результат проверки: без ошибок');
+   else
+      writeln('По тракту:',tr,'к СК4:',(uks)>>8,'подключен БАЛ:',(модуль)>>8,' результат проверки: ошибка');
+   fi;
+
+   // включение фоновых тестов
+   //
+   sendmess(uks, 1030, uks, $027a, 2, reg);
+   recvmess(a);
+
+
+
+fi;
+
+od;
+
+//c:=Evaluate('~find_linkCOUNT(~cd(d[0]),~cd(d[4]),result)',tr,link);
+        // if c<>0 then link1:=Evaluate('~find_link(~cd(d[0]),~cd(d[4]),LinkID)',tr,link);link:=link1; indikator:=1;
+// else goto endcikl;
+// fi;
+
+//writeln('Для тракта',tr,'есть',c,'вариант(ов) линкАйДи',link);
+
+//c:=Evaluate('~find_module3COUNT(~cd(d[0]),~cd(d[4]),result)',tr,link);
+// if c<>0 then type2ID:=Evaluate('~find_module3(~cd(d[0],~cd(d[4])),Module2)',tr,link);indikator:=1;
+// else goto endcikl;
+// fi;
+//writeln('type2ID',type2ID);
+//writeln('link',link);
+//c:=Evaluate('~find_linkCOUNT(~cd(d[0]),~cd(d[4]),result)',tr,link);
+// if c<>0 then link1:=Evaluate('~find_link(~cd(d[0],~cd(d[4])),LinkID)',tr,link);
+//link:=link1; fi;
+
+//writeln('link1',link1);
+
+//type2:=Evaluate('~findmodule2type(~cd(d[0]),AK_ModType)',type2ID);
+
+//if ((type2>=1) && (type2<=4)) then модуль:=type2ID*$100+$fe;
+// else goto endcikl;
+// fi;
+
+//mod:=type2ID;
+//c:=Evaluate('~find_module1COUNT(~cd(d[0]),~cd(d[4]),result)',mod,tr);
+// if c<>0 then type2ID:=Evaluate('~find_module1(~cd(d[0]),~cd(d[4]),Module1)',mod,tr);
+// else goto endcikl;
+// fi;
+//type2:=Evaluate('~findmodule2type(~cd(d[0]),AK_ModType)',type2ID);
+
+//if ((type2>=8) && (type2<=9)) then uks:=type2ID*$100+$fe;
+// else goto endcikl;
+// fi;
+
+
+//*********************************************************************************************************************************************
+//                      Проверка
+//*********************************************************************************************************************************************
+
+
+   //  отключение фоновых тестов
+   //
+//   sendmess(uks, 1028, uks, $027a, 2);
+//   recvmess( a, b, c, d, e, reg);
+//   sendmess(uks, 1030, uks, $027a, 2, 0);
+//   recvmess( a, b, c, d, e, f);
+
+//   sendmess(uks,$0407,(tr*32)+ch,p+1,0,0);
+//   recvmess(a,b,c,d);
+//   sendmess(uks,$0407,p-1,(tr*32)+ch,0,0);
+//   recvmess(a,b,c,d);
+
+//   sendmess(модуль,$0407,ch,ch,0,0);
+//   recvmess(z);
+
+//   sendmess(uks,$046c,p,data,data,data,data,data,data,data,data);
+//   recvmess(a,b,c,a1,a2,a3,a4,a5,a6,a7,a8);
+
+//   sendmess(uks,$046b,p);
+//   recvmess(a,b,c,x1,x2,x3,x4,x5,x6,x7,x8);
+
+//   if (x1<>0) && (a1=x1) && (a2=x2) && (a3=x4) && (a4=x4) && (a5=x5) && (a6=x6) && (a7=x7) && (a8=x8) then
+//      writeln('По тракту:',tr,'к СК4:',type2ID,'подключен модуль:',mod,' результат проверки: +');
+//   else
+//      writeln('По тракту:',tr,'к СК4:',type2ID,'подключен модуль:',mod,' результат проверки: -');
+//   fi;
+
+   // включение фоновых тестов
+   //
+//   sendmess(uks, 1030, uks, $027a, 2, reg);
+//   recvmess(a);
+
+
+
+//endcikl:
+//if indikator=1 then goto povtorno; fi;
+//od;
+
+//finish:
+

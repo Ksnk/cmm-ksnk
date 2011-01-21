@@ -1,0 +1,20 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля XX, адрес страницы YYYY - вводить $XXYYYY ",300,200)'));
+
+//if (mod<>-1) then 
+settimeout(10000);
+Addr := mod && $FFFF ;//$8000; 
+mod := mod>>16 ;
+  if mod=0 then 
+    include chkmod.inc;
+  fi;
+writeln('пишем по адресу', Addr, ':0 в модуле', mod);
+// стирание флешки средствами сообщений 8830
+//writeln('стирание флешки средствами сообщений 8830 ', Addr);
+setmask($d);
+SendMess(mod*256+$ff,$ff01,16,(Addr && $fff)<<4,Addr && $F000,$1111,$1111,$1111,$1111,$1111,$1111,$1111,$1111);
+if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
+//fi ;
+

@@ -1,0 +1,34 @@
+mod := $30 ;
+Register := $d042 ; Value := $1 ;
+Setmod(MOd);
+Delic := $A00 ;
+{
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,Delic+$41,$550A,  $0503,-10, // jump if not 0 5 words back
+
+    $0100, $0016  	,$100, delic+ $2  ,$5509, // out (delic+0, 0);
+    $0100, $d040  	,$100, delic+ $0  ,$5509, // out (delic+0, 0);
+    $0100, $1 		,$100, delic+ $42, $5509, // out (delic+0, 0);
+    $0100, $1 	,	$100, delic+ $40, 	 $550B, // outb (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+ delay(100); 
+}
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,Delic+$41,$550A,  $0503,-10, // jump if not 0 5 words back
+
+    $0100, Value  	,$100, delic+ $2  ,$5509, // out (delic+0, 0);
+    $0100, Register  	,$100, delic+ $0  ,$5509, // out (delic+0, 0);
+    $0100, $1 		,$100, delic+ $42, $5509, // out (delic+0, 0);
+    $0100, $1 	,	$100, delic+ $40, 	 $550B, // outb (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+ delay(100); 
+ SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,Delic+$41,$550A,   $0503,-10, // jump if not 0 5 words back
+
+    $0100, $7381  	,$100, delic+ $0  ,$5509, // out (delic+0, 0);
+    $0100, $200 	,$100, delic+ $42, $5509, // out (delic+0, 0);
+    $0100, $28 	,	$100, delic+ $40, 	 $550B, // outb (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script

@@ -1,0 +1,17 @@
+mod := $70 ;
+setTimeout(10000);
+// check if channals absent!
+setmask($b); sendmess(mod*256,$ff01,2,$a4,$1b0); recvmess(a,b,c,d,e,eedisp); writeln(a,b,c,d,e,eedisp);
+//goto fin;
+
+if eedisp=0 then goto fin fi; 
+
+for i from 0 to 0 do 
+//setmask($d);sendmess(mod*256,$ff01,$10,eedisp+(i*$30),$1b0,$2211,$4433,$6655,$8877,$aa99,$ccbb,$eedd,$ff);
+//recvmess;
+SendMess(256*mod+$ff,$8880,(i+$20)*256+i); delay(1000);  writeln('инициализировали канал',i); 
+
+od ;
+
+
+fin:

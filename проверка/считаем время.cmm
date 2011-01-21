@@ -1,0 +1,27 @@
+// погрешность измерений между считываемыми значениями с учетом задержек = 5mksec
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+mod:=$04;
+y:=4; // прочитать yyy байт
+x:=$a; // смещение в поле данных $01b0
+timer := 600000;
+setmask($b);
+evalwrite('устанавливаем задержку = ~cd(d[0]) сек',timer /1000); //evalwrite(',~cd(d[0])',c2 >> 8)
+for i from 1 to 1 do
+ 
+sendmess(mod*256,$ff01,y,x,$1b0);
+ recvmess(a,b,c,d,e,a1,a2,a3,a4); 
+tim := a2*$10000+a1;
+writeln;
+write('замеряем...');
+
+delay(timer); 
+
+sendmess(mod*256,$ff01,y,x,$1b0);
+ recvmess(a,b,c,d,e,a1,a2,a3,a4); 
+tim2 := a2*$10000+a1;
+
+//writeln('второе значение',tim2);
+evalwrite('разность - ~cd(d[0]) сек (~cd(d[4]))',tim2-tim,(tim2-tim)/(timer/1000));
+writeln('новое измерение');
+od;

@@ -1,0 +1,9 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+include gotmod.inc;
+
+start := $700f ;
+len := $6000 ;
+
+include gdumpx.inc ;
+fin: 

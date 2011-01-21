@@ -1,0 +1,39 @@
+
+include gotmod.inc
+setmod(mod); 
+
+slot:=1;           //  слот
+tr  :=23;            //  физический тракт
+cnt:=4;
+
+muxbase :=$8000;
+datack4 := $6033 ;
+//        setmask($16);
+again:
+//writeln(port1);
+port1    :=muxbase +$2000 +(tr <<8)+ (slot<<1);
+// яш°хь!!!
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,datack4,$100,port1,$5509    //!! OutWord(<port1>,<datack4>)
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+delay(100);
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+//        ,$100,datack4,$100,port1,$5509    //!! OutWord(<port1>,<datack4>)
+        ,$100,muxbase,$5508               //!! inword(<muxbase>)
+        ,$504                             //!! DUP
+        ,$10                              //!! push $10
+        ,$509                             //!! or
+        ,$100,muxbase,$5509               //!! OutWord(<muxbase>,*)
+ //       ,5,$5501                          //!! delay(1)
+        ,$100,port1,$550A                 //!! in(<port1>)
+        ,0,$1,$5506                       //!! send(0,*)
+        ,$100,muxbase,$5509               //!! OutWord(<muxbase>,*)
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+RecvMess(msg,val1,val2);
+
+writeln(mod,'got data ', tr, 'slot', slot, val1 );
+cnt := cnt-1; tr := tr +1 ;
+if cnt>0 then goto again fi ;

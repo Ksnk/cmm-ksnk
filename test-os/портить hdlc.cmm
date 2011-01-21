@@ -1,0 +1,7 @@
+mod:= $21;
+
+base := $2000;
+setmod(mod);
+for i from $0 to $0 do
+out(base+i,$ff);
+od;

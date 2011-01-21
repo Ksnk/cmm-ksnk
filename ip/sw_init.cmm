@@ -1,0 +1,8 @@
+include gotmod.inc;
+setmod(mod);
+//delay(5000);
+//out($8000,$80);//recvmess(a);
+out($8000,$1);//recvmess(a);
+//out($8010,$0);//recvmess(a);
+//out($8040,$0);//recvmess(a);
+//out($8000,$01);

@@ -1,0 +1,10 @@
+include gotmod.inc;
+// 520000 - код проекта
+// 5fff00 - код платы
+sendmess(mod*256+$ff,$ab80,$10,0,$52);
+if(recvmess(a,b,c,d,e,f)) then
+  sendmess(mod*256+$ff,$ab80,$10,$ff00,$5f);
+  recvmess(a,b,c,d,e,f);
+else
+   writeln(' версия не поддерживает чтение по абсолютному адресу') 
+fi;

@@ -1,0 +1,18 @@
+mod := $20;
+include gotmod.inc ;
+// информация о записи появляется в области памяти CALLREC_ARRAY
+writeln('found module', mod);
+
+// стереть страницу с записи XX .. xx=0 || XX= много 
+//XX := 30; sendmess(mod*256+$ff,$7701,XX); delay(1000) ;
+
+// информация о записи появляется в области памяти CALLREC_ARRAY
+// прочитать запись с номером XX
+XX := $0;  sendmess(mod*256+$ff,$7702,XX); delay(1000) ;
+
+// информация должна бть в области памяти CALLREC_ARRAY
+// записать  запись с номером XX
+//XX := $3000;  sendmess(mod*256+$ff,$7703,XX); delay(1000) ;
+
+
+fin:

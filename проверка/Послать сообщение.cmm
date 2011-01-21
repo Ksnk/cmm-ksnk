@@ -1,0 +1,46 @@
+// оценка увеличения трафика при передаче сообщений по МТП
+//
+//
+{
+BASE := $20 ; mod := $21 ;
+SendMess(BASE*256+$FF,$6c,0,1);
+{}
+{
+Mod := $20 ;
+RetMod := $21 ;
+for i from 1 to 3 do
+SetReturnAddress (RetMod*256+$01);
+SendMess(Mod*256+$ff,$6b);
+od ;
+}
+
+//SetReturnAddress(BASE*256+$ff);SendMess(mod*256+$ff,$aa08,$60,$6b); // послать сообщение MESS_TEST
+{
+SendMess($20ff,$6b
+//        ,0,0,0,0,0,0 //2 - 14
+//        ,0,0,0,0 //3,
+//        ,0,0,0,0,0,0
+//        ,0,0,0,0,0,0
+        ,0,0,0,0,0,0
+        ,0,0,0,0,0,0
+        ,0,0,0,0,0,0
+        ,0
+   );
+;  recvmess()
+}
+
+// ЗАПРОС ДАННЫХ ОБЪЕКТА
+mod := $72 ; 
+SendMess(mod*256+$ff,$8a01,$60,$20,2
+  ,$72ff,$72f0,$72f1,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff
+  ,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff
+  ,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff,$72ff
+); // послать сообщение MESS_TEST
+//SendMess(mod*256+$ff,$8a03,$60,$72ff,$20,2); // послать сообщение MESS_TEST
+aa := recvmess(a,b,c,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9
+,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19
+,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29
+); writeln(aa,b,c,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9
+,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19
+,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29
+);

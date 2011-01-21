@@ -1,0 +1,52 @@
+
+
+        mod:=$70;
+        setmod(mod);
+        muxbase1 :=$1008;
+        muxbase2 :=$100A;
+/*
+out($100d,2);
+out($1003,2);
+out($1007, $80);
+out($1005, $8);
+out($100e, $0);
+*/
+
+
+//----------------------------------------------------------------
+
+
+
+for  i from 0 to 127 do
+
+if (i && $1f) =0 then writeln fi;
+
+
+        setmask($16);
+
+                SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                                $0100,  $00+i,
+                                $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+                                $0100,  $00+i,
+                                $0100,  muxbase2,       $5509,  // OutWord(muxbase,crval); // Restore CR
+                                $FFFF                                                                                   // Finish
+                                );
+
+        setmask($16);
+
+                SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,  $000+i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100, muxbase2, $5508, // read port
+    $0100, $4444, $0000,10,$5506, // Send "StartDebug"
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+recvmess(a,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+writeln(i+$300,a,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+
+
+
+od;

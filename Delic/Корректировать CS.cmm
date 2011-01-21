@@ -1,0 +1,19 @@
+mod1:= $70717273 ;
+mod2:= $74757677 ;
+
+Dx := $f420; Ax := $205; 
+i := 0;
+again:
+  mod := asmod && $ff; asmod := asmod >>8 ;
+  if mod > 0 then   setmod(mod); writeln(dx,ax); out(dx,ax); fi ;
+  if asmod = 0 then 
+     if i = 5 then i := i+1 ; asmod := mod6 fi ;
+     if i = 4 then i := i+1 ; asmod := mod5 fi ;
+     if i = 3 then i := i+1 ; asmod := mod4 fi ;
+     if i = 2 then i := i+1 ; asmod := mod3 fi ;
+     if i = 1 then i := i+1 ; asmod := mod2 fi ;
+     if i = 0 then i := i+1 ; asmod := mod1 fi ;
+  fi ;
+  if asmod <> 0 then goto again fi ;
+;  
+

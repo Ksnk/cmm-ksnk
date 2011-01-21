@@ -1,0 +1,95 @@
+include info.inc
+// универсальный скрипт для СК4 и ЦСЛ8 позволяет
+//  - получить информацию о существующих каналах
+//  - получить информацию о состоянии 
+//	всех или отделного канала (Showmod:= 0|N mod канала)
+//       в том числе в режиме непрерывного сканирования (Nsos= [1-9999])
+//  - протестровать на скорость передачи сообщений
+//	всех или отделного канала (Showmod:= 0|N mod канала)
+//        в том числе в режиме непрерывного тестирования (Nask= [1-9999])
+
+Sowmod:=$0;
+Show := 0;
+//------------------------------------
+
+Nsos:=0;  // опрос состояния 0-9999
+
+//-----------параметры тестрования на скорость передачи сообщений-------------------------
+
+Nask:=0;  // тестирование на Скорость обмена 0-9999
+base := mod;
+time  :=5;   // cek
+length:=10;  // длина сообщений
+
+//_______________________________________________________________________
+
+
+
+
+include ver.inc;
+if mod > 10 then
+	displ := $300-4;
+else	
+	displ := $300-4;
+fi;
+    SetHashFile('.\Hashes\Common.xml');
+    SetHashFile ('.\Hashes\MyHash.xml');
+
+
+// сетевая информация
+     recvmess(a,b,c,d,e,Alive,MessRecv,f,iobCRC,g,iobErr);
+
+
+
+channum := 0 ;
+//chis:=0;
+
+for j from 0 to 60 do
+
+	include sign_chan.inc ;
+	if disp 
+	then 
+	  if (chan = Sowmod )|| (Sowmod=0) then
+
+         if Nsos>0 then        
+	        writeln('---------------------------------');
+	        write('     опрос состояния канала');
+	    	
+	    for i from 1 to Nsos do
+		if Show then writeln; fi;
+		include check.inc;
+	    od;
+  	 fi;
+         if Nask>0 then        
+
+		writeln;
+		if (mod > 10) && (chan=0) 
+		then mod:=4;
+		else mod:=chan;
+		fi;
+        
+		// setup internal variables
+		SetMask($B);
+		SendMess(Base*256,$ff01,2,$100+($FF*2),$1b0);
+		recvMess(a,b,c,d,e,MainSeg);
+	        writeln('     тестируем на скорость передачи - (Длина,за период) = (',length,',',time,'):');
+		for k from 1 to Nask do
+			again:
+			wave := 10  ;   include speed.inc ;
+			wave := 1  ;   include speed.inc ;
+        
+			delay (5000); 
+		od ;
+		mod:=base;
+           fi;
+          fi;
+
+	fi;
+
+od ;
+
+
+fin:
+
+
+

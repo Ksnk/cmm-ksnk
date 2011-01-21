@@ -1,0 +1,10 @@
+include gotmod.inc;
+
+if ( mod >0) && (mod < $80) then
+writeln ('Мониторинг загрузки процессора', mod);
+// измерение нагрузки процессора
+SendMess(mod*256+$ff,$8b26); recvmess(a,b,c,d,e,f);
+again:
+SendMess(mod*256+$ff,$8b26); recvmess(a,b,c,d,e,f); writeln(c,' ',d,' ',e ,' ',f); delay(5000);
+goto again
+fi ;

@@ -1,0 +1,86 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)'));
+
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0)||(mod=-1) then
+  include chkmod.inc ;
+fi;
+
+//Mod := $20;
+
+//writeln('модуль',mod);
+include ver.inc ;
+
+//ScanerDisp := $42 ; DScanerDisp := $4C ; IdleList := $6C ; CommonItrList := $84 ;// for bal
+if LoVer=$3531 then // версия 215
+  ScanerDisp := $42 ; DScanerDisp := $4C ; IdleList := $72 ; CommonItrList := $89 ;// for ck4
+else
+  ScanerDisp := $42 ; DScanerDisp := $4C ; IdleList := $6A ; CommonItrList := $84 ;// for ck4
+fi ;
+
+include TRC_INIT.inc ;
+
+//OS_SEG := $1b0; // if usual OS
+//OS_SEG := $2ff; // if usual OS
+OS_SEG := $1297; // if ck4trn
+
+//OS_SEG := $507;//4d5; //$407;//$3ef; // if case of crash
+writeln('Сканируеем с адреса ',OS_SEG);
+writeln('Scaner list.');
+SetMask($b);SendMess(mod*256,$ff0a,2,ScanerDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);
+again:
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,Tim,Max,Sema,PRC,Next);
+write('found scaner at',CDisp,' - ',PRC,'(',Tim,Max,')'); if Sema<>0 then write('Closed!!'); fi;  writeln('.'); CDisp := Next ;
+if CDisp <> 0 then Goto Again fi ; 
+writeln(' ');
+
+writeln('DoubleScaner list.');
+SetMask($b);SendMess(mod*256,$ff0a,2,DScanerDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);
+if CDisp = 0 then goto fin  fi ;
+again0:
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,Tim,Max,Sema,PRC,Next);
+write('found scaner at',CDisp,' - ',PRC,'(',Tim,Max,')'); if Sema<>0 then write('Closed!!'); fi;  writeln('.'); CDisp := Next ;
+if CDisp <> 0 then Goto Again0 fi ; 
+
+fin:
+
+writeln('Idle procedures list.');
+SetMask($b);SendMess(mod*256,$ff0a,2,IdleList,OS_SEG); recvmess(a,b,c,d,e,CDisp0);
+if CDisp0 = 0 then goto finidle  fi ; CDisp := CDisp0; 
+againidle:
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,iData,Sema,PRC,Next);
+write('found idle at',CDisp,' - ',PRC,iData); if Sema<>0 then write('Closed!!'); fi;  writeln('.'); CDisp := Next ;
+if CDisp <> CDisp0 then Goto Againidle fi ; 
+
+finidle:
+
+
+//goto fin1;
+CDisp := CommonItrList-2 ;
+writeln('OS_Ext list:');
+SetMask($b);SendMess(mod*256,$ff0a,2,CDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);
+again1:
+SetMask($b);SendMess(mod*256,$ff0a,4,CDisp,OS_SEG); recvmess(a,b,c,d,e,Proc,Next);
+write('found proc at',CDisp,' - ',Proc);  writeln('.'); CDisp := Next ;
+if CDisp <> 0 then Goto Again1 fi ; 
+fin1:
+
+//goto fin1;
+
+CDisp := CommonItrList ;
+writeln('Common Itr list:');
+SetMask($b);SendMess(mod*256,$ff0a,2,CDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);// writeln(a,b,c,d,e,CDisp);
+AgainCommonItr:
+if CDisp <>0 then 	
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,Proc,Proc1,PData,Sema,Next);
+write('found Commmon proc at',CDisp,' - ',Proc1,':',Proc,' объект',PData);  writeln('.');  if Sema<>0 then write('Closed!!'); fi;
+CDisp := Next ;
+if CDisp <> 0 then Goto AgainCommonItr fi ; 
+fi ;
+finCommonItr:
+
+
+

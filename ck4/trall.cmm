@@ -1,0 +1,59 @@
+// передача данных во фреймерный тракт
+//
+//  блок 1 проключение трактов СК во фреймерные тракты СЦ
+//
+modcsl :=$40;
+mod:=$20;
+data:=$22;      // данные передаваемые в тайм-слотах
+incr:=0;
+tr  :=0;           //  физический 0 - первый фреймер 1 - 2 фреймер
+
+
+modcslto:=(modcsl<<8)+$fe;
+//-------------------------------------------
+// проключение СК4 на ЦСЛ8
+for t from 0 to 7 do
+writeln(''); write(t,'::');
+    oTR:=t;
+    iTR:=t+8;
+settimeout(100);
+for i from 0 to 31 do  // (8-15) --> (0-7)
+
+    if i=16 then
+               writeln(''); write('   ::');
+    fi;
+
+  oCH:=i;      ampl :=$0;
+  iCH:=i;
+
+     x1 := (oTR << 5) || oCH;
+     x2 := (iTR << 5) || iCH;
+     sendmess(modcslto, $0407, x1, x2, 1,ampl);
+     recvmess(a);
+
+write(i);
+od;
+od;
+//
+//  блок генерация данных в определенный тайм-слот
+//
+
+setmod(mod);
+d:=$6000;
+slot:=0;
+data:=$ff;         // данные передаваемые в тайм-слотах
+incr:=0;
+tr  :=0;           //  физический 0 - первый фреймер 1 - 2 фреймер
+
+for i from 0 to 15 do
+
+for i from 0 to 127 do
+      datack4:=d+data;
+      include writep.inc;
+      slot:=slot+1;
+
+od;
+      tr:=tr+1;
+      slot:=0;
+od;
+

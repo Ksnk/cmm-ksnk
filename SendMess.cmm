@@ -1,0 +1,95 @@
+//*
+include gotmod.inc
+setmod(mod); 
+//MESS_REALTIME_SET
+//sendmess(mod*256+$ff,$AB00,(15*60+40)*30);recvmess(a);
+//sendmess($6dff,$6b); recvmess(a,b,c,d);
+// *********************************************
+
+//sendmess(MOD*256+$FE,1077,4,$1B0,$FF,0);
+//sendmess($7eff,$8801); recvmess(a);
+sendmess($40ff,$6b,1,2,3); recvmess(a);
+sendmess($20ff,$6b,1,2,3); recvmess(a);
+
+
+
+//writeln('1002-',inword($8000)); //out($1002,$ff);
+/*
+i := 1; 
+again:
+i := i+1 ;
+sendmess(mod*256+$ff,$6b,$ff00,$1111);
+delay(100);
+if i<3 then 
+goto again;
+fi
+*/
+//writeln(in($a0));
+//out($a1,$fd);
+//sendmess(mod*256+$ff,$8C83);
+// послать по UDP данные 
+{
+sendmess(mod*256+$ff,$8C81, // +11
+		(8+6)*256,  // Length - hi endian
+		$0a00,$039e, 6767,  // IP - Port
+		$3132,$3334,$3536);
+}
+//sendmess(mod*256+$ff,$8c01);
+/*
+for i from 1 to 1000 do 
+  setmask($d);
+  sendmess(mod*256,$ff01,2,$3a,$1b0,$3ff); delay(1000);
+od ;
+*/
+// fpo get_time
+//sendmess(mod*256+$ff,$8923);recvmess(a);
+//Client := GetTaskSocket>>8 ;SetMask(15+8); SendMess(mod*256,$FF01, mod*256+Client); //проключить резервный модуль
+
+//SendMess(mod*256+$ff,$7780);
+/**/
+
+//out($22,$7f);
+//writeln('1003-',in($1004),'100a-',in($100a),'22',in($22));
+/*
+sendmess(mod*256+$01,$8800,$70ff,$2);
+
+for i from 0 to 20 do 
+delay(4000);
+sendmess(mod*256+$01,$8803);
+recvmess(a,b,c,d,e,f); writeln(c-cpast,d-dpast);
+  cpast:=c;dpast:=d;
+od ;
+sendmess(mod*256+$01,$8802);
+recvmess(a,b,c,d,e,f); writeln(a,b,c,d,e,f);
+*/
+
+/*
+setreturnaddress($05ff);
+sendmess($72ff,$6b,1,2,3,4,5);
+*/
+//setmod ($20);in($5014);
+
+//setmod ($71);out($2017,$80);
+//setmod ($70);out($2017,$80);
+//setmod ($05);out($2017,$80);
+//writeln(in($2017));out($2017,$80);
+//out($2016,$80);
+//writeln(in($2017));out($2017,$90);
+//writeln(in($2017));out($2067,$80);
+/*
+again:
+for i from 0 to $10 do 
+write(in($2012));
+od ; write('#');
+writeln('.');
+goto again ;
+*/
+/*
+setmod ($5);
+writeln(in($2017));
+out($2017,$b0);
+*/
+//*
+//sendmess($04ff,$aa0c,4,$1c,$2e68,1);
+//recvmess(a,b,c); writeln(a,b,c);
+/**/

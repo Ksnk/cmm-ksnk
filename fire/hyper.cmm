@@ -1,0 +1,290 @@
+// Перезапись версии по выбору оператора
+// работает для локального проключения
+
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile ('.\Hashes\Common.xml');
+if STACK=0 then STACK:= $40 fi ;
+Client := GetTaskSocket>>8 ;
+
+if (mod <> 0) && (Client < $1d) then goto chknext  fi ;
+
+chkmod:
+    if mod=0 then mod := $80; fi ;
+	 settimeout(1000);
+    SetMask($B);SendMess(mod*256,$FF01,2,$d,STACK);
+    if recvmess(a,b,c,d,e,a1,a2,a3,a4) then
+      mod := a1 && $ff  ;
+      SetMask($B);SendMess(mod*256,$FF01,2,$6,STACK);
+      if recvmess(a,b,c,d,e,a1,a2,a3,a4) then a1 := a1 && $ff fi ;
+     
+    else
+      mod := 0 ;
+    fi ;
+ settimeout(3000);
+
+chknext:
+
+if (mod =0)||(ForseChouseMod=1) then
+  ForseChouseMod:=0;
+  modx:=(evalasync('~user("Caption","номер модуля",300,200)'));
+  if (modx<>-1)&&(modx<>0) then mod := modx; goto chkmod fi ;
+fi;
+
+if mod = 0 then
+  goto fin
+fi ;
+
+vcnt := 0 ;
+SetMask(19);
+SendMess(Mod*256,$FF01);
+if recvmess(a,b,c,d,e,type)>0 then
+  type := type && $FF;
+  write('found mod ',mod,' type ', type);
+else
+  writeln('No module found! Sorry pal!'); goto fin;
+fi ;
+variant := 3 ;
+include code.inc ;
+setmask($b);SendMess(mod*256,$ff01,2,2,0); recvmess(a,b,c,d,e,SEG);
+writeln;
+
+
+if SEG+$10 = $5000 then
+  startArea := $6000
+else
+  startArea := $5000
+fi ;
+if (a1 && $10) <> 0 then
+  if SEG+$10>=$f000 then
+    StartArea := $500+$400; // $400
+    writeln('прожигаем в защищенном режиме. На ходу! ',StartArea,SEG);
+    firevariant:=1 ;
+  else
+    writeln('прожигаем в защищенном режиме. ',StartArea,SEG);
+    firevariant:=3 ;
+  fi
+else
+  if SEG+$10=$2000 then StartArea := $5000;
+    writeln('прожигаем в реальном режиме + ',StartArea,SEG);
+    firevariant:=0 ;
+  else
+   StartArea := $300; //   StartArea := $5000;
+    writeln('прожигаем в реальном режиме. ',StartArea,SEG);
+    firevariant:=2 ;
+  fi ;
+fi ;
+
+setmask($b);SendMess(mod*256,$ff01,2,2,0); recvmess(a,b,c,d,e,SEG);
+
+defcnt := oscnt ;
+//startArea := $300;
+if (ForseAutoDef=1)&&(vcnt=1) then oscnt := defcnt
+else
+  variant := 0 ;
+  include code.inc ;
+fi ;
+if oscnt = -1 then if vcnt=1 then oscnt := defcnt; else  goto fin fi; fi;
+
+variant := 1 ;
+include code.inc ;
+
+if firevariant=1 then
+    StartArea0 := StartArea;  StartArea := StartArea0+$1000-OS_SIZE ;
+fi ;
+if firevariant=3 then
+    StartArea0 := StartArea;  StartArea := StartArea0+$1000-OS_SIZE ;
+fi ;
+if firevariant=2 then
+    StartArea0 := StartArea;  StartArea := StartArea0+$1000-OS_SIZE ;
+fi ;
+
+justload:
+
+SetMask($F);
+SendMess ($FF+(256*Mod),$aa0c,$FFFF && OS_SIZE*$10,0,StartArea,1);
+wait_some_crc0:
+if RecvMess (a,b,CRC_1,d)>0 then
+  if b <> $AA0c then goto wait_some_crc0 fi ;
+else writeln('CRC не удалось получить'); goto fin;
+fi ;
+
+if CRC_1 <> OS_CRC then
+
+variant := 2 ;
+include code.inc ;
+else
+  writeln('Образ уже загружен');
+fi ;
+
+
+SetMask($F);SendMess ($FF+(256*Mod),$aa0c,$FFFF && OS_SIZE*$10,0,StartArea,1);
+wait_some_crc:
+if RecvMess (a,b,CRC_1,d)>0 then
+  if b <> $AA0c then goto wait_some_crc fi ;
+else writeln('CRC не удалось получить'); goto fin;
+fi ;
+
+if CRC_1 <> OS_CRC then
+   writeln('CRC error while loading image... again');
+   if OS_SIZE<>$1000 then
+     goto justload;
+   fi ;
+else
+   writeln('CRC Ok !!!');
+fi ;
+// выяснение способа прожига.
+// writeln(a1);
+
+// SetMask($10);SendMess(mod*256,$ff01,0,0,StartArea) ;
+
+//goto fin;
+
+writeln('RAM ready - sending script... ');
+if firevariant=2 then
+  // writeln('ck5 modification!!!'); SendMess(mod*256+$ff,$9999,$5d0,$10,$f0);
+
+SendMess((Mod*256)+$ff,$AA51,0                                //!! 
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,StartArea,0,$5502                               //!! Goto(<StartArea>:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444)
+        ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
+        ,$1f0,$5504                                           //!! ClearFlash($f000:0);
+        ,$100,StartArea0,0,$1f0,0,0,$5505                     //!! WriteMem(<StartArea0>:0,$f000:0,0);
+        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
+        ,$FFFF);                                              //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+    //goto fin;
+fi ;
+
+if firevariant=3 then
+  SendMess(mod*256+$ff,$9999,$f0,$10,$5D0);
+if OS_SIZE<>$1000 then
+  OS_SIZE0:=OS_SIZE<<4;
+SendMess((Mod*256)+$ff,$AA51,0                                //!! 
+        ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
+        ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
+        ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
+        ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
+        ,$FFFF);                                              //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+
+goto fin;
+
+fi; 
+fi ;
+
+OS_SIZE0:=OS_SIZE<<4;
+
+if firevariant=1 then
+  if ForseLoadOs=1 then
+  SendMess(mod*256+$ff,$9999,$60,$10,$70);
+  SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
+  sendmess(Mod*256+$ff,4444);
+  delay(5000);
+  sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
+  sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
+    writeln('Не удалось стартовать локальную версию ОС');
+    goto fin
+  fi fi;
+
+  setmask($b);SendMess(mod*256,$ff01,2,2,0); recvmess(a,b,c,d,e,SEG);
+  if SEG <> (StartArea-$10) then
+    writeln('Не удалось стартовать локальную версию ОС!');
+    goto fin
+  fi ;
+  SetMask($F);SendMess ($FF+(256*Mod),$aa0c,$FFFF && OS_SIZE*$10,0,StartArea,1);
+  wait_some_crc:
+  if RecvMess (a,b,CRC_1,d)>0 then
+    if b <> $AA0c then goto wait_some_crc fi ;
+  else writeln('CRC не совпадает'); goto fin;
+  fi ;
+// проключить на страницу $f pyfxtybt 5d
+//  SendMess(mod*256+$ff,$9999,$f0,$10,$5d0); // CK5!!!!!!!!!!!!!!!!!!!!11
+// прожечь
+SendMess((Mod*256)+$ff,$AA51,0                                //!! 
+        ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
+        ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
+        ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
+        ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
+        ,$FFFF);                                              //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+
+  else // if not ForseLoadOs=1
+
+  //SendMess(mod*256+$ff,$9999,$60,$10,$70);
+    if OS_SIZE=$100 then
+SendMess((Mod*256)+$ff,$AA51,0                    //!! 
+        ,$30,0,$100,$aaaa,$5507                   //!! WRMEM($30:0,$aaaa);
+        ,$100,StartArea,0,$5502                   //!! Goto(<StartArea>:0);
+        ,$100,startArea,0,$1f0,0,$180,$5505       //!! WRITEMEM(<startArea>:0,$f000:0,$8000);
+        ,$100,startArea+$800,0,$1f8,0,$180,$5505  //!! WRITEMEM(<startArea+$800>:0,$f800:0,$8000);
+        ,$1f0,$5504                               //!! CLEARFLASH($f000:0);
+        ,$100,$ffff,0,$5502                       //!! Goto($FFFF:0);
+        ,$FFFF);                                  //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                  //!! 
+    else
+ 
+ // молча стартуем все и пытаемся выжить...
+
+SendMess((Mod*256)+$ff,$AA51,0                                //!! 
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,StartArea,0,$5502                               //!! Goto(<StartArea>:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444)
+        ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
+        ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
+        ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
+        ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
+);SendMess((Mod*256)+$ff,$AA51,78                             //!! 
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
+        ,$FFFF);                                              //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+   fi;
+  fi;
+
+fi ;
+
+if firevariant=0 then
+  if writeto = $5f0 then
+
+SendMess((Mod*256)+$ff,$AA51,0                                       //!! 
+        ,$1f0,$5504                                                  //!! CLEARFLASH($f000:0);
+        ,$1f0,$5504                                                  //!! CLEARFLASH($f000:0);
+        ,$1f2,$5504                                                  //!! CLEARFLASH($f200:0);
+        ,$1f4,$5504                                                  //!! CLEARFLASH($f400:0);
+        ,$1fc,$5504                                                  //!! CLEARFLASH($fc00:0);
+        ,$100,startArea,0,$100,$10000-OS_SIZE,0,$100,OS_SIZE0,$5505  //!! WRITEMEM(<startArea>:0,<$10000-OS_SIZE>:0,<OS_SIZE0>);
+        ,$FFFF);                                                     //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                                     //!! 
+  else
+    if OS_SIZE=$1000 then
+SendMess((Mod*256)+$ff,$AA51,0                    //!! 
+        ,$1d0,$5504                               //!! CLEARFLASH($d000:0);
+        ,$100,startArea,0,$1d0,0,$180,$5505       //!! WRITEMEM(<startArea>:0,$d000:0,$8000);
+        ,$100,startArea+$800,0,$1d8,0,$180,$5505  //!! WRITEMEM(<startArea+$800>:0,$d800:0,$8000);
+        ,$FFFF);                                  //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                  //!! 
+    else
+SendMess((Mod*256)+$ff,$AA51,0                                      //!! 
+        ,$1d0,$5504                                                 //!! CLEARFLASH($d000:0);
+        ,$100,startArea,0,$100,$e000-OS_SIZE,0,$100,OS_SIZE0,$5505  //!! WRITEMEM(<startArea>:0,<$e000-OS_SIZE>:0,<OS_SIZE0>);
+        ,$FFFF);                                                    //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                                    //!! 
+    fi ;
+  fi;
+fi ;
+writeln('Let''s look');
+SendMess((Mod*256)+$ff,4444);    // Run the script
+delay(1000);
+SendMess((Mod*256)+$ff,4444);    // Run the script
+Delay(2000);
+
+fin:
+
+

@@ -1,0 +1,50 @@
+include gotmod.inc ;
+if xmod=-1 then 
+  mod := $100020; xmod := 0 ;
+fi ;
+Start := $000 ;
+len := 15; 
+if mod > $100 then Start := mod >> 8 ; mod := mod && $ff fi ;
+if xmod=-1 then 
+  start := $1100;
+  mod := $20 ;
+  len := 1; 	
+fi ;
+
+
+// быстрый вывод значения портов
+// для новой версии ОС только
+setmod(mod);
+write ('module ',mod, 'at',Start);writeln('a1=',in($a1));
+again:
+for i from (start>>4) to (start>>4)+len do
+SendMess((Mod*256)+$ff,$AA51,0,            // fill script from disp 0
+    $0100,$eeee, // just to sign
+    $100,i*$10+$0,$5508,  // read register 4A
+    $100,i*$10+$2,$5508,  // read register 4A
+    $100,i*$10+$4,$5508,   // read register 4A
+    $100,i*$10+$6,$5508,   // read register 4A
+    $100,i*$10+$8,$5508,   // read register 4A
+    $100,i*$10+$a,$5508,   // read register 4A
+    $100,i*$10+$c,$5508,   // read register 4A
+    $100,i*$10+$e,$5508,   // read register 4A
+
+    $0000, 1+8, $5506,   // sendmess 6+1 - ¦ръёшьры№эр  фышэр!!!!!!!!!!!
+
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+recvmess(a,b,a1,a2,a3,a4,a5,a6,a7,a8); 
+ if i < $10 then write(' ') fi ;
+ write  (i*$10,':|');
+ write  (a1&&$ff,a1/256  );
+ write  (a2&&$ff,a2/256  );
+ write  (a3&&$ff,a3/256  );
+ write  (a4&&$ff,a4/256  );
+ write  (a5&&$ff,a5/256  );
+ write  (a6&&$ff,a6/256  );
+ write  (a7&&$ff,a7/256  );
+ writeln(a8&&$ff,a8/256  );
+
+od;
+//goto again;

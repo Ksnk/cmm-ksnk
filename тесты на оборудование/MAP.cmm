@@ -1,0 +1,16 @@
+include gotmod.inc;
+if (mod =0)||(mod=-1) then goto fin fi ;
+writeln('выбран модуль', mod );
+MODULE := mod; 
+again:
+mod:=(evalasync('~user("Caption","проключим длиной X0H в-YY00:0 начиная от адреса ZZZ000 адресного пространства",300,200)'));
+if (mod =0)||(mod=-1) then goto fin fi ;
+//writeln(mod);
+XX := (mod >> 20)&& $f ; if XX=0 then XX := 2 fi ;
+YY := (mod >> 12)&& $FF; if YY=0 then YY := $68 fi ; 
+ZZ := mod && $FFF; 
+writeln('с адреса $',YY,'00:0 длиной $',XX,'00 байт отображаем адрес $',ZZ,'000');
+  SendMess(MODULE*256+$ff,$9999,YY,XX,ZZ); goto again; 
+fin:
+  writeln('bye bye!');
+

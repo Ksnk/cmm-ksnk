@@ -1,0 +1,11 @@
+include gotmod.inc;
+
+writeln('смотрим модуль',Mod);
+
+StartArea0 := $300;
+Size := $4000;
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $0135,$0000,     $0100,StartArea0+$20,$0000,$100,Size,$5500,// copy mem
+    $0100,$1b0,$0000,$0100,StartArea0,    $0000,$100,$200,$5500,// copy mem
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script

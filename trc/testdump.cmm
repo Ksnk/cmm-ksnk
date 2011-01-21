@@ -1,0 +1,7 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+mod := $70; 
+start := $1b0 ;
+len := $18 ;
+include gdump.inc;
+

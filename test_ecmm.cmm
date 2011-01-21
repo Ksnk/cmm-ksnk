@@ -1,0 +1,15 @@
+//
+mod:=$70;
+seg:= $700f;x := $10 ;
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,x                           //!! push <x> ;
+        ,$100,seg                         //!! push <seg>
+        ,$100,$700f,$100,x,$10,$550f      //!! RDMEMC($700f:<x>,$10);
+        ,0,$12,$5506                      //!! send(0,*,*,*,*, *,*,*,*, *,*,*,*, *,*,*,*, *,*)
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+recvmess(x,s,d,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,aa,ab,ac,ad,ae,af);
+writeln (s,d,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,aa,ab,ac,ad,ae,af);
+writeln('ello!');
+

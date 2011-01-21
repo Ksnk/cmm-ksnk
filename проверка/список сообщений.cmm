@@ -1,0 +1,57 @@
+include gotmod.inc; 
+if mod> $100 then mess := mod>>8; mod := mod&& $ff fi ;
+if mess=0 then
+ SetMask($b); SendMess(mod*256,$ff01,4,0,$30);
+ if recvmess(a,b,c,d,e,f,g)>0 then 
+   if f = $4321 then ats := g fi ;
+   if f = $1234 then writeln('трасса уже установелна!') ;
+     if ats = 0 then // пытаемс€ найти сегмент
+       ats0 := g; // correct AtSeg
+       SetMask($b); SendMess(mod*256,$ff01,2,0,ats0);
+       if recvmess(a,b,c,d,e,f)>0 then 
+         if f = $4321 then ats := ats0 fi ;
+       fi ;
+     fi ; 
+   fi;  
+ fi ;
+if ats = 0 then // пытаемс€ найти сегмент
+ SetMask($b); SendMess(mod*256,$ff01,2,2,$1b0);
+ if recvmess(a,b,c,d,e,f)>0 then 
+   ats0 := f+$10; // correct AtSeg
+   SetMask($b); SendMess(mod*256,$ff01,2,0,ats0);
+   if recvmess(a,b,c,d,e,f)>0 then 
+     if f = $4321 then ats := ats0 fi ;
+   fi ;
+ fi ;
+fi ; 
+
+   SetMask($b); SendMess(mod*256,$ff01,2,0,ats); recvmess(a,b,c,d,e,f) ;
+   if f = $4321 then
+     len := $18; 
+     for i from 0 to 5 do
+       SetMask($b); SendMess(mod*256,$ff01,6,len*2+$a,ats);
+       if recvmess(a,b,c,d,e,ee,ats0,len0)>0 then 
+         ats := ats+((len*2+$10)>>4) ; //writeln(ats0,len0,ats,len) ;
+         len := len0; 
+       fi ;
+     od ;
+     mess := ats ; 
+   fi ;
+fi ;
+writeln('пул сообщений :', mess);
+
+
+disp := $25be ; 
+// список...
+
+  fcnt := 0 ;allcnt:= 0 ;
+again:
+  if disp = 0 then goto fin ; fi ;
+  SetMask($B);SendMess(mod *256,$FF01,12,disp,mess);
+  recvmess(a,b,c,d,e,len,d,messto,messfrom,dd,ee);
+
+  evalwrite('~cd(d[0],h): ~cd(d[8],h)->~cd(d[4],h)[~cd(d[12],h)](~cd(d[16],d)[~cd(d[16],h)])',disp,messto,messfrom,dd && $ff,(dd>>8)+((ee && $ff)<<8));writeln;
+  allcnt := allcnt+1 ;
+  disp := d ; goto again ;
+fin:
+  writeln (fcnt,allcnt);

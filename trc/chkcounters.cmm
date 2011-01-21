@@ -1,0 +1,44 @@
+if oops=1 then writeln(variant,'-проверка счетчиков разных.')
+else
+if mod = 0 then
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)');ats := mod >> 8;
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0)||(mod=-1) then
+     SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+     recvmess(a,b,c,d,e,mod)
+fi;
+
+mod := mod && $ff ;
+fi  ;
+
+write(mod,'>');
+
+if mod<$70 then // it's a ck
+  KilledMessCount := $72 ;
+  Lost_mess	  := $40 ;
+  Flash_wr	  := $5a ;
+  Flash_Er	  := $5c ;
+else
+  KilledMessCount := $7C ;
+  Lost_mess	  := $40 ;
+  Flash_wr	  := $5a ;
+  Flash_Er	  := $5c ;
+fi ;
+
+ SetMask($b); SendMess(mod*256,$ff01,2,KilledMessCount,$1b0);
+ if recvmess(a,b,c,d,e,f)>0 then  write('KMC',f); fi ;
+
+ SetMask($b); SendMess(mod*256,$ff01,2,Lost_mess,$1b0);
+ if recvmess(a,b,c,d,e,f)>0 then  write('LM',f); fi ;
+
+ SetMask($b); SendMess(mod*256,$ff01,4,Flash_wr,$1b0);
+ if recvmess(a,b,c,d,e,f,g)>0 then  write('f',f,g); fi ;
+
+ot_fin:
+
+;
+fi 

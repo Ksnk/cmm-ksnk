@@ -1,0 +1,91 @@
+
+include gotmod.inc ;
+
+// для проверки тарификации убедитесь, что версия собрана с флагом 
+//  TARIF_TEST в файле TARIF.INC
+//  функции Bx -  7 - очистить страницу
+//             -  8 - записать 1 запись
+//             -  9 - прочитать запись
+//             - 10 - очистить запись
+//
+//  7709,Bx,Ax,Dx,Di,Es, где Dx:Ax - адрес записи. Es:Di - куда/откуда брать
+//
+var := 0 ;
+if mod > 0 then var:= mod>>8 fi ;
+solgo:
+par:=0;
+if var = 0 then 
+  var :=evalasync('~user("Caption","3-стереть обе страницы,$lllSSSO,где lll - количество, sss - начальная запись O - 4-стереть запись, 1-писать,2-читать ",300,200)');
+  if var = -1 then goto fin fi ;
+  par := var >> 4 ;var := var && $f ; 
+  if par<$1000 then par := $1000+par ; fi ;
+fi ;
+
+tind := $cc7;
+tseg := $a000 ;
+if tind>$ccc then tseg := $b000 ; tind := tind-$ccc fi ;
+tdisp := tind*20 ;
+write(par,var);
+if (var = 5) && (par=$1000) then writeln('стираем страницу a000');
+   if (par && 1)=0 then  SendMess(mod*256+$ff,$770e,7   ,0,$a000, 0, $55); delay(6000);fi ;
+fi ;
+if (var = 4) && (par=$1000) then writeln('стираем страницу b000');
+   if (par && 2)=0 then SendMess(mod*256+$ff,$770e,7   ,0,$b000, 0, $55); fi ;delay(6000);
+fi ;
+if (var = 3) && (par=$1000) then writeln('стираем обе страници тарификации');
+    
+   SendMess(mod*256+$ff,$770e,7   ,0,$b000, 0, $55); delay(6000);
+   SendMess(mod*256+$ff,$770e,7   ,0,$a000, 0, $55); delay(6000);
+fi ;
+if var = 1 then writeln('Пишем запись тарификации', par);
+  for i from (par && $fff) to (par && $fff)+(par>>12)-1 do 
+    setmask($d);sendmess(mod*256,$ff01,20,0,$55,$1111,$2222,$3333,$4444,$5555,$6666,$7777,$8888,i,$aaaa);recvmess(a);
+    if i < $ccc then 
+      SendMess(mod*256+$ff,$770e,8   ,i*20,$a000, 0, $55); 
+    else
+      SendMess(mod*256+$ff,$770e,8   ,(i-$ccc)*20,$b000, 0, $55); 
+    fi ;
+  od ;
+fi ;
+if var = 4 then writeln('стираем запись тарификации', par);
+  for i from (par && $fff) to (par && $fff)+(par>>12)-1 do 
+    if i < $ccc then 
+      SendMess(mod*256+$ff,$770e,10   ,i*20,$a000, 0, $55); 
+    else
+      SendMess(mod*256+$ff,$770e,10  ,(i-$ccc)*20,$b000, 0, $55); 
+    fi ;
+    delay(100);
+  od ;
+fi ;
+zzz:=0;
+if var = 2 then writeln('Читаем запись ', par); xxx := -1;
+  for i from (par && $fff) to (par && $fff)+(par>>12)-1 do     if i < $ccc then 
+      SendMess(mod*256+$ff,$770e,9   ,i*20,$a000, 0, $55); 
+    else
+      SendMess(mod*256+$ff,$770e,9   ,(i-$ccc)*20,$b000, 0, $55);
+    fi ;
+    setmask($b);sendmess(mod*256,$ff01,20,0,$55);
+    recvmess(a,b,c,d,e,a1,a2,a3,a4,a5,a6,a7,a8,a9,aa);
+    if (xxx=a9) then ; write('.'); if zzz>40 then zzz:=0;writeln; else zzz:= zzz+1; fi ;
+    else 
+     if zzz<>0 then writeln; zzz:=0; fi ;
+     if i < $ccc then write('a000:',i*20);
+     else write('b000:',(i-$ccc)*20);
+     fi ;
+     writeln(a1,a2,a3,a4,a5,a6,a7,a8,a9,aa);			
+      xxx := a9 ;
+    fi ;	
+    xxx:= xxx+1; 	
+  od ;
+fi ;
+
+if var = 10 then 
+SendMess(mod*256+$ff,$770e,9   ,tdisp,tseg, 0, $55); // прочитать запись тарификации
+//SendMess(mod*256+$ff,$770e,8 ,tdisp,tseg, 0, $4f); // записать 1 запись
+fi ;
+
+again:
+if  recvmess(a)>0 then write('.'); goto again fi ;
+var := 0 ;
+goto solgo;
+fin:

@@ -1,0 +1,38 @@
+include gotmod.inc;
+
+setmask($b);
+sendMess(mod*256,$ff01,2,$22,$40); 
+if recvmess(a,b,c,d,e,ALSEG)<=0 then writeln('oops!') ; goto fin; fi ;
+if ALSEG = 0 then writeln('будильников нету :('); goto fin; fi ;
+setmask($b);
+sendMess(mod*256,$ff01,4,0,ALSEG); recvmess(a,b,c,d,e,STL,STH);
+sendMess(mod*256,$ff01,4,$a,$1b0); recvmess(a,b,c,d,e,CTL,CTH);
+
+TIM := (CTH*$1000+CTL/16)-(STH*$1000+STL/16);
+
+TH:=TIM/22500; T:=TIM-TH*22500 ;
+TM:=T /375; T:=T-TM*375 ;
+TC:=T/6;
+//writeln(TIMH,TIML);
+//writeln(TH,TM,TC);
+sendmess(mod*256+$ff,$aa0f,$1111);
+EvalWrite ('Время в модуле: ~cd(d[0]):~cd(d[4]):~cd(d[8])',TH,TM,TC);writeln;
+
+//SendMess(mod*256+$ff,$8923);recvmess(a,b,c,d,e,f,g,h);//writeln(a,b,c,d,e,f,g,h);
+//EvalWrite ('Время в модуле: ~cd(d[8]):~cd(d[4]):~cd(d[0])',e,d,c);writeln;
+
+  M:=(evalasync('~user("Caption","Установить время будильника ЧЧММ",300,200)'));
+if (M=-1) then writeln('bye bye!');goto fin fi ;
+
+  MH := M/100; M:=M-MH*100;
+  MM := M;
+EvalWrite ('ставим будильник на: ~cd(d[0]):~cd(d[4])',MH,MM);writeln;
+sendmess(mod*256+$ff,$aa0e,$1111,MH*60+MM);
+again:
+if recvmess(a,b,c,d,e,f) >0
+then //writeln (a,b,c,d,e,f) 
+  else delay(5000);
+  goto again 
+fi ;
+writeln('We got it!');
+fin:

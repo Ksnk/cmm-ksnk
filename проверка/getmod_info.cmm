@@ -1,0 +1,30 @@
+include gotmod.inc ;
+
+md1 := (mod >>24)&& $ff ;
+md2 := (mod >>16)&& $ff ;
+md3 := (mod >>8)&& $ff ;
+mod := mod && $ff;
+
+writeln('found mod ',mod);
+// for  sk4!!!!!!!!
+rmd1:=-3;rmd2:=-3;rmd3:= -3 ;
+
+again:
+//for md from 2 to $78 do
+if md1 <> 0 then   SetMask($f);SendMess(mod*256+$ff,$bb0e,md1);  recvmess(a,b,c1,d,e,f) fi ;
+if md2 <> 0 then   SetMask($f);SendMess(mod*256+$ff,$bb0e,md2);  recvmess(a,b,c2,d,e,f) fi ;
+if md3 <> 0 then   SetMask($f);SendMess(mod*256+$ff,$bb0e,md3);  recvmess(a,b,c3,d,e,f) fi;
+if ((rmd1<>c1) ||(rmd2<>c2)||(rmd3<>c3)) then 
+  writeln('!') ;
+  if md1 <> 0 then write('mod ',md1, 'info',c1); fi ;rmd1:=c1; 
+  if md2 <> 0 then write('mod ',md2, 'info',c2); fi ;rmd2:=c2; 
+  if md3 <> 0 then write('mod ',md3, 'info',c3); fi ;rmd3:=c3; 
+  writeln('.') ;
+  pnum := 0 ;
+else
+  pnum := pnum+1; 
+  if pnum > 60 then pnum := 0; writeln('.') else write('.') fi ;
+fi; 
+//od;
+goto again;
+

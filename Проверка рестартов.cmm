@@ -1,0 +1,11 @@
+mod:=$70;
+setmod(mod);
+Y := 0;
+again:
+X := in($4000+$4f) && $ffff;
+if X <>0 then writeln(X)
+else write('.') ;
+  Y := Y+1 ;
+  if Y>40 then writeln(' ' ) ; Y:= 0 ; fi ;
+fi; 
+ goto again;

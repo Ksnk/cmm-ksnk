@@ -1,0 +1,17 @@
+if oops=1 then writeln(variant,'-вычисляем время жизни от последнего рестрта')
+else
+include gotmod.inc
+
+write('модуль',mod);
+setmask($b); sendmess(mod*256,$ff01,4,$a,$1b0);
+if recvmess(a,b,c,d,e,t1,t2)>0 then TCC := (t2*$8000)+(t1>>1) ;
+setmask($b); sendmess(mod*256,$ff01,4,$4d8,$1b0);
+recvmess(a,b,c,d,e,t1,t2);TCC := TCC-((t2*$8000)+(t1>>1)) ;
+TH := TCC/(50*60*60); TCC := TCC - TH*(50*60*60);
+TM := TCC/(50*60); TCC := TCC - TM*(50*60);
+TC := TCC/(50); 
+EvalWrite ('с момента рестарта прошло ~cd(d[0],d)ч.~cd(d[4],d)м.~cd(d[8],d)с.',TH,TM,TC); 
+else write(mod,'не откликается')
+fi ;
+writeln;
+fi ;

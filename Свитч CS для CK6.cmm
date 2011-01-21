@@ -1,0 +1,18 @@
+mod := $0f ;
+
+//Register := $d168 ; value :=3 ; include WriteRegister.cmm ;
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+// disable UCS
+    $0100, 0   ,  $100, $f438+0  ,$5509, // Wr UCS.ML->0;
+    $0100, 0   ,  $100, $f438+2  ,$5509, // Wr UCS.ML->0;
+    $0100, 0   ,  $100, $f438+4  ,$5509, // Wr UCS.ML->0;
+    $0100, 0   ,  $100, $f438+6  ,$5509, // Wr UCS.ML->0;
+// enable CS2
+    $0100, $307 ,  $100, $f410+ $0  ,$5509, // out (delic+0, 0);
+    $0100, 8    ,  $100, $f410+ $2  ,$5509, // out (delic+0, 0);
+    $0100, $f801,  $100, $f410+ $4  ,$5509, // out (delic+0, 0);
+    $0100, $7   ,  $100, $f410+ $6  ,$5509, // out (delic+0, 0);
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+//out(Delic+$0, $40);

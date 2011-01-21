@@ -1,0 +1,13 @@
+include gotmod.inc;
+
+FromAdr := $3400;
+ToAdr   := $400 ;
+Len     := $4000 ;
+
+//Register := $d168 ; value :=3 ; include WriteRegister.cmm ;
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+// disable UCS
+    $0100,FromAdr,$0000,$0100, ToAdr,$0000,$100,Len,$5500,// 12.   CopyMem(F800:0,$300:0,$8000);
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+

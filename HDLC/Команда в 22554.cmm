@@ -1,0 +1,10 @@
+include gotmod.inc ;
+setmod(mod);
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100, $100   ,  $100, $1008  ,$5509, // out (delic+0, 0);
+    $0100, $200   ,  $100, $100A  ,$5509, // out (delic+0, 0);
+    $0100, $200   ,  $100, $1008  ,$5509, // out (delic+0, 0);
+    $0100, $100   ,  $100, $100A  ,$5509, // out (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script

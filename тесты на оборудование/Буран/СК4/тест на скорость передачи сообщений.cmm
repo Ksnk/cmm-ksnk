@@ -1,0 +1,52 @@
+include info.inc; 
+
+Base := mod ;
+
+Show := 1 ;
+include ver.inc;
+
+displ := $300;
+    SetHashFile('.\Hashes\Common.xml');
+    SetHashFile ('.\Hashes\MyHash.xml');
+
+Evalwrite('mod :=~cd(d[0])',mod);
+writeln('; ');
+
+// сетевая информация
+     recvmess(a,b,c,d,e,Alive,MessRecv,f,iobCRC,g,iobErr);
+
+displ := displ  ; channum := 0 ; 
+chan01 := 0 ;chan02 := 0 ;chan03 := 0 ;chan04 := 0 ;chan05 := 0 ;chan06 := 0 ;chan07 := 0 ;chan08 := 0 ;chan09 := 0 ;
+                                                  include sign_chan.inc ;
+if Alive <>0 then chan01 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan02 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan03 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan04 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan05 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan06 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan07 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan08 :=chan else chan01 := 0; fi ;include sign_chan.inc ;
+if Alive <>0 then chan09 :=chan else chan01 := 0; fi ;
+
+
+time := 5 ;
+Length:=1;
+wave := 1  ; 
+
+// setup internal variables
+SetMask($B);
+SendMess(Base*256,$ff01,2,$100+($FF*2),$1b0);
+recvMess(a,b,c,d,e,MainSeg);
+// let's go!!!!!!!1
+
+                   mod := chan01 ; if mod <> 0 then    include speed.inc ;
+fi ; delay(2000);  mod := chan02 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan03 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan04 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan05 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan06 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan07 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan08 ; if mod <> 0 then    include speed.inc ; 
+fi ; delay(2000);  mod := chan09 ; if mod <> 0 then    include speed.inc ; 
+fi ;
+fin:

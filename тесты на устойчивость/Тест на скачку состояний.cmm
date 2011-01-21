@@ -1,0 +1,23 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+//****************************************************************
+//
+// Запрашивает состояния всех объектов.
+//
+//**************** выбор пары модулей для тестирования************
+//isvr := 1 ; // вариант со списком модулей
+//mod := 1 ;//$100001 ;  {
+mod:=(evalasync('~user("Caption","Номер модуля($ZZXXYY)",300,200)'));
+// }
+if (mod=0) then writeln('by-by!'); goto fin; fi ;
+icnt := 0;
+again:
+SendMess(mod*256+$ff,$8a01,$3333,16,2
+  ,mod*256+$e0,mod*256+$ff,mod*256+$ff,mod*256+$ff,mod*256+$ff,mod*256+$ff,mod*256+$ff,mod*256+$e7,mod*256+$e8,mod*256+$e9,mod*256+$ea,mod*256+$eb,mod*256+$ec,mod*256+$ed,mod*256+$ee,mod*256+$ef
+  ,mod*256+$f0,mod*256+$f1,mod*256+$f2,mod*256+$f3,mod*256+$f4,mod*256+$f5,mod*256+$f6,mod*256+$f7,mod*256+$f8,mod*256+$f9,mod*256+$fa,mod*256+$fb,mod*256+$fc,mod*256+$fd,mod*256+$fe,mod*256+$ff
+//  ,mod*256+$d0,mod*256+$d1,mod*256+$d2,mod*256+$d3,mod*256+$d4,mod*256+$d5,mod*256+$d6,mod*256+$d7,mod*256+$d8,mod*256+$d9,mod*256+$da,mod*256+$db,mod*256+$dc,mod*256+$dd,mod*256+$de,mod*256+$df
+  ,mod*256+$aa,mod*256+$dd,mod*256+$aa,mod*256+$aa,mod*256+$aa,mod*256+$aa,mod*256+$dd,mod*256+$dd,mod*256+$c8//,mod*256+$c9,mod*256+$ca,mod*256+$cb,mod*256+$cc,mod*256+$cd,mod*256+$ce,mod*256+$cf
+//  ,mod*256+$a0,mod*256+$a1,mod*256+$a2,mod*256+$a3,mod*256+$a4,mod*256+$a5,mod*256+$a6,mod*256+$a7,mod*256+$a8,mod*256+$a9,mod*256+$aa,mod*256+$ab,mod*256+$ac,mod*256+$ad,mod*256+$ae,mod*256+$af
+); //16+16+9 !!!!!
+if recvmess(a)>0 then write('.'); if icnt < 60 then icnt:=icnt+1 else writeln ; icnt := 0 fi; goto again fi ;
+fin:

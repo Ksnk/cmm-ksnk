@@ -1,0 +1,17 @@
+include gotmod.inc ;
+
+Param := mod >> 8 ; if Param =0 then Param := $40 fi ;
+
+setmask($b);SendMess(mod*256,$ff01,2,$2fe,$1b0); if recvmess(a,b,c,d,e,f)<=0 then writeln('module not found',mod);goto fin fi ;
+setMask($d);SendMess(mod*256,$ff01,2,$4d,f,GetTaskSocket); recvmess(a);
+SetReturnAddress($400e);
+
+SendMess(mod*256+$ff,$aa08,Param);
+i := 0;ii := 0 ;
+again:
+  if recvmess(a,b)>0 then i:= i+1 ;ii := ii+1; write('.');if ii> 49 then ii:= 0; writeln(' '); fi ;goto again fi ;
+writeln(' ');
+Evalwrite(' всего ~cd(d[0]) сообщений',i);
+
+fin: ;
+

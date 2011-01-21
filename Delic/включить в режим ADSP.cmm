@@ -1,0 +1,24 @@
+mod := $07;
+
+again: // check if module exists
+  sendmess(mod*256+$ff,$6b); if recvmess(a)<=0  then  write('.') ; goto again fi ;
+
+addr := $2880 ; val := $20f ;
+sendmess(mod*256+$fe,1070,addr);
+recvmess(t0,t1, a00,a01,a02,a03); writeln('was:',a01);
+sendmess(mod*256+$fe,1071,addr,val);
+recvmess(t0,t1, a00,a01,a02,a03); 
+
+// проключение
+
+//установка режима фонового тестирования
+sendmess(mod*256+$fe, 1030, mod*256+$fe, $027a, 2, $0);
+recvmess( a, b, c, d, e, f);
+
+// установка нужных проключений //5.0=>14.1 7.1=>5.0
+   sendmess(mod*256+$fe,$0407,(0*32)+0,(14*32)+0,0,0);   recvmess(a,b,c,d);
+   sendmess(mod*256+$fe,$0407,(7*32)+0,(0*32)+0,0,0);   recvmess(a,b,c,d);
+   sendmess(mod*256+$fe,$0407,(5*32)+0,(14*32)+1,0,0);   recvmess(a,b,c,d);
+   sendmess(mod*256+$fe,$0407,(7*32)+1,(5*32)+0,0,0);   recvmess(a,b,c,d);
+//   sendmess(mod*256+$fe,$0407,(7*32)+0,(0*32)+16,0,0);   recvmess(a,b,c,d);
+

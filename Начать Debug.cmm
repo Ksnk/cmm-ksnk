@@ -1,0 +1,13 @@
+ragain:
+include Gotmod.inc
+if (GetTaskSocket>=$1e00)&&(mod = -1)then  goto ragain fi ;
+if (mod = -1) then goto fin fi ;
+writeln('Тормозим модуль ',mod,'...');
+
+again:
+SendMess(mod*256+$ff,4444);
+
+delay(1000);
+goto again;
+fin:
+;

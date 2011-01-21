@@ -1,0 +1,15 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","Старый номер модуля XX, новый номер модуля YY - вводить $XXYY ",300,200)'));
+if (mod =0)||(mod=-1) then
+  writeln('bye bye!');
+else
+  newmod := mod && $FF ;mod := mod >>8;
+  if mod=0 then 
+    include chkmod.inc;
+  fi;
+  writeln('mod:',mod);
+  SendMess(mod*256+$ff,$bb04,newmod);
+  delay(3000);	
+fi;

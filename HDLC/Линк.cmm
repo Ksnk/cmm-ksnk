@@ -1,0 +1,59 @@
+include gotmod.inc; 
+
+        muxbase1 :=$1008;
+        muxbase2 :=$100A;
+
+for j from 0 to 2 do 
+  start := j*$100 ;ttt := (3-j)*$100 ;
+for i from 0 to $1f do 
+  SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,  start+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $400, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+1+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $400, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+2+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $400, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+3+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $400, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100, $4444, $0000,1,$5506,
+    $FFFF
+  );                            // 2.    finish!  64 bytes total
+  SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+  recvmess(a);
+//  delay(200);
+od ;
+od; 
+
+{
+for j from 0 to 2 do 
+  start := j*$100 ;ttt := j*$100 ;
+for i from 0 to $1f do 
+  SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,  start+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+1+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+2+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  start+3+4*i, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100, $4444, $0000,1,$5506,
+    $FFFF
+  );                            // 2.    finish!  64 bytes total
+  SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+  recvmess(a);
+//  delay(200);
+od ;
+od; 
+}
+
+  SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,  $100, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $100, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $210, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $210, $0100,  muxbase1,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $0100,  $140, $0100,  muxbase2,       $5509,  // OutWord(muxbase,dmrena); // Enable DM reading
+    $FFFF
+  );                            // 2.    finish!  64 bytes total
+  SendMess((Mod*256)+$ff,$AA52,0);    // Run the script

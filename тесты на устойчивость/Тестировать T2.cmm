@@ -1,0 +1,136 @@
+include gotmod.inc;
+
+TestProcAddress := Mod*256+2;
+// проверка- есть ли тестовый процесс
+SendMess(Mod*256+$ff, $aa0b ,$3274);
+recvmess(a,b,c,d,e); //writeln (a,b,c,d,e);
+
+if (d=0) then
+  StartArea := $500 ;
+
+if loadfile('T1.PRG',mod*256,startArea)=0 then 
+  if loadfile('Q:\KSNK.212\3dmodel\main\T1.PRG',mod*256,startArea)=0 then 
+    writeln('Не смогли найти T1.prg'); goto fin 
+  fi ;
+fi ;
+// регистрируем
+sendmess(256*mod+$ff,4446,startArea);
+// запрашиваем информацию
+
+sendmess(256*mod+$ff,$AA0b,$3274);recvmess(a,b,c,d,e);
+fi ;
+
+if (d=0) then writeln('Oops!') ; goto fin ; fi ;
+
+//sendmess(256*mod+$ff,$64,0,$3174);
+
+//goto fin;
+
+// убить возможно запущенный ранее процесс
+SendMess(TestProcAddress,$88ff);
+delay(1000);
+//goto fin;
+// запуск тестового процесса для t1 ($31( 1)74 (t))
+writeln('Запуск процесса',Mod,TestProcAddress);
+
+SendMess(Mod*256+$ff, $64 ,TestProcAddress,$3274);
+
+//goto fin;
+// проверка, что процесс запустился
+RecvMess(a,b,c,d,e); // then   writeln(a,b,c,d,e);fi ;
+SendMess(TestProcAddress,$8800,mod*256+$ff,2);
+delay(1000);
+SendMess(TestProcAddress,$8802);
+RecvMess(a,b,c,d,e);//>0 then   writeln(a,b,c,d,e);fi ;
+if (b<>$8803) then goto fail fi ;
+if ((c=0)||(d<>0)) then writeln('тест живучести провален!'); fi ;
+
+// тестировать чего-то
+//setmask($d);sendmess(mod*256,$ff01,1,1,$326a,$d0); recvmess(a);
+// потоковый тест
+
+writeln(' ');
+write('Самотестирование...');
+SendMess(TestProcAddress,$8810);
+delay(5000);
+recvmess(a,b,Result,Kvit); // writeln(a,b,Result,Kvit);
+writeln('done!',Result,Kvit);
+if b<>$8811 then
+  writeln('Тест не запустился')
+else
+  TBit := 1; Write('тест на таймауты');
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then writeln(' OK') else writeln(' fault') fi;
+
+  TBit := 2; 
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then write('+') else writeln('тест на очередь - fault') fi;
+  TBit := 4; 
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then write('+') else writeln('тест на маску - fault') fi;
+  TBit := 8; 
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then write('+') else writeln('тест на таймаут(2)- fault') fi;
+  TBit := 16;
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then write('+') else writeln('тест на расширенные таймауты- fault') fi;
+  TBit := 32;
+  if ((Kvit && TBit)<> 0) &&((Result && TBit) <>0)  then write('+') else writeln('тест на убийство уже случившегося таймера- fault') fi;
+  writeln;
+fi ;
+
+// чего дальше делать
+sendmess(TestProcAddress,$8805);
+recvmess(a,b,c,d,e,f);
+sendmess(TestProcAddress,$8802);
+recvmess(a,b,c,d,e,f);
+
+variant:=evalasync('~user("Caption","$1XX - живучесть-модуль XX,$2XX - нагрузка-модуль XX",300,200)');
+if variant=-1 then goto fin fi ;
+amod := variant && $ff ;
+variant:= variant>>8 ;
+Par := 0;
+if variant > $f then 
+  Par := variant>>4;
+  variant :=variant && $f;
+fi ;
+
+writeln;
+if ((variant=1)||(variant=2))&&(amod>0) then
+if (variant=2) then 
+  write('Тест на нагрузку'); start := $8804;info := $8806;fintest := $8805;testpar:=10;
+else
+  write('Тест на живучесть');start := $8800;info := $8803;fintest := $8802;testpar:= 2;
+fi ;
+if Par <> 0 then testpar := Par fi ;
+writeln('для модуля ',amod);
+
+for j from 0 to 20 do
+sendmess(TestProcAddress,start,amod*256+$ff,testpar);
+call := 0;cpast := 0 ; dpast := 0 ;
+for i from 0 to 20 do
+  delay(4000);
+  sendmess(TestProcAddress,info);
+  recvmess(a,b,c,d,e,f,g);
+  if (dpast=d) then
+    if (cpast=c) then write('X') else  write('.'); fi ;
+  else write(d-dpast); fi ;
+  call := call+(c-cpast);
+  if call >30000 then i := 20 fi ;
+  cpast:=c;dpast:=d;
+od ;
+sendmess(TestProcAddress,fintest);
+recvmess(a,b,c,d,e,f,g);
+if b<> info then writeln('Ооps!') ; goto fin ; fi ;
+call := call+(c-cpast);
+evalwrite('~cd(d[0]) sec, ~cd(d[4])- max, ~cd(d[8])- total ~cd(d[12])- mps ',f/100,e,call,(call*100)/f); if (d>0) then write(d,'errors!!!!!(',g,')') fi ;
+writeln;
+delay(5000);
+od ;
+
+writeln;
+writeln(a,b,c,d,e,f);
+
+fi ;
+
+writeln(' ');
+
+goto fin;
+fail:
+  writeln('Тестовый процесс не запустился!');
+fin:

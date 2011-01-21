@@ -1,0 +1,9 @@
+include gotmod.inc ;
+ofs := $26 ; 
+SendMess(mod*256+$fe,1028,mod*256+$fd,ofs,2);
+recvmess(a,b,c,d,e,VAL);  writeln(VAL);
+
+SendMess(mod*256+$fe,1030,mod*256+$fd,ofs,2,VAL);
+recvmess(a);
+SendMess(mod*256+$fe,1029,mod*256+$fd,ofs,2,VAL);
+recvmess(a);

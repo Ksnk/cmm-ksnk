@@ -1,0 +1,89 @@
+if oops=1 then writeln(variant,'-установка посмертной трассы')
+else
+if mod = 0 then
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)');ats := mod >> 8;
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0)||(mod=-1) then
+     SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+     recvmess(a,b,c,d,e,mod)
+fi;
+
+mod := mod && $ff ;
+fi  ;
+
+writeln('модуль',mod);
+
+trc_disp:= $300;
+//atseg := $6100 ;
+AtSeg :=-1;
+include TRC_INIT.inc ;
+
+//{ correct DataLength
+ SetMask($b); SendMess(mod*256,$ff01,2,2,$1b0);
+ if recvmess(a,b,c,d,e,f)>0 then // writeln(f);
+   if AtSeg=-1 then 
+     AtSeg := f+$100;// correct AtSeg
+   fi ;
+   len4 := ((f-$1b0)+2)*8;
+ else goto ot_fin
+fi ;
+//atseg := $1000 ;
+// AtSeg:= $700f ; //$380 ;
+{}
+// correct MessSeg
+SetMask($b); SendMess(mod*256,$ff01,2,$2c ,$1b0); if recvmess(a,b,c,d,e,f)>0 then if START6>0 then START6:= f ; fi ; fi ;
+// correct ToData
+SetMask($b); SendMess(mod*256,$ff01,2,$2fc,$1b0); if recvmess(a,b,c,d,e,f)>0 then if (START5>0)&&(f>0) then START5:= f ; fi ; fi ;
+
+//****************************************//
+// check memory size
+SetMask($b); SendMess(mod*256,$ff01,2,2,$1b0);
+if recvmess(a,b,c,d,e,f)>0 then
+SetMask($b); SendMess(mod*256,$ff01,2,0,f);
+if recvmess(a,b,c,d,e,ff)>0 then
+   //writeln(ff);
+   if (atseg<=f) then writeln('Возможна порча данных ОС! Переопределите переменную AtSeg') fi ;
+   RL:=4*8 ;
+   if START1<>0 then  RL := RL+8+len1 fi ;
+   if START2<>0 then  RL := RL+8+len2 fi ;
+   if START3<>0 then  RL := RL+8+len3 fi ;
+   if START4<>0 then  RL := RL+8+len4 fi ;
+   if START5<>0 then  RL := RL+8+len5 fi ;
+   if START6<>0 then  RL := RL+8+len6 fi ;
+   if START7<>0 then  RL := RL+8+len7 fi ;
+   if START8<>0 then  RL := RL+8+len8 fi ;
+   if START9<>0 then  RL := RL+8+len9 fi ;
+   if (RL>>8)>(FF-(AtSeg-f)) then writeln('Возможна порча данных ФПО') fi ;
+
+else writeln('oops!',f);fi
+else writeln('oops!!',f)fi;
+
+
+
+no_correct:
+// setup trace to 0:300
+         SetMask($d);  SendMess(mod*256,$ff01,$2a,trc_disp,$0,$edcb {$1234} ,AtSeg
+                           ,START1,len1
+                           ,START2,len2
+                           ,START3,len3
+                           ,START4,len4
+                           ,START5,len5
+                           ,START6,len6
+                           ,START7,len7
+                           ,START8,len8
+                           ,START9,Len9
+//			   ,0,0,0,0
+                       );
+         RecvMess(t1,t2,t3,t4,t5,A2); 
+// setup trace to 0:300
+         SetMask($d);  SendMess(mod*256,$ff01,$2,$30,AtSeg,$0000  );
+         RecvMess(t1,t2,t3,t4,t5,A2); 
+
+
+ot_fin:
+;
+fi

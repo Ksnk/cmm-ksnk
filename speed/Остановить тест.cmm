@@ -1,0 +1,13 @@
+//include gotmod.inc; 
+//if mod <> -1 then SendMess(mod*256+$FF,$6c,0,1); fi ;
+SendMess($71*256+$FF,$6c,0,1);
+SendMess($70*256+$FF,$6c,0,1);
+SendMess($75*256+$FF,$6c,0,1);
+SendMess($76*256+$FF,$6c,0,1);
+SendMess($77*256+$FF,$6c,0,1);
+delay(10000);
+SendMess($71*256+$FF,$6c,0,0);
+SendMess($70*256+$FF,$6c,0,0);
+SendMess($75*256+$FF,$6c,0,0);
+SendMess($76*256+$FF,$6c,0,0);
+SendMess($77*256+$FF,$6c,0,0);

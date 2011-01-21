@@ -1,0 +1,16 @@
+mod := $07;
+
+//SendMess(mod*256+$ff,$4402,$5441,$205a,$0a0d); //atz
+//SendMess(mod*256+$ff,$4402,$5441,$5444,$3036,$3030,$2039,$0a0d); //at dt 60008
+//SendMess(mod*256+$ff,$4402,$5441,$0041,$0a0d); //ata
+//SendMess(mod*256+$ff,$4404); // ring me darling...
+//SendMess(mod*256+$ff,$4402,$5441,$3048,$0a0d); // ath0 and lisening...
+
+//{
+// заказ позвонить мне через N секунд
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $100,30*100,$5501, // delay for 30 sec
+    $0100,$4404,$0100,$80ff,1,$5506, // Send "StartDebug"
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+{}

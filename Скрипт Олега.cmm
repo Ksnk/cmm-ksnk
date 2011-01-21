@@ -1,0 +1,71 @@
+mod:=$21;
+        setmod(mod);
+        muxbase :=$8000;
+        crval :=inword(muxbase);
+        dmrena :=crval ||$0010;
+
+
+        
+        SendMess((mod*256) +$ff, $AA51, 0,      
+                                $0100,  $ffff,  $0000,  $5502,          
+                                $0040,  $0006,  $009c,  $5507,          
+                                $FFFF                                   // Finish
+                        );
+        Write('Wait');
+        SendMess((mod*256) +$ff,$AA52,0);       
+        for j from 0 to 90 do
+                delay(350); Write('.');
+        od;
+        Writeln('');
+        Writeln('');
+        Writeln('');
+        
+        Out($1006,$0);
+        delay(800);
+        Out($1006,$10);
+        
+
+
+        st := $6;
+        ch := $28;
+        port :=muxbase +$2000 +(st <<8) +(ch <<1);
+        restst:=0;
+        byte:=0;
+        write('>>>> ');
+        write('Test Lamp:   ');
+
+        byte:= $ff;
+        data := $6000 + byte;
+//1-------------------------------------------------------------------------------
+        Setmask($16);
+                SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                        $0100,  data,
+                        $0100,  port,           $5509,
+                                $FFFF                                                      
+// Finish
+                                );
+        setmask($16);
+                SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+
+                delay(100);
+//2-------------------------------------------------------------------------
+        Setmask($16);
+                SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                        $0100,  data,
+                        $0100,  $6018,           $5509,
+                                $FFFF                                                      
+// Finish
+                                );
+        setmask($16);
+                SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+//3-------------------------------------------------------------------------
+        Setmask($16);
+                SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                        $0100,  data,
+                        $0100,  $6008,           $5509,
+                                $FFFF                                                      
+// Finish
+                                );
+        setmask($16);
+                SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+

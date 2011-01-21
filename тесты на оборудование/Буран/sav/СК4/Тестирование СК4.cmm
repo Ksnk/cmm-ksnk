@@ -1,0 +1,53 @@
+include info.inc;
+writeln('                   Тестирование модуля СК4 ');
+writeln('-----------------------------------------------------------');
+writeln('           Стойка -',stative,'плата -',board, 'модуль -',mod);
+writeln('-----------------------------------------------------------');
+writeln('-----------------------------------------------------------');
+writeln('                      вывод информации о модуле ');
+writeln('-----------------------------------------------------------');
+
+SendMess(256*mod+$ff,$8801);
+write('тестирование...');
+RecvMess(fromaddr,command,selfstate,jumper,over);
+writeln('закончено!');
+
+if Command = $77FF then
+
+  if board=9 then
+    if jumper=0 then
+      writeln('СК находится в активном сстоянии.');
+      if over=1 then
+        writeln('левый СК находится в пассивном сстоянии.');
+      else
+        writeln('левый СК отсутствует.');
+      fi
+    else
+      if over=1 then
+        writeln('СК находится в пассивном сстоянии.');
+      else
+        writeln('СК отсутствует.');
+      fi
+    fi
+  else
+    if jumper=1 then
+      writeln('СК находится в активном сстоянии.');
+      if over=1 then
+        writeln('правый СК находится в пассивном сстоянии.');
+      else
+        writeln('правый СК отсутствует.');
+      fi
+    else
+      if over=1 then
+        writeln('СК находится в пассивном сстоянии.');
+      else
+        writeln('СК отсутствует.');
+      fi
+    fi
+  fi
+else
+  writeln('неверная версия системного процесса! ')
+fi
+
+{
+}

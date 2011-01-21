@@ -1,0 +1,123 @@
+settimeout(6000);
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+variant := 20 ;
+mod := $ff;
+
+ssagain:
+mod1 := $70760475 ;//mod2 := $75;
+//mod1 := $2040 ;
+//mod1 := $7071 ;
+//mod3 := $77 ;
+//mod1 := $55564544 ;
+
+asmod := 0 ;circle := 1;
+i := 0 ;
+
+again:
+mod := asmod && $ff ; asmod := asmod >> 8 ;
+//**********************************************************
+// do something!!!!!!!!!!!!!!!!!!!!!!!!!!
+if mod<>0 then 
+//**********************************************************
+// проверяем - не рестартовал ли
+setmask($b);sendmess(mod*256,$ff01,2,0,$30);
+if recvmess(a,b,c,d,e,f)>0 then 
+  if (f = $1234)||(f = $edcb)||(f = $bcde) then write('.') 
+  else
+//**********************************************************
+// рестартовал!!!!
+// ждем 10 сек и снимаем трассу
+  delay(10000);
+  writeln;
+  writeln('>>>> трасса снимается с модуля', mod);
+// не установлен ли уже !!!
+ats := 0;
+include chktrace.inc
+
+//writeln('mod=',mod);
+include TRC_INIT.inc;
+if ats <>0 then AtSeg := ats ; fi ;
+
+writeln('модуль --------------------', Mod);
+if START_DEBUG=1 then SendMess(mod*256+$ff,4444); fi ;
+start := AtSeg ;
+
+setmask($b);SendMess(Mod*256,$ff01,12,$30,start);
+if recvmess(a,b,c,d,e,a1,a2,a3,a4,a5,a6)>0 then
+  if (a1=$EEEE)&&(a2=$EEEE)&&(a3=$EEEE)&&(a4=$EEEE)&&(a5=$EEEE)&&(a6=$EEEE) then 
+// поехали!!!
+len := $18 ;
+again_new:
+include gdump.inc;
+
+start := start+len/8 +1;
+rg_again:
+setmask($b);SendMess(Mod*256,$ff01,16,0,start-1);
+if recvmess(a,b,c,d,e,a1,a2,a3,a4,a5,a6,a7,a8)>0 then
+  if (a1=$EEEE)&&(a2=$EEEE)&&(a3=$EEEE)&&(a4=$EEEE)&&(a5=$EEEE)&&(a6=$EEEE) then 
+        if e<> start-1 then goto rg_again fi ;
+        len := a8 ;
+	if a7=0 then goto rg_fin fi ;
+	writeln('**** death trace from ', a7,'-----',len*2); 
+	goto again_new;
+  else
+    writeln('Трасса оборвана...'); goto rg_fin;
+  fi  ;
+else goto rg_again 
+fi ;
+
+  else
+    writeln('не удалось найти начало трассы'); 
+  fi  ;
+fi ;
+rg_fin: ;
+
+pr_fin:
+//**********************************************************
+//****
+include ot.cmm
+
+  fi ;
+
+else 
+  write('?');
+fi ;
+
+fi ;
+//writeln(i,mod,asmod);
+// od!!!!!!!!!!!!!!!!
+//**********************************************************
+if asmod=0 then 
+   if i=6 then asmod := mod7 ; i := i+1 fi ;
+   if i=5 then asmod := mod6 ; i := i+1 fi ;
+   if i=4 then asmod := mod5 ; i := i+1 fi ;
+   if i=3 then asmod := mod4 ; i := i+1 fi ;
+   if i=2 then asmod := mod3 ; i := i+1 fi ;
+   if i=1 then asmod := mod2 ; i := i+1 fi ;
+   if i=0 then asmod := mod1 ; i := i+1 fi ;
+   if asmod <>0 then goto again fi ;
+else
+   goto again
+fi;
+
+mod := asmod && $ff ; asmod := asmod >> 8 ;
+if circle = 1 then 
+mod := 4;
+if recvmess(a)>0 then delay(3000)fi ; 
+showtime := 0 ;
+if (havenotime=0) then
+  havenotime:=10 ;
+    SendMess(mod*256+$ff,$8922);
+    if recvmess(a,b,c,d,e,f,g,h)>0 then 
+      if b=$8921 then
+        EvalWrite (' ~cd(d[8],d):~cd(d[4],d):~cd(d[0],d)',e,d,c); 
+      fi ;
+    fi 
+else
+  havenotime := havenotime-1 ;
+fi ;writeln ;
+delay(7000); goto ssagain fi ;
+rr_fin:
+

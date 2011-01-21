@@ -1,0 +1,26 @@
+//   настройка
+// закрытие трассы для всех объектов
+// ------------------------------------------
+
+settimeout( 20000);
+
+osbal := (mod << 8);
+tobal := (mod << 8) + $00fe;
+
+o:=$fd;
+
+for i from 1 to $fd do
+
+obj :=(mod<<8) +o;
+sendmess(tobal, 1030, obj,   1,1, $E0);
+if RecvMess( a ) =0 then goto finish fi;
+o:=o-1;
+od;
+
+finish:
+SetMask ($D);
+
+SendMess (osbal,$ff01, 2, 14, $3300, $aaaa );
+RecvMess (b1,b2,b3,b4,b5, dump1);
+
+

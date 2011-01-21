@@ -1,0 +1,36 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","TraceRT от модул€ XX до модул€ YY- вводить $XXYY ",300,200)'));
+if (mod =0)||(mod=-1) then
+  writeln('bye bye!'); goto fin;
+
+else
+ if (mod =0)||(mod=-1) then SetMask($B);SendMess($8000,$FF01,2,$D,$40);recvmess(a,b,c,d,e,mod) fi;
+  newmod := mod && $FF ;mod := mod >>8;
+fi;
+// нашли модуль, пытаемс€ его отсканировать
+mod_loop:
+//  write('модуль :',mod);
+  include ver.inc;
+// mod - им€ модул€, newmod - куда ведем трассу
+  a2 := $1b0; a1:= $304 ;
+rdttab:
+  setmask($b);sendmess(mod*256,$ff01,4,a1,a2);recvmess(a,b,c,d,e,c1,c2); 
+  if ((c2 && $ff)=0) then a1:=$300 ; goto findmod   fi ;
+  if ((c2 && $ff)=newmod) then goto findmod ; fi ;
+  a1:=a1+4; goto  rdttab ;
+
+findmod: //writeln(a1,a2);
+  setmask($b);sendmess(mod*256,$ff01,4,a1,a2);recvmess(a,b,c,d,e,c1,c2); 
+channum := 0 ;displ := a1-4;
+ include sign_chan.inc ;
+//  writeln('chan',chan,module);
+  if (module >>8)=0 then writeln('путь оборван'); goto fin; fi ;
+  if (module >>8)=newmod then writeln('ƒобрались!!!!',module); goto fin; 
+  else mod := module >>8 ; goto mod_loop ;fi ;
+
+//  if chan=newmod then writeln('ƒобрались!!!!');goto fin fi ;
+//  mod := chan ; goto mod_loop ;
+
+fin:

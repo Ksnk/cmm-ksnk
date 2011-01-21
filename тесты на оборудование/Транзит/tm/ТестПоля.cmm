@@ -1,0 +1,118 @@
+// тест поля для СК4
+
+mod:=04;
+modto:=mod*256+$fe;
+SetMod(mod);
+
+// ЇҐаҐе®¤ ў аҐ¦Ё¬ б®®ЎйҐ­Ё©
+writeln('TEST  FIELD START');
+//outword($8000,$6028);
+
+
+setmod(mod);
+
+setmask($16);
+
+SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                 $0100,  $6028,
+                 $0100,  $8000,  $5509,  // OutWord(port1,val);
+                 $FFFF                                                                                   // Finish
+        );
+
+setmask($16);
+SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+error:=0;
+       for i from 0 to 1 /*31*/ do
+          for j from 0 to 127 do
+             adrr:=$a000+i*$100+j*2;
+             data:=i*128+j+$6000;
+             out(adrr,data);
+             data1:=in(adrr);
+             temp:=j && $1f;
+             if ((data && $ff) = data1)
+                then
+                   if (temp<>0)
+                     then   write('.')
+                     else   writeln('')
+                   fi
+                else error:=error+1
+             fi;
+           od
+       od;
+
+writeln;
+writeln('Quantity error = ',error);
+
+
+writeln('...! восстановление режима проключений!');
+
+setmod(mod);
+SetMask($b);
+SendMess(MOd*256,$FF01,2,$b6,$0);
+recvmess(t0,t1, a0,a1,a2,a3);
+segfi:=a3;     //адрес сегмента поля
+
+setmod(mod);
+addr:=$8000;
+
+setmod(mod);
+        setmask($16);
+
+                SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                                $0100,  $0008,
+                                $0100,  $8000,  $5509,  // OutWord(port1,val);
+                                $FFFF                                                                                   // Finish
+                                );
+        setmask($16);
+        SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+
+
+   for t from 0 to 7 do
+     for c from 0 to 31 do
+             ofsfi:=((t<<5) || c)*2;
+             oTR:=t;          //ofsfi >> 5;
+             oCH:=c;          //ofsfi && $1f;
+
+             SetMask($b);
+             SendMess(MOd*256,$FF01,2,ofsfi,segfi);
+             recvmess(t0,t1, a0,a1,a2,a3);
+
+             inpp:=a3;
+
+
+//получение входного канала
+             iTR := inpp >> 5;
+             iCH:=inpp && $1f;
+
+             riTR :=  iTR >> 2;
+             roTR :=  oTR >> 2;
+             riCH := ( iTR && 3) + ( iCH << 2);
+             roCH := ( oTR && 3) + ( oCH << 2);
+
+             mtaddr:=$a000 + (roTR <<8) + (roCH << 1);
+             data :=$2000 + (riTR <<8) + riCH;
+show:=0;
+if show then      write(riTR,'.',riCH);if (( c && 7)=7 ) then writeln; fi; fi;
+
+//             delay(500);
+             setmod(mod);
+             setmask($16);
+
+             SendMess((mod*256) +$ff,$AA51,0, // save script from disp 0
+                                $0100,  data,
+                                $0100,  mtaddr,  $5509,  // OutWord(port1,val);
+                                $FFFF                                                                                   // Finish
+                                );
+
+        setmask($16);
+        SendMess((mod*256) +$ff,$AA52,0);       // Run the script
+
+// проключение тени
+       od
+    od;
+
+
+writeln('TEST  END');
+
+
+

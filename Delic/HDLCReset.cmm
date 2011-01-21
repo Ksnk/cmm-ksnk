@@ -1,0 +1,18 @@
+mod := $30 ;
+Delic := $E00 ;
+setmod(mod);
+
+SendMess((Mod*256)+$ff,$AA51,0,          // fill script from disp 0
+    $0100,Delic+$41,$550A, // read port 
+    $0503,-10, // jump if not 0 5 words back
+    $0100, 0   ,  $100, delic+ $0  ,$5509, // out (delic+0, 0);
+    $0100, $1 ,  $100, delic+ $43,$5509, // out (delic+0, 0);
+    $0100, $1f ,  $100, delic+ $40,$5509, // out (delic+0, 0);
+     $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+ 
+//out(Delic+$0, $0);
+//out(Delic+$43, $1); 
+//out(Delic+$40, $1f);
+
+

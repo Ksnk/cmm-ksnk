@@ -1,0 +1,55 @@
+include gotmod.inc;
+
+// чипселект
+setmod(mod);
+REG:=$8000;
+if (in($f42a)=0) then 
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+//             ,$1   ,$100,$f428,$5509      //!! outword ($f428,$0001);
+//        ,$100,$180 ,$100,$f42a,$5509      //!! outword ($f42a,$0180);
+//        ,$100,$fc01,$100,$f42c,$5509      //!! outword ($f42c,$fc01);
+//        ,$100,$3ff ,$100,$f42e,$5509      //!! outword ($f42e,$03ff);
+        ,$100,$102 ,$100,$f428,$5509      //!! outword ($f428,$0001);
+        ,$100,$0030,$100,$f42a,$5509      //!! outword ($f42a,$0180);
+        ,$100,$fc01,$100,$f42c,$5509      //!! outword ($f42c,$fc01);
+        ,$100,$0 ,$100,$f42e,$5509      //!! outword ($f42e,$03ff);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+SendMess(mod*256+$ff,$9999,$60,$8,$300);
+writeln('Ok!');
+fi ;
+goto fin;
+//sw-reset
+
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$80,$100,REG,$550B               //!! out (<REG>,$80);
+        ,$550C                            //!! nop;
+        ,$ff,$100,$1002,$550B             //!! out ($1002,$ff);
+        ,$550C                            //!! nop;
+        ,0,$100,$1002,$550B               //!! out ($1002,$00);
+        ,$550C                            //!! nop;
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+// sys_init
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,$1122,$100,REG+$88,$5509    //!! outword (<REG+$88>,$1122);
+        ,$100,$3344,$100,REG+$8a,$5509    //!! outword (<REG+$8a>,$3344);
+        ,$100,$5566,$100,REG+$8c,$5509    //!! outword (<REG+$8c>,$5566);
+        ,$100,$5555,$100,REG+$95,$5509    //!! outword (<REG+$95>,$5555);
+        ,$1,$100,REG+0,$550B              //!! out (<REG+0>,$1);
+        ,$550C                            //!! nop
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+// SockInit
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$d4,$100,REG+$a1,$550B           //!! out (<REG+$a1>,$d3);
+        ,$100,$6f1a,$100,REG+$ae,$5509    //!! outword (<REG+$ae>,$6f1a);
+        ,$2,$100,REG,$550B                //!! out (<REG>,$2);
+        ,$550C                            //!! nop
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+
+fin:

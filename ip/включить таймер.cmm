@@ -1,0 +1,4 @@
+for i from $2A to $30 do
+setreturnaddress($05ff); // from 05 module
+sendmess(i*256+$ff,$8840);
+od ;

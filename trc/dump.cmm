@@ -1,0 +1,3 @@
+include gotmod.inc;
+start := $40; len := $100;
+include gdump.inc;

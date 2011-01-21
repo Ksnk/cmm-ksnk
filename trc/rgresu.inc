@@ -1,0 +1,34 @@
+
+writeln('модуль --------------------', Mod);
+if START_DEBUG=1 then SendMess(mod*256+$ff,4444); fi ;
+start := AtSeg ;
+
+setmask($b);SendMess(Mod*256,$ff01,12,$30,start);
+if recvmess(a,b,c,d,e,a1,a2,a3,a4,a5,a6)>0 then
+  if (a1=$EEEE)&&(a2=$EEEE)&&(a3=$EEEE)&&(a4=$EEEE)&&(a5=$EEEE)&&(a6=$EEEE) then 
+// поехали!!!
+len := $18 ;
+again_new:
+include gdump.inc;
+
+start := start+len/8 +1;
+rg_again:
+setmask($b);SendMess(Mod*256,$ff01,16,0,start-1);
+if recvmess(a,b,c,d,e,a1,a2,a3,a4,a5,a6,a7,a8)>0 then
+  if (a1=$EEEE)&&(a2=$EEEE)&&(a3=$EEEE)&&(a4=$EEEE)&&(a5=$EEEE)&&(a6=$EEEE) then 
+        if e<> start-1 then goto rg_again fi ;
+        len := a8 ;
+	if a7=0 then goto rg_fin fi ;
+	writeln('**** death trace from ', a7,'-----',len*2); 
+	goto again_new;
+  else
+    writeln('Трасса оборвана...'); goto rg_fin;
+  fi  ;
+else goto rg_again 
+fi ;
+
+  else
+    writeln('не удалось найти начало трассы'); 
+  fi  ;
+fi ;
+rg_fin:

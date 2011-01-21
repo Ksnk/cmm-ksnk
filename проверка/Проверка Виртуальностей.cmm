@@ -1,0 +1,11 @@
+include gotmod.inc ;
+
+// информация о записи появляется в области памяти CALLREC_ARRAY
+writeln('found module', mod);
+
+//запрос большого количества объектов.
+sendmess(mod*256+$ff,$8a01,$1234,$10,2,$7e+mod*256,$7e+mod*256,$7e+mod*256);
+
+again:
+if recvmess(a)>0 then goto again  fi ;
+fin:

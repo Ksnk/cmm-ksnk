@@ -1,0 +1,24 @@
+
+mod:=$30;
+
+
+//------------------------------------------------
+modto:=(mod<<8)+$fe;
+
+
+delic:=0;
+include  field.inc;
+
+
+delic:=1;
+include  field.inc;
+
+
+
+delic:=2;
+include  field.inc;
+
+
+delic:=3;
+include  field.inc;
+

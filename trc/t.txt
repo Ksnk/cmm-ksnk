@@ -1,0 +1,55 @@
+reading D:\Program Files\ЛАНИТ-ТЕРКОМ\РМО АТС КВАНТ-Е\CMM\Ksnk\trc\получить результат.log
+Loading ck6 map,ofs...
+Анализ посмертной трассы
+key 0300 - as 0001 from 0000  0040 bytes long
+key 0304 - as 0001 from 0000  0310 bytes long
+key 0335 - as 0040 from 0000  0210 bytes long
+key 0356 - as 00c0 from 0000  0410 bytes long
+key 0397 - as 01b0 from 0000  1ce0 bytes long
+
+_Scaners start at 42->6ec
+06ec:  scaner - proc 3e56(00, 64)[05ac:344d дата 0003]
+086c:  scaner - proc 4e8d(05, 05)[a99e:14f8 дата 5e58]
+087c:  scaner - proc 4e8d(07, 0a)[a99e:1862 дата 5e58]
+088c:  scaner - proc 4e8d(02, 03)[ed87:26c6 дата 5844]
+089c:  scaner - proc 4e8d(08, 09)[ed87:2736 дата 5844]
+08ac:  scaner - proc 4e8d(01, 01)[ed87:228e дата 5844]
+08bc:  scaner - proc 4e8d(30, 64)[ed87:288c дата 5844]
+08cc:  scaner - proc 4e8d(02, 02)[ed87:292a дата 5844]
+08dc:  scaner - proc 4e8d(01, 01)[ed87:2a79 дата 5844]
+
+_DoubleScaners start at 4a->0
+
+QUEUE_KILL_START start at 74->84a
+084a: QKill - 06fc(0)
+
+_IDLERING start at 5c->842
+0842:  idle - proc 3e7f(06ec) SemaClosed !!!
+
+COMMON_INTERRUPTS start at 72->862
+0862:  comItr  34b9:ab71 object-5be8 
+
+MessQueue status
+at 001e for 0000 mess - Timer Queue 
+at 00f1 for 00e0 mess - Own_queue 
+at 0061 for 0007 mess - To 
+at 0069 for 0000 mess - To2 
+at 007d for 0000 mess - SafeQueue 
+at 06fc for 0000 mess - queue-0 
+IdleCnt: _Cur 002a, Cur 003d, MaxC 5447, MinC 003d, C100 0040, Max100 2554, Min100 0000, _wait 001
+           Lost_mess at 0040 - 0000
+  tim_CurrentMessage at 0036 - 0000
+          Timers_cnt at 0044 - 0001
+      err_Lost_2_Tim at 003e - 0000
+      err_Lost_1_Tim at 003c - 00fd
+            icnt_rec at 0070 - 084e
+             MemSema at 0000 - 0000
+           Init_Sema at 000e - da00
+      TIM_InUse_Sema at 0034 - 0000
+        CodeTab_Sema at 0035 - 0000
+       prot_2ms_sema at 007c - 0001
+
+CurOFree list start at a4 - 644
+5cc, 5f4, 644, Всего 3
+ -mess seg !!!!!!!!! 
+Пул сообщений не найден.

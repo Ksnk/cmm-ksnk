@@ -1,0 +1,40 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","($длина|55)($mod{2}|loc)",300,200)'));
+if (mod=-1) then mod := 0 fi ;
+mod2 := mod >> 8 ;
+
+setmask($f);
+//writeln('mod=',mod);
+if (mod =0) then
+  include chkmod.inc ;
+fi;
+if (mod =0) then
+  writeln('не удалось определить модуль'); goto fin;
+fi;
+if (mod2=0) then 
+ mod2 := GetTaskSocket ; 
+fi ;
+mod := mod && $FF; 
+
+// генерируем сообщение длинное из одного модуля в другой
+len:= 55;
+//len:= 50;
+
+SendMess((mod*256)+$ff,$AA51,0,       // fill script from disp 0
+    $0100,$ffff,$0100,mod2,$100,len,$5506, // Send len bytes
+    $FFFF );                            // 2.    finish!  64 bytes total
+start:
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+writeln('Let''s look');
+
+again:
+if recvmess(a)>0 then write('+'); //goto again 
+ fi ;
+
+delay(100);
+goto start ;
+
+fin:

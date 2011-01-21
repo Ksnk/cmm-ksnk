@@ -1,0 +1,22 @@
+mod := $21;
+
+//SLenX := $4540; Seg := $4000 ;
+SLenX := $df10; Seg := $34f ;
+
+Writeln('Start to test module',mod,',from', Seg,',by',SLenX ,'bytes');
+again:
+Disp := 0 ;
+//for i from 0 to 7 do 
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('0:'); if C<> CRC0 then  CRC0:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('1:'); if C<> CRC1 then  CRC1:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('2:'); if C<> CRC2 then  CRC2:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('3:'); if C<> CRC3 then  CRC3:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('4:'); if C<> CRC4 then  CRC4:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('5:'); if C<> CRC5 then  CRC5:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('6:'); if C<> CRC6 then  CRC6:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+SLen:=$8000; if Disp+SLen>SLenX then SLen:= SLenX-Disp; fi ;SendMess(mod*256+$ff,$aa0c,SLen,Disp && $F,Seg+(Disp>>8),1);RecvMess(a,b,C); write ('7:'); if C<> CRC7 then  CRC7:=C ;write(C) else write('....') fi ;   Disp := Disp +SLen ;if Disp >= SlenX then goto fffin ; fi ;
+//od ;
+fffin:
+writeln(' ');
+delay(5000);
+goto again;

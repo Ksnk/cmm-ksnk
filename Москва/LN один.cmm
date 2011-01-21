@@ -1,0 +1,8 @@
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+  mod:=evalasync('~user("Caption","$xxYYYY - xx - 1,2,3 YYYY - адрес LN",300,200)');
+
+  VARIANT := mod >> 16 ; 
+	LN := mod && $FFFF ;
+	include checkln.inc ;
+

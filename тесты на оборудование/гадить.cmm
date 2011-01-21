@@ -1,0 +1,6 @@
+mod := $20;
+sendmess(mod*256+$fe,1029,$20fc,$30,2,$a830);
+sendmess(mod*256+$fe,1029,$20fc,$30,2,$a830);
+sendmess(mod*256+$fe,1029,$20fc,$30,2,$a830);
+sendmess(mod*256+$fe,1029,$20fc,$30,2,$a830);
+sendmess(mod*256+$fe,1029,$20fc,$30,2,$a830);

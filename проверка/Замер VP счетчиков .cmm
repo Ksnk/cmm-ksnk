@@ -1,0 +1,37 @@
+SetHashFile('.\Hashes\Common.xml');
+SetHashFile ('.\Hashes\MyHash.xml');
+
+include gotmod.inc; 
+tim := 5 ;
+rmod := mod;  
+again:
+mod := rmod && $ff ;
+rmod := rmod >> 8 ;
+if mod = 0 then goto fin; fi ;
+writeln;
+include ver.inc; 
+
+//VPSEG := $7008 ; VPDISP := $5f9c ;
+VPSEG := $7004 ; VPDISP := $5fdc ;
+Evalwrite('Замеряем изменения счетчиков за ~cd(d[0]) секунд... ',tim ); writeln;
+// сбрасываем IdleCnt счетчики 
+Setmask($f); sendMess(mod*256+$ff,$8b26);recvmess(a,b,c,d,e,f);
+// читаем VP счетчики
+Setmask($b); SendMess(mod*256,$ff01,6,VPDISP,VPSEG);
+recvmess(a,b,c,d,e,GPFcnt,PGFcnt,IRQcnt);//writeln(GPFcnt,PGFcnt,IRQcnt);
+delay(tim*1000);// 10 сек
+Setmask($b); SendMess(mod*256,$ff01,6,VPDISP,VPSEG);
+recvmess(a,b,c,d,e,GPFcnt0,PGFcnt0,IRQcnt0);//writeln(GPFcnt0,PGFcnt0,IRQcnt0);
+Setmask($f); sendMess(mod*256+$ff,$8b26);recvmess(a,b,c,d,e,f);
+
+if PGFcnt0 < PGFcnt then PGFcnt:= $10000+PGFcnt0-PGFcnt else PGFcnt:= PGFcnt0-PGFcnt fi ;
+if GPFcnt0 < GPFcnt then GPFcnt:= $10000+GPFcnt0-GPFcnt else GPFcnt:= GPFcnt0-GPFcnt fi ;
+if IRQcnt0 < IRQcnt then IRQcnt:= $10000+IRQcnt0-IRQcnt else IRQcnt:= IRQcnt0-IRQcnt fi ;
+//writeln(PGFcnt,GPFcnt,IRQcnt);
+Evalwrite('в среднем, было  GPF-~cd(d[0]) PGF-~cd(d[4]) IRQ-~cd(d[8]) в секунду',GPFcnt/tim,PGFcnt/tim,IRQcnt/tim ); writeln;
+Evalwrite('Idle счетчики :  ~cd(d[0]) ~cd(d[4]) ~cd(d[8]) ~cd(d[12]) за секунду',c/tim,d/tim,e/tim,f/tim ); 
+writeln;
+
+goto again ;
+
+fin:

@@ -1,0 +1,5 @@
+Mod := $1 ;
+// Get CMOS time
+SendMess(mod*256+$ff,$8922); recvmess(a,b,c,d,e,f); writeln(c,'h',d,'m',e,'s',f,'f');
+// telme who your are
+SendMess(mod*256+$ff,$8801); recvmess(a,b,c,d,e); writeln(a,b,c,d,e,f);

@@ -1,0 +1,56 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+mod:=(evalasync('~user("Caption","номер модуля - 32=$20, 48=$30, 64=$40, 117=$75",300,200)'));
+
+setmask($f);
+if (mod =0)||(mod=-1) then
+  include chkmod.inc ;
+fi;
+
+writeln('модуль',mod);
+
+ATA_disp := $a8 ;
+
+SetMask($b);SendMess(mod*256,$ff01,4,ATA_disp,$1b0);recvmess(a,b,c,d,e,AA,AB); writeln(aa,ab); 
+
+RING := AA; 
+agga:
+if RING >0 then
+  SetMask($b);SendMess(mod*256,$ff01,2,RING+8,$1b0);recvmess(a,b,c,d,e,RING0); writeln('Ring found at',RING0); 
+  SetMask($b);SendMess(mod*256,$ff01,2,RING0+$16,$1b0);recvmess(a,b,c,d,e,RINGFRS); write('Ring start found at',RINGFRS); 
+  aag:
+    SetMask($b);SendMess(mod*256,$ff01,2,RINGFRS+$e,$1b0);recvmess(a,b,c,d,e,RINGADR); writeln('address :',RINGADR); 
+    SetMask($b);SendMess(mod*256,$ff01,2,RINGFRS+$8e,$1b0);recvmess(a,b,c,d,e,RINGFRS); write('Ring next found at',RINGFRS); 
+    if RINGFRS > 0 then goto aag; fi ;
+  if RING = AB then goto fin; fi ;
+  RING := AB ; goto agga; 
+fi;
+
+goto fin;
+//ScanerDisp := $42 ; DScanerDisp := $4C ; IdleList := $6A ; CommonItrList := $84 ;// for csl8
+//ScanerDisp := $42 ; DScanerDisp := $4C ; IdleList := $6A ; // for ckl8trn
+
+//OS_SEG := $1b0; // if usual OS
+OS_SEG := $1297; // if usual OS
+//OS_SEG := $129C; // if ck4trn
+
+//OS_SEG := $507;//4d5; //$407;//$3ef; // if case of crash
+
+writeln('Scaner list.');
+SetMask($b);SendMess(mod*256,$ff0a,2,ScanerDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);
+again:
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,Tim,Max,Sema,PRC,Next);
+write('found scaner at',CDisp,' - ',PRC,'(',Tim,Max,')'); if Sema<>0 then write('Closed!!'); fi;  writeln('.'); CDisp := Next ;
+if CDisp <> 0 then Goto Again fi ; 
+writeln(' ');
+
+writeln('DoubleScaner list.');
+SetMask($b);SendMess(mod*256,$ff0a,2,DScanerDisp,OS_SEG); recvmess(a,b,c,d,e,CDisp);
+if CDisp = 0 then goto fin  fi ;
+again0:
+SetMask($b);SendMess(mod*256,$ff0a,10,CDisp,OS_SEG); recvmess(a,b,c,d,e,Tim,Max,Sema,PRC,Next);
+write('found scaner at',CDisp,' - ',PRC,'(',Tim,Max,')'); if Sema<>0 then write('Closed!!'); fi;  writeln('.'); CDisp := Next ;
+if CDisp <> 0 then Goto Again0 fi ; 
+
+fin:

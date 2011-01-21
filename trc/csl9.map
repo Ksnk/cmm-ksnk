@@ -1,0 +1,552 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 09089H 0908AH _TEXT              CODE
+ 0908AH 0908AH 00000H _DATA              DATA
+ 0908AH 0908DH 00004H PREPOST_CODE       ZZY
+ 09090H 0909FH 00010H POST_CODE          ZZZ
+ 090A0H 0915FH 000C0H _BSS               BSS
+ 09160H 0955FH 00400H STACK              STACK
+
+  Address         Publics by Name
+
+ 0000:5ABC       chan_init(int,hframe_descr near*,char)
+ 0000:4CD5       checkcrc(int,unsigned char near*)
+ 0000:3F8C       close(unsigned char)
+ 0000:50CD       countup(frame0_descr near*)
+ 0000:525C       ebf_getbyte(x22554_frame near*)
+ 0000:52A6       ebf_putbyte(x22554_frame near*)
+ 0000:52E7       ebf_reset(x22554_frame near*)
+ 0000:530E       ebf_reset2(x22554_frame near*)
+ 0000:89F4       far_proc(scaner_descr near*)
+ 0000:61B9       findbuf(io_ring_item near*,unsigned char)
+ 0000:8EF6       findconfig()
+ 0000:50B4       frames_init(frame0_descr near*)
+ 0000:6203       freebuf(io_ring_item near*,unsigned char)
+ 0000:4F07       frm_handle(frame0_descr near*,unsigned int)
+ 0000:76A2       getnewio(hard_lvl near*,int)
+ 0000:6A01       getnewring(int,hard_lvl near*)
+ 0000:8DBC       get_buf(io_buf_struct near*)
+ 0000:4D83       gotdata(frame0_descr near*)
+ 0000:58E1       hdlc_pebhandle(hframe_descr near*,unsigned int)
+ 0000:6D81       ibm_new_install_rs232(int,int,int,int)
+ 0000:4601       initnetconfig()
+ 0000:4243       initseqnum(unsigned char)
+ 0000:8186       inportb(unsigned int)
+ 0000:8E0F       insert_buf(io_buf_struct near*,io_buf near*)
+ 0000:6E40       iobuf_pb(unsigned char,iobuf near*)
+ 0000:6E7B       iobuf_unpackc(unsigned char,iobuf near*)
+ 0000:7371       io_getbyte(io_beta_dscr near*)
+ 0000:73A5       io_handle(io_beta_dscr near*,unsigned int,int,int)
+ 0000:7632       io_idle(void near*)
+ 0000:72C3       io_readbyte(unsigned int,io_beta_dscr near*)
+ 0000:7609       io_scaner(scaner_descr near*)
+ 0000:4629       ip_drv_idle(void near*)
+ 0000:4B29       ip_route(void far*)
+ 0000:6A32       itemscanerproc(scaner_descr near*)
+ 0000:856D       killpmomessages(messqueue near*,unsigned int,unsigned char)
+ 0000:4D0C       mkcrc(int,unsigned char near*)
+ 0000:8600       mssgetmess(msslvl_descr near*,unsigned char near*)
+ 0000:86A1       mssgotmessage(msslvl_descr near*,unsigned char near*,unsigned int near*,int)
+ 0000:8819       mssgotokmessage(msslvl_descr near*,char)
+ 0000:885E       msssichr(msslvl_descr near*,char)
+ 0000:85DF       mssstate(msslvl_descr near*)
+ 0000:7D65       mtp_idle(void near*)
+ 0000:5485       multychan_idle(void near*)
+ 0000:4227       nblisten(unsigned char)
+ 0000:6A4F       newringitem(io_ring near*,unsigned char,unsigned char)
+ 0000:5343       new_22554_frame(int,int)
+ 0000:6E31       next_crc(unsigned char,unsigned char)
+ 0000:8191       outportb(unsigned int,unsigned char)
+ 0000:50E4       peb22554_hdlcinit(unsigned int)
+ 0000:517A       peb22554_idle(void near*)
+ 0000:4EEC       readdata(frame0_descr near*)
+ 0000:3A7A       read_data(unsigned char,unsigned char near*,unsigned char near*,unsigned int)
+ 0000:3E1E       recv(unsigned char,unsigned char near*,unsigned int)
+ 0000:8F09       regasconfig(unsigned int)
+ 0000:6F37       regq(io_beta_dscr near*)
+ 0000:4EA3       reset(frame0_descr near*)
+ 0000:69A8       ring_handle(io_ring_item near*,unsigned int)
+ 0000:6234       ring_handle(io_ring near*,unsigned int,int,int)
+ 0000:69DD       ring_idle(io_ring near*)
+ 0000:69AD       ring_scaner(scaner_descr near*)
+ 0000:48AE       route_init()
+ 0000:6C3E       rs_newhandle(drv_rs232 near*,unsigned int)
+ 0000:5B7E       sccinit(char,char)
+ 0000:4D4F       schstart(int,unsigned char near*,unsigned int)
+ 0000:3FDA       select(unsigned char,unsigned char)
+ 0000:3DD7       send(unsigned char,unsigned char near*,unsigned int)
+ 0000:6F05       sendconfig(unsigned char,unsigned char,io_beta_dscr near*)
+ 0000:7BE4       sendmmm(channel_rec near*)
+ 0000:4E2C       sendnext(frame0_descr near*)
+ 0000:7CBB       sendthroutmtp(channel_rec near*,unsigned int,unsigned int)
+ 0000:6EB6       send_command(unsigned char,unsigned char,iobuf near*)
+ 0000:6E99       send_fin(unsigned char,iobuf near*)
+ 0000:3C02       send_in(unsigned char,unsigned char near*,unsigned int)
+ 0000:75CD       serial_io_beta_init(io_beta_dscr near*)
+ 0000:42FE       socket(unsigned char,unsigned char,unsigned int,unsigned char)
+ 0000:43B0       sysinit(unsigned char,unsigned char)
+ 0000:8995       timerproceverytime(scaner_descr near*)
+ 0000:8F78       transport_idle(void near*)
+ 0000:8F90       transport_scaner(scaner_descr near*)
+ 0000:3A70       wait_1ms(int)
+ 0000:3A66       wait_1us(int)
+ 0000:3B3E       write_data(unsigned char,unsigned char near*,unsigned char near*,unsigned int)
+ 0000:5396       _peb22554_ctrl(int)
+ 0000:285B       AM29DL800_CHECK_AND_INSTALL
+ 0000:38AD       ATTACHMESSAGE
+ 0000:8C24       ATTACH_SHORT
+ 0000:8C29       ATTACH_SHORT_INNER
+ 0000:1E22       BATTLE_RUN
+ 0000:7AB4       BOPOHE_BASE
+ 0000:005C  Abs  CHANNELS
+ 0000:8FF9       CHECKTRANSTATUS
+ 0000:17D0       CHECK_TARIF_INFO
+ 0000:0087  Abs  CK4_CURSTATE
+ 0000:0088  Abs  CK4_FLAG
+ 0000:1841       CLEAR_TARIF_PAGE
+ 0000:184D       CLEAR_TARIF_REC
+ 0000:24F2       CLOSEPROCESS
+ 0000:0D76       COMN_RUN
+ 0000:2985       COPYMESSAGE
+ 0000:0006  Abs  CPU_FLAGS_FOR_ALL_LIFE
+ 0000:26A5       CRC_CHECK
+ 0000:0100  Abs  DATATABLE
+ 0000:0107       DGROUP@
+ 0000:1914       DO_MAKE_VIRMREC
+ 0000:122B       ERASE_CALL_REC
+ 0000:25CE       FILEEXIST
+ 0000:3774       FINDMODULETRANITEM
+ 0000:261F       FIND_CODESEG
+ 0000:7889       FLASH_CHECK_AND_INSTALL
+ 0000:7736       FREEMESS
+ 0000:7980       FREEMSU
+ 0000:7BE9       GETCHANNEL
+ 0000:201A       GETDATAMEMORY
+ 0000:774E       GETMESS
+ 0000:790A       GETMSU
+ 0000:7764       GETQMESS
+ 0000:8D61       HEX2INT
+ 0000:20F4       IBMSETNEARINTVECT
+ 0000:6DFC       IBM_COM_SPEED
+ 0000:2CFA       IDLE_ACTION
+ 0000:2F52       INIT_TIMER
+ 0000:578E       INTRX_VECT
+ 0000:2549       INT_FINDPROC
+ 0000:2E63       INT_FREEMEM
+ 0000:35ED       INT_GETBD_STR
+ 0000:256E       INT_GETBUFFER
+ 0000:3018       INT_GETCURTIME
+ 0000:2E46       INT_GETMEM
+ 0000:2E46       INT_GETMEM4FILE
+ 0000:3622       INT_HARDWARE
+ 0000:300A       INT_I_AM_ALIVE
+ 0000:22E7       INT_LINK
+ 0000:248A       INT_LOAD_FILE
+ 0000:22EE       INT_LOAD_RUN
+ 0000:3027       INT_MAKETOPROC
+ 0000:2A1C       INT_RECV
+ 0000:3586       INT_REGBD_STR
+ 0000:23BD       INT_REGISTERCODE
+ 0000:05B1       INT_RESTART_OS
+ 0000:28F8       INT_SEND
+ 0000:8466       INT_TOTRACE
+ 0000:6AEA       INT_V_NET
+ 0000:8E8F       IOBUF_CLEARBUF
+ 0000:8E47       IOBUF_GETBYTE
+ 0000:8EB9       IOBUF_INIT
+ 0000:8E6A       IOBUF_PUTBYTE
+ 0000:8A81       IS_SEMA
+ 0000:25E3       JUSTSCANSEG
+ 0000:2193       JUSTWAIT
+ 0000:2137       LAMPSSTART
+ 0000:0040  Abs  LOST_MESS
+ 0000:22CC       MAKEOWNINTR
+ 0000:0300  Abs  MODULETRAN
+ 0000:21DB       NEWNUMBERGOT
+ 0000:3895       OSATTACHMESSAGE
+ 0000:7778       OVERTAB
+ 0000:7878       OVERTRAN
+ 0000:5ADF       PEB_INIT
+ 0000:1522       PEB_SWITCH
+ 0000:2221       PROCARRAY
+ 0000:853C       PROMI386_INIT
+ 0000:7714       PUTQMESS
+ 0000:76FB       PUTQMESSONTOP
+ 0000:8EA2       QUEUE_INIT
+ 0000:76E6       QUEUE_SPLIT
+ 0000:11F2       READ_CALL_REC
+ 0000:1893       READ_TARIF_REC
+ 0000:6F7F       RECVMESS
+ 0000:3840       REGISTERCHANNELAS
+ 0000:11B7       REGISTEREXT
+ 0000:8A14       REGISTERFARSCANER
+ 0000:8940       REGISTERIDLEPROC
+ 0000:8A68       REGISTERNEWSCANER
+ 0000:3867       REGISTERPROCESSQUEUE
+ 0000:37FB       REGISTERQUEUE
+ 0000:89AE       REGISTERSCANER
+ 0000:378F       REGISTER_QUEUE
+ 0000:2253       ROUTETAB
+ 0000:224D       ROUTETABBASE
+ 0000:7B96       ROUTE_REGISTERAS
+ 0000:7BB2       ROUTE_REGISTERAS3
+ 0000:2077       SAVE_FIRST_64K
+ 0000:2B14       SCANPROCTABLES
+ 0000:5C8B       SENDMESS2ALL
+ 0000:292C       SEND_SELF
+ 0000:8ECC       SERIAL_INIT
+ 0000:22A8       SETOWNINTR
+ 0000:819D       SETTO
+ 0000:2156       SHOW_INTR
+ 0000:8CF4       SLM_GETNEXT
+ 0000:8C7C       SLM_GETTOP
+ 0000:8CD8       SLM_INSERTAT
+ 0000:8C60       SLM_PUTONTOP
+ 0000:8CFD       SLM_REMOVEMESSAGE
+ 0000:394F       SLM_SEMAGETFIRST
+ 0000:8CAD       SLM_SPLITQUEUES
+ 0000:31DF       SO_RESTART
+ 0000:151A       SPEC_OPS
+ 0000:2B09       STARTSCANPROCTABLES
+ 0000:008B  Abs  STRANGE_QUEUE
+ 0000:008D  Abs  STRANGE_SWITCH
+ 0000:2EC3       SYSCHECKMAXPARA
+ 0000:2EEF       SYSFREEPARAMEM
+ 0000:8B5A       SYSFREESMEM
+ 0000:2E72       SYSGETPARAMEM
+ 0000:8AD5       SYSGETSMEM
+ 0000:8A91       SYSINITSMEM
+ 0000:003A  Abs  SYS_FLAGS
+ 0000:317B       TCP_GETDUMP
+ 0000:31D7       TCP_RESTART_NEXT
+ 0000:0C31       TIMERPROC
+ 0000:001E  Abs  TIMERQUEUE_SEMA
+ 0000:337F       TIMER_SELF
+ 0000:000A  Abs  TIM_TIMECOUNTER
+ 0000:8D1A       TOHEX
+ 0000:8FC0       TRANSPORT_INIT
+ 0000:7A3D       TTRACE
+ 0000:200E       WATCHDOG_RESET
+ 0000:1214       WRITE_CALL_REC
+ 0000:21B1       WRITE_PORTS
+ 0000:1875       WRITE_TARIF_REC
+ 0000:8304       _ALARM_CLOCK
+ 090A:00B0       _AST_A
+ 090A:00B2       _AST_B
+ 0000:0050  Abs  _ATT_FILTER_STATE
+ 0000:54E6       _C0_CHECK
+ 0000:55B9       _C0_REPLY
+ 0000:0004  Abs  _CMOSTIME
+ 090A:00B4       _COM
+ 0000:6BC2       _COM_INIT
+ 090A:00BC       _CUROFREE
+ 090A:00BE       _CUROFREECNT
+ 0000:004A  Abs  _DOUBLESCANERS
+ 0000:8D7B       _GETFREEBUF
+ 0000:8DE6       _GET_IO_BUF
+ 0000:005E  Abs  _IDLERING
+ 0000:3986       _INT0
+ 0000:F020  Abs  _INTERRUPT_PORT
+ 090A:00A8       _IO_IP_TRACE
+ 0000:4C0D       _IP_CNTR
+ 090A:00AA       _IP_DRV
+ 0000:0058  Abs  _LAMP_MASTER
+ 090A:00B8       _LAST_QUEUE
+ 0000:8D9B       _MAKEFREE
+ 0000:002C  Abs  _MESSSEG
+ 0000:8083       _MTP_PREP
+ 0000:7DEE       _MTP_SELF
+ 090A:00AE       _MULTCH
+ 0000:007C  Abs  _OS_EXTENSION
+ 090A:00AC       _P22554DATA
+ 0000:5CD3       _PEB_CONTROL
+ 0000:495C       _ROUTE_IP
+ 0000:80D3       _ROUTE_MTP
+ 0000:564F       _ROUTE_MULTICH
+ 0000:5D77       _ROUTE_PEB20525
+ 0000:5408       _ROUTE_PEB22554
+ 0000:9080       _ROUTE_STD_VOID
+ 0000:0042  Abs  _SCANERS
+ 0000:2874       _SEND_OS_MESSAGE
+ 0000:28A1       _SEND_TO_CHAN
+ 0000:0052  Abs  _SPY_DESCR
+ 0000:0760       _STARTINIT
+ 090A:00BA       _STATION_OPC
+ 0000:84C7       _SYS_TRACE
+ 0000:007A  Abs  _TEMP_VALUE
+ 0000:004E  Abs  _THE_BLINK
+ 0000:85C6       _UP_3F
+
+  Address         Publics by Value
+
+ 0000:0004  Abs  _CMOSTIME
+ 0000:0006  Abs  CPU_FLAGS_FOR_ALL_LIFE
+ 0000:000A  Abs  TIM_TIMECOUNTER
+ 0000:001E  Abs  TIMERQUEUE_SEMA
+ 0000:002C  Abs  _MESSSEG
+ 0000:003A  Abs  SYS_FLAGS
+ 0000:0040  Abs  LOST_MESS
+ 0000:0042  Abs  _SCANERS
+ 0000:004A  Abs  _DOUBLESCANERS
+ 0000:004E  Abs  _THE_BLINK
+ 0000:0050  Abs  _ATT_FILTER_STATE
+ 0000:0052  Abs  _SPY_DESCR
+ 0000:0058  Abs  _LAMP_MASTER
+ 0000:005C  Abs  CHANNELS
+ 0000:005E  Abs  _IDLERING
+ 0000:007A  Abs  _TEMP_VALUE
+ 0000:007C  Abs  _OS_EXTENSION
+ 0000:0087  Abs  CK4_CURSTATE
+ 0000:0088  Abs  CK4_FLAG
+ 0000:008B  Abs  STRANGE_QUEUE
+ 0000:008D  Abs  STRANGE_SWITCH
+ 0000:0100  Abs  DATATABLE
+ 0000:0107       DGROUP@
+ 0000:0300  Abs  MODULETRAN
+ 0000:05B1       INT_RESTART_OS
+ 0000:0760       _STARTINIT
+ 0000:0C31       TIMERPROC
+ 0000:0D76       COMN_RUN
+ 0000:11B7       REGISTEREXT
+ 0000:11F2       READ_CALL_REC
+ 0000:1214       WRITE_CALL_REC
+ 0000:122B       ERASE_CALL_REC
+ 0000:151A       SPEC_OPS
+ 0000:1522       PEB_SWITCH
+ 0000:17D0       CHECK_TARIF_INFO
+ 0000:1841       CLEAR_TARIF_PAGE
+ 0000:184D       CLEAR_TARIF_REC
+ 0000:1875       WRITE_TARIF_REC
+ 0000:1893       READ_TARIF_REC
+ 0000:1914       DO_MAKE_VIRMREC
+ 0000:1E22       BATTLE_RUN
+ 0000:200E       WATCHDOG_RESET
+ 0000:201A       GETDATAMEMORY
+ 0000:2077       SAVE_FIRST_64K
+ 0000:20F4       IBMSETNEARINTVECT
+ 0000:2137       LAMPSSTART
+ 0000:2156       SHOW_INTR
+ 0000:2193       JUSTWAIT
+ 0000:21B1       WRITE_PORTS
+ 0000:21DB       NEWNUMBERGOT
+ 0000:2221       PROCARRAY
+ 0000:224D       ROUTETABBASE
+ 0000:2253       ROUTETAB
+ 0000:22A8       SETOWNINTR
+ 0000:22CC       MAKEOWNINTR
+ 0000:22E7       INT_LINK
+ 0000:22EE       INT_LOAD_RUN
+ 0000:23BD       INT_REGISTERCODE
+ 0000:248A       INT_LOAD_FILE
+ 0000:24F2       CLOSEPROCESS
+ 0000:2549       INT_FINDPROC
+ 0000:256E       INT_GETBUFFER
+ 0000:25CE       FILEEXIST
+ 0000:25E3       JUSTSCANSEG
+ 0000:261F       FIND_CODESEG
+ 0000:26A5       CRC_CHECK
+ 0000:285B       AM29DL800_CHECK_AND_INSTALL
+ 0000:2874       _SEND_OS_MESSAGE
+ 0000:28A1       _SEND_TO_CHAN
+ 0000:28F8       INT_SEND
+ 0000:292C       SEND_SELF
+ 0000:2985       COPYMESSAGE
+ 0000:2A1C       INT_RECV
+ 0000:2B09       STARTSCANPROCTABLES
+ 0000:2B14       SCANPROCTABLES
+ 0000:2CFA       IDLE_ACTION
+ 0000:2E46       INT_GETMEM
+ 0000:2E46       INT_GETMEM4FILE
+ 0000:2E63       INT_FREEMEM
+ 0000:2E72       SYSGETPARAMEM
+ 0000:2EC3       SYSCHECKMAXPARA
+ 0000:2EEF       SYSFREEPARAMEM
+ 0000:2F52       INIT_TIMER
+ 0000:300A       INT_I_AM_ALIVE
+ 0000:3018       INT_GETCURTIME
+ 0000:3027       INT_MAKETOPROC
+ 0000:317B       TCP_GETDUMP
+ 0000:31D7       TCP_RESTART_NEXT
+ 0000:31DF       SO_RESTART
+ 0000:337F       TIMER_SELF
+ 0000:3586       INT_REGBD_STR
+ 0000:35ED       INT_GETBD_STR
+ 0000:3622       INT_HARDWARE
+ 0000:3774       FINDMODULETRANITEM
+ 0000:378F       REGISTER_QUEUE
+ 0000:37FB       REGISTERQUEUE
+ 0000:3840       REGISTERCHANNELAS
+ 0000:3867       REGISTERPROCESSQUEUE
+ 0000:3895       OSATTACHMESSAGE
+ 0000:38AD       ATTACHMESSAGE
+ 0000:394F       SLM_SEMAGETFIRST
+ 0000:3986       _INT0
+ 0000:3A66       wait_1us(int)
+ 0000:3A70       wait_1ms(int)
+ 0000:3A7A       read_data(unsigned char,unsigned char near*,unsigned char near*,unsigned int)
+ 0000:3B3E       write_data(unsigned char,unsigned char near*,unsigned char near*,unsigned int)
+ 0000:3C02       send_in(unsigned char,unsigned char near*,unsigned int)
+ 0000:3DD7       send(unsigned char,unsigned char near*,unsigned int)
+ 0000:3E1E       recv(unsigned char,unsigned char near*,unsigned int)
+ 0000:3F8C       close(unsigned char)
+ 0000:3FDA       select(unsigned char,unsigned char)
+ 0000:4227       nblisten(unsigned char)
+ 0000:4243       initseqnum(unsigned char)
+ 0000:42FE       socket(unsigned char,unsigned char,unsigned int,unsigned char)
+ 0000:43B0       sysinit(unsigned char,unsigned char)
+ 0000:4601       initnetconfig()
+ 0000:4629       ip_drv_idle(void near*)
+ 0000:48AE       route_init()
+ 0000:495C       _ROUTE_IP
+ 0000:4B29       ip_route(void far*)
+ 0000:4C0D       _IP_CNTR
+ 0000:4CD5       checkcrc(int,unsigned char near*)
+ 0000:4D0C       mkcrc(int,unsigned char near*)
+ 0000:4D4F       schstart(int,unsigned char near*,unsigned int)
+ 0000:4D83       gotdata(frame0_descr near*)
+ 0000:4E2C       sendnext(frame0_descr near*)
+ 0000:4EA3       reset(frame0_descr near*)
+ 0000:4EEC       readdata(frame0_descr near*)
+ 0000:4F07       frm_handle(frame0_descr near*,unsigned int)
+ 0000:50B4       frames_init(frame0_descr near*)
+ 0000:50CD       countup(frame0_descr near*)
+ 0000:50E4       peb22554_hdlcinit(unsigned int)
+ 0000:517A       peb22554_idle(void near*)
+ 0000:525C       ebf_getbyte(x22554_frame near*)
+ 0000:52A6       ebf_putbyte(x22554_frame near*)
+ 0000:52E7       ebf_reset(x22554_frame near*)
+ 0000:530E       ebf_reset2(x22554_frame near*)
+ 0000:5343       new_22554_frame(int,int)
+ 0000:5396       _peb22554_ctrl(int)
+ 0000:5408       _ROUTE_PEB22554
+ 0000:5485       multychan_idle(void near*)
+ 0000:54E6       _C0_CHECK
+ 0000:55B9       _C0_REPLY
+ 0000:564F       _ROUTE_MULTICH
+ 0000:578E       INTRX_VECT
+ 0000:58E1       hdlc_pebhandle(hframe_descr near*,unsigned int)
+ 0000:5ABC       chan_init(int,hframe_descr near*,char)
+ 0000:5ADF       PEB_INIT
+ 0000:5B7E       sccinit(char,char)
+ 0000:5C8B       SENDMESS2ALL
+ 0000:5CD3       _PEB_CONTROL
+ 0000:5D77       _ROUTE_PEB20525
+ 0000:61B9       findbuf(io_ring_item near*,unsigned char)
+ 0000:6203       freebuf(io_ring_item near*,unsigned char)
+ 0000:6234       ring_handle(io_ring near*,unsigned int,int,int)
+ 0000:69A8       ring_handle(io_ring_item near*,unsigned int)
+ 0000:69AD       ring_scaner(scaner_descr near*)
+ 0000:69DD       ring_idle(io_ring near*)
+ 0000:6A01       getnewring(int,hard_lvl near*)
+ 0000:6A32       itemscanerproc(scaner_descr near*)
+ 0000:6A4F       newringitem(io_ring near*,unsigned char,unsigned char)
+ 0000:6AEA       INT_V_NET
+ 0000:6BC2       _COM_INIT
+ 0000:6C3E       rs_newhandle(drv_rs232 near*,unsigned int)
+ 0000:6D81       ibm_new_install_rs232(int,int,int,int)
+ 0000:6DFC       IBM_COM_SPEED
+ 0000:6E31       next_crc(unsigned char,unsigned char)
+ 0000:6E40       iobuf_pb(unsigned char,iobuf near*)
+ 0000:6E7B       iobuf_unpackc(unsigned char,iobuf near*)
+ 0000:6E99       send_fin(unsigned char,iobuf near*)
+ 0000:6EB6       send_command(unsigned char,unsigned char,iobuf near*)
+ 0000:6F05       sendconfig(unsigned char,unsigned char,io_beta_dscr near*)
+ 0000:6F37       regq(io_beta_dscr near*)
+ 0000:6F7F       RECVMESS
+ 0000:72C3       io_readbyte(unsigned int,io_beta_dscr near*)
+ 0000:7371       io_getbyte(io_beta_dscr near*)
+ 0000:73A5       io_handle(io_beta_dscr near*,unsigned int,int,int)
+ 0000:75CD       serial_io_beta_init(io_beta_dscr near*)
+ 0000:7609       io_scaner(scaner_descr near*)
+ 0000:7632       io_idle(void near*)
+ 0000:76A2       getnewio(hard_lvl near*,int)
+ 0000:76E6       QUEUE_SPLIT
+ 0000:76FB       PUTQMESSONTOP
+ 0000:7714       PUTQMESS
+ 0000:7736       FREEMESS
+ 0000:774E       GETMESS
+ 0000:7764       GETQMESS
+ 0000:7778       OVERTAB
+ 0000:7878       OVERTRAN
+ 0000:7889       FLASH_CHECK_AND_INSTALL
+ 0000:790A       GETMSU
+ 0000:7980       FREEMSU
+ 0000:7A3D       TTRACE
+ 0000:7AB4       BOPOHE_BASE
+ 0000:7B96       ROUTE_REGISTERAS
+ 0000:7BB2       ROUTE_REGISTERAS3
+ 0000:7BE4       sendmmm(channel_rec near*)
+ 0000:7BE9       GETCHANNEL
+ 0000:7CBB       sendthroutmtp(channel_rec near*,unsigned int,unsigned int)
+ 0000:7D65       mtp_idle(void near*)
+ 0000:7DEE       _MTP_SELF
+ 0000:8083       _MTP_PREP
+ 0000:80D3       _ROUTE_MTP
+ 0000:8186       inportb(unsigned int)
+ 0000:8191       outportb(unsigned int,unsigned char)
+ 0000:819D       SETTO
+ 0000:8304       _ALARM_CLOCK
+ 0000:8466       INT_TOTRACE
+ 0000:84C7       _SYS_TRACE
+ 0000:853C       PROMI386_INIT
+ 0000:856D       killpmomessages(messqueue near*,unsigned int,unsigned char)
+ 0000:85C6       _UP_3F
+ 0000:85DF       mssstate(msslvl_descr near*)
+ 0000:8600       mssgetmess(msslvl_descr near*,unsigned char near*)
+ 0000:86A1       mssgotmessage(msslvl_descr near*,unsigned char near*,unsigned int near*,int)
+ 0000:8819       mssgotokmessage(msslvl_descr near*,char)
+ 0000:885E       msssichr(msslvl_descr near*,char)
+ 0000:8940       REGISTERIDLEPROC
+ 0000:8995       timerproceverytime(scaner_descr near*)
+ 0000:89AE       REGISTERSCANER
+ 0000:89F4       far_proc(scaner_descr near*)
+ 0000:8A14       REGISTERFARSCANER
+ 0000:8A68       REGISTERNEWSCANER
+ 0000:8A81       IS_SEMA
+ 0000:8A91       SYSINITSMEM
+ 0000:8AD5       SYSGETSMEM
+ 0000:8B5A       SYSFREESMEM
+ 0000:8C24       ATTACH_SHORT
+ 0000:8C29       ATTACH_SHORT_INNER
+ 0000:8C60       SLM_PUTONTOP
+ 0000:8C7C       SLM_GETTOP
+ 0000:8CAD       SLM_SPLITQUEUES
+ 0000:8CD8       SLM_INSERTAT
+ 0000:8CF4       SLM_GETNEXT
+ 0000:8CFD       SLM_REMOVEMESSAGE
+ 0000:8D1A       TOHEX
+ 0000:8D61       HEX2INT
+ 0000:8D7B       _GETFREEBUF
+ 0000:8D9B       _MAKEFREE
+ 0000:8DBC       get_buf(io_buf_struct near*)
+ 0000:8DE6       _GET_IO_BUF
+ 0000:8E0F       insert_buf(io_buf_struct near*,io_buf near*)
+ 0000:8E47       IOBUF_GETBYTE
+ 0000:8E6A       IOBUF_PUTBYTE
+ 0000:8E8F       IOBUF_CLEARBUF
+ 0000:8EA2       QUEUE_INIT
+ 0000:8EB9       IOBUF_INIT
+ 0000:8ECC       SERIAL_INIT
+ 0000:8EF6       findconfig()
+ 0000:8F09       regasconfig(unsigned int)
+ 0000:8F78       transport_idle(void near*)
+ 0000:8F90       transport_scaner(scaner_descr near*)
+ 0000:8FC0       TRANSPORT_INIT
+ 0000:8FF9       CHECKTRANSTATUS
+ 0000:9080       _ROUTE_STD_VOID
+ 0000:F020  Abs  _INTERRUPT_PORT
+ 090A:00A8       _IO_IP_TRACE
+ 090A:00AA       _IP_DRV
+ 090A:00AC       _P22554DATA
+ 090A:00AE       _MULTCH
+ 090A:00B0       _AST_A
+ 090A:00B2       _AST_B
+ 090A:00B4       _COM
+ 090A:00B8       _LAST_QUEUE
+ 090A:00BA       _STATION_OPC
+ 090A:00BC       _CUROFREE
+ 090A:00BE       _CUROFREECNT
+
+Program entry point at 0000:0000
+

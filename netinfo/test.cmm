@@ -1,0 +1,33 @@
+settimeout(6000);
+include gotmod.inc ;
+setmask($b); sendmess(mod*256,$ff01,4,$a,$1b0);
+if recvmess(a,b,c,d,e,M1,M2) <=0 then goto fin fi ;
+//writeln(m1,m2);
+setmask($f);
+again:
+sendmess(mod*256+$ff,$6b); acnt := acnt+1 ;cnt:= cnt+1; 
+if recvmess(a)>0 then evalwrite('.');gcnt := gcnt+1 ;
+else err1 := err1 +1 ;evalwrite('?');if recvmess(a)>0 then writeln('+')else writeln('-') fi ;
+fi;
+
+if cnt> 91 then cnt := 0 ; writeln; 
+if acnt > 1000 then 
+  if recvmess(a) > 0 then
+    evalwrite('~cd(d[0]) сообщений, ~cd(d[4]). +++',acnt,err1)
+  else
+    evalwrite('~cd(d[0]) сообщений, ~cd(d[4]) сбоев.',acnt,err1)
+  fi ;
+  setmask($b); sendmess(mod*256,$ff01,4,$a,$1b0);
+  if recvmess(a,b,c,d,e,Mx1,Mx2)>0 then
+     evalwrite('за. ~cd(d[0]) сек.', (((Mx2-M2)<<16) +(Mx1-M1))/100);
+     M2 := Mx2 ; M1 := Mx1 ;
+  fi ;
+  setmask($f);
+  acnt := 0 ; err1 := 0 ; gcnt := 0 ;
+  writeln ; 
+fi ;
+
+fi   ;
+goto again; 
+
+fin:

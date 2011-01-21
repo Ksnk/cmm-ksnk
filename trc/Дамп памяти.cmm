@@ -1,0 +1,55 @@
+// 
+
+mod:=$20;
+seg:=$6400; offset:=$9c;
+size:=$4;
+
+
+       setmask($B); sendmess(mod*256,$FF01, 2, offset,seg);
+       recvmess(a1,a2,a3,a4,a5,  b1,b2,b3,b4,b5,b6,b7,b8); 
+       writeln(b1,b2,b3,b4,b5,b6,b7,b8);
+       setmask($B); sendmess(mod*256,$FF01, 4, offset,seg);
+       recvmess(a1,a2,a3,a4,a5,  b1,b2,b3,b4,b5,b6,b7,b8); 
+       writeln(b1,b2,b3,b4,b5,b6,b7,b8);
+       setmask($B); sendmess(mod*256,$FF01, 6, offset,seg);
+       recvmess(a1,a2,a3,a4,a5,  b1,b2,b3,b4,b5,b6,b7,b8); 
+       writeln(b1,b2,b3,b4,b5,b6,b7,b8);
+       setmask($B); sendmess(mod*256,$FF01, 8, offset,seg);
+       recvmess(a1,a2,a3,a4,a5,  b1,b2,b3,b4,b5,b6,b7,b8); 
+       writeln(b1,b2,b3,b4,b5,b6,b7,b8);
+ 
+// ------------------------------------------------------------------------
+settimeout( 60000 );
+
+modos:= mod<<8;
+
+writeln( '-------------------- дамп памяти --------------------------' );
+
+for p from 0 to ((size +15) >>4) do
+
+   ofs := (offset+$10*p) && $fff0;
+
+   setmask($B); 
+   sendmess(modos,$FF01, 16, ofs,seg);
+   if RecvMess( a, b, c, d, e, a0, a1, a2, a3, a4, a5, a6, a7 ) = 0 then
+      goto exit
+   fi;
+
+   if (ofs && $ff00) = 0 then
+      write( seg,':  ', ofs, ' ::  ' )
+   else
+      write( seg,':',ofs, ' ::  ' )
+   fi;
+   writeln(
+                a0 && $00FF, a0 >> 8,
+                a1 && $00FF, a1 >> 8,  '  ',
+                a2 && $00FF, a2 >> 8,
+                a3 && $00FF, a3 >> 8, '  ',
+                a4 && $00FF, a4 >> 8,
+                a5 && $00FF, a5 >> 8, '  ',
+                a6 && $00FF, a6 >> 8,
+                a7 && $00FF, a7 >> 8 )
+od;
+
+exit:
+

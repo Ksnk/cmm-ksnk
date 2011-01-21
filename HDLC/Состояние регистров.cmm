@@ -1,0 +1,35 @@
+include gotmod.inc
+
+setmod(mod);
+BASE := $2000 ;
+writeln('20,21 + a0,a1',inword($20),inword($A0));
+writeln('GMOD,GSTAR: ()',in(BASE+$01),in(BASE+$03));
+writeln('DISR,DIMR: ()',in(BASE+$0E),in(BASE+$0F));
+writeln('version: ',inword(BASE+$EC),in(BASE+$EE));
+writeln('ch A: (CCR0,CCR1,CCR2,CCR3)',inword(BASE+$16),inword(BASE+$18),inword(BASE+$1A),inword(BASE+$1C));
+writeln('      (STAR,CMDR)',inword(BASE+$12),inword(BASE+$14));
+writeln('      (isr0,isr1,isr2)',in(BASE+$50),in(BASE+$51),in(BASE+$52));
+writeln('      (imr0,imr1,imr2)',in(BASE+$54),in(BASE+$55),in(BASE+$56));
+//out(BASE+$14,$10);
+//out(BASE+$15,$1);
+BASE:=BASE+$50 ;
+writeln('ch B: (CCR0,CCR1,CCR2,CCR3)',inword(BASE+$16),inword(BASE+$18),inword(BASE+$1A),inword(BASE+$1C));
+writeln('      (STAR,CMDR)',inword(BASE+$12),inword(BASE+$14));
+writeln('      (isr0,isr1,isr2)',in(BASE+$50),in(BASE+$51),in(BASE+$52));
+writeln('      (imr0,imr1,imr2)',in(BASE+$54),in(BASE+$55),in(BASE+$56));
+// состояние драйверов
+ASTA_DISP := $a8 ;
+Setmask($b);Sendmess(mod*256,$ff01,4,ASTA_DISP,$1b0); recvmess(a,b,c,d,e,ASTA,ASTB); // writeln(a,b,c,d,e,f,g);
+
+Setmask($b);Sendmess(mod*256,$ff01,12,$22+ASTA,$1b0);recvmess(a,b,c,d,e,SPa,RPa,ER0a,ER1a,ER2a,ER3a);
+Setmask($b);Sendmess(mod*256,$ff01,12,$22+ASTB,$1b0);recvmess(a,b,c,d,e,SPb,RPb,ER0b,ER1b,ER2b,ER3b);
+scanagain:
+delay(2000);
+
+Setmask($b);Sendmess(mod*256,$ff01,12,$22+ASTA,$1b0);recvmess(a,b,c,d,e,_SPa,_RPa,_ER0a,_ER1a,_ER2a,_ER3a);
+write('A chan:',_SPa-SPa,_RPa-RPa,_ER0a-ER0a,_ER1a-ER1a,_ER2a-ER2a,_ER3a-ER3a);
+SPa:=_SPa;RPa:=_RPa;ER0a:=_ER0a;ER1a:=_ER1a;ER2a:=_ER2a;ER3a:=_ER3a;
+Setmask($b);Sendmess(mod*256,$ff01,12,$22+ASTB,$1b0);recvmess(a,b,c,d,e,_SPb,_RPb,_ER0b,_ER1b,_ER2b,_ER3b);
+writeln('B chan:',_SPb-SPb,_RPb-RPb,_ER0b-ER0b,_ER1b-ER1b,_ER2b-ER2b,_ER3b-ER3b);
+SPb:=_SPb;RPb:=_RPb;ER0b:=_ER0b;ER1b:=_ER1b;ER2b:=_ER2b;ER3b:=_ER3b;
+goto scanagain;

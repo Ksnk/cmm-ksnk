@@ -1,0 +1,8 @@
+mod := $01 ;
+//setmask($b);SendMess(mod*256,$ff01,2,2*$ff+$100,$1b0);recvmess(a,b,c,d,e,MG_SEG);
+
+setmask($d);SendMess(mod*256,$ff01,4,$1a,$1b0,getTaskSocket,getTaskSocket);recvmess(a,b,c,d,e,MG_SEG);
+
+again:
+if recvmess(a,b,c,d,e,f,g)>0 then writeln(a,b,c,d,e,f,g) fi ;
+goto again; 
