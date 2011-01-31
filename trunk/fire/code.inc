@@ -5,14 +5,14 @@ if variant=0 then // гузим файл
 fi ;
 if variant=1 then // CRC & OS_SIZE
   if  oscnt=1 then  type:=23; OS_SIZE:=$0C00; OS_CRC:=$8404;fi ;
-  if  oscnt=2 then  type:=35; OS_SIZE:=$1000; OS_CRC:=$9762;fi ;
-  if  oscnt=3 then  type:=30; OS_SIZE:=$0C00; OS_CRC:=$5C88;fi ;
+  if  oscnt=2 then  type:=35; OS_SIZE:=$1000; OS_CRC:=$50C4;fi ;
+  if  oscnt=3 then  type:=30; OS_SIZE:=$0C00; OS_CRC:=$B413;fi ;
   if  oscnt=4 then  type:=21; OS_SIZE:=$0C00; OS_CRC:=$0BC0;fi ;
-  if  oscnt=5 then  type:=18; OS_SIZE:=$0C00; OS_CRC:=$316D;fi ;
+  if  oscnt=5 then  type:=18; OS_SIZE:=$0C00; OS_CRC:=$1C67;fi ;
   if  oscnt=6 then  type:=33; OS_SIZE:=$0C00; OS_CRC:=$8E86;fi ;
   if  oscnt=7 then  type:=34; OS_SIZE:=$0800; OS_CRC:=$47C8;fi ;
-  if  oscnt=8 then  type:=20; OS_SIZE:=$0C00; OS_CRC:=$E764;fi ;
-  if  oscnt=9 then  type:=15; OS_SIZE:=$0C00; OS_CRC:=$1551;fi ;
+  if  oscnt=8 then  type:=20; OS_SIZE:=$0C00; OS_CRC:=$FFDB;fi ;
+  if  oscnt=9 then  type:=15; OS_SIZE:=$0C00; OS_CRC:=$5C26;fi ;
   if  oscnt=10 then  type:=1; OS_SIZE:=$0800; OS_CRC:=$1CDC;fi ;
 fi ;
 if variant=2 then // loadit!
