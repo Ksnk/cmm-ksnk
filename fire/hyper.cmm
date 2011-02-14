@@ -180,8 +180,15 @@ OS_SIZE0:=OS_SIZE<<4;
 if firevariant=1 then
   if ForseLoadOs=1 then
   SendMess(mod*256+$ff,$9999,$60,$10,$70);
-  SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
-  sendmess(Mod*256+$ff,4444);
+	SendMess((Mod*256)+$ff,$AA51,0                    //!! 
+        ,$30,0,$100,$aaaa,$5507                   //!! WRMEM($30:0,$aaaa);
+        ,$100,StartArea,0,$5502                   //!! Goto(<StartArea>:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
+        ,$FFFF); 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+
+//  SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
+//  sendmess(Mod*256+$ff,4444);
   delay(5000);
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
@@ -203,6 +210,18 @@ if firevariant=1 then
 // проключить на страницу $f pyfxtybt 5d
 //  SendMess(mod*256+$ff,$9999,$f0,$10,$5d0); // CK5!!!!!!!!!!!!!!!!!!!!11
 // прожечь
+if OS_SIZE=$1000 then
+
+SendMess((Mod*256)+$ff,$AA51,0                                //!! 
+         ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
+        ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
+        ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
+        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
+        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
+        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
+        ,$FFFF); 
+SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+else
 SendMess((Mod*256)+$ff,$AA51,0                                //!! 
         ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
         ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
@@ -211,19 +230,20 @@ SendMess((Mod*256)+$ff,$AA51,0                                //!!
         ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
         ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
         ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
-        ,$FFFF);                                              //!! 
+        ,$FFFF); 
 SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
 
+fi                                             
   else // if not ForseLoadOs=1
 
   //SendMess(mod*256+$ff,$9999,$60,$10,$70);
-    if OS_SIZE=$100 then
+    if OS_SIZE=$1000 then
 SendMess((Mod*256)+$ff,$AA51,0                    //!! 
         ,$30,0,$100,$aaaa,$5507                   //!! WRMEM($30:0,$aaaa);
         ,$100,StartArea,0,$5502                   //!! Goto(<StartArea>:0);
+        ,$1f0,$5504                               //!! CLEARFLASH($f000:0);
         ,$100,startArea,0,$1f0,0,$180,$5505       //!! WRITEMEM(<startArea>:0,$f000:0,$8000);
         ,$100,startArea+$800,0,$1f8,0,$180,$5505  //!! WRITEMEM(<startArea+$800>:0,$f800:0,$8000);
-        ,$1f0,$5504                               //!! CLEARFLASH($f000:0);
         ,$100,$ffff,0,$5502                       //!! Goto($FFFF:0);
         ,$FFFF);                                  //!! 
 SendMess((Mod*256)+$ff,$AA52,0);                  //!! 
