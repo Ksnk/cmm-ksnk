@@ -306,6 +306,9 @@ fi ;
 writeln('Let''s look');
 SendMess((Mod*256)+$ff,4444);    // Run the script
 delay(1000);
+if (Client > $1d) then 
+  SetMask(15+8); SendMess($8000,$FF01, $1f00+Client);  
+fi ;
 SendMess((Mod*256)+$ff,4444);    // Run the script
 Delay(2000);
 
