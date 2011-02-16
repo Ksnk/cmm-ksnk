@@ -189,7 +189,11 @@ SendMess((Mod*256)+$ff,$AA52,0);                              //!!
 
 //  SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
 //  sendmess(Mod*256+$ff,4444);
-  delay(5000);
+   delay(4000);
+if (Client > $1d) then 
+  SetMask(15+8); SendMess($8000,$FF01, $1f00+Client);  
+fi ;
+  delay(4000);
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
     writeln('Не удалось стартовать локальную версию ОС');
