@@ -10,6 +10,7 @@ if (mod <> 0) && (Client < $1d) then goto chknext  fi ;
 
 chkmod:
     if mod=0 then mod := $80; fi ;
+    SetMask(15+8); SendMess(mod*256,$FF01, $1f00+Client); delay(100);
 	 settimeout(1000);
     SetMask($B);SendMess(mod*256,$FF01,2,$d,STACK);
     if recvmess(a,b,c,d,e,a1,a2,a3,a4) then
@@ -180,20 +181,20 @@ OS_SIZE0:=OS_SIZE<<4;
 if firevariant=1 then
   if ForseLoadOs=1 then
   SendMess(mod*256+$ff,$9999,$60,$10,$70);
-	SendMess((Mod*256)+$ff,$AA51,0                    //!! 
-        ,$30,0,$100,$aaaa,$5507                   //!! WRMEM($30:0,$aaaa);
-        ,$100,StartArea,0,$5502                   //!! Goto(<StartArea>:0);
-        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
-        ,$FFFF); 
-SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$30,0,$100,$aaaa,$5507           //!! WRMEM($30:0,$aaaa);
+        ,$100,StartArea,0,$5502           //!! Goto(<StartArea>:0);
+        ,$100,4444,$100,$80ff,$1,$5506    //!! Send($80ff,4444);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
 
 //  SetMask($10); SendMess(Mod*256,$FF01,0,0,StartArea);
-//  sendmess(Mod*256+$ff,4444);
-   delay(4000);
+   delay(6000);
+  sendmess(Mod*256+$ff,4444);
 if (Client > $1d) then 
   SetMask(15+8); SendMess($8000,$FF01, $1f00+Client);  
 fi ;
-  delay(4000);
+  delay(2000);
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
   sendmess(Mod*256+$ff,4444); sendmess(Mod*256+$ff,$6b); if recvmess(s)<=0 then
     writeln('Не удалось стартовать локальную версию ОС');
@@ -216,15 +217,15 @@ fi ;
 // прожечь
 if OS_SIZE=$1000 then
 
-SendMess((Mod*256)+$ff,$AA51,0                                //!! 
-         ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
-        ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
-        ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
-        ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
-        ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
-        ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
-        ,$FFFF); 
-SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
+SendMess((Mod*256)+$ff,$AA51,0                     //!! 
+        ,$1f0,$5504                                //!! CLEARFLASH($f000:0);
+        ,$100,startArea0,0,$1f0,0,$180,$5505       //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
+        ,$100,startArea0+$800,0,$1f8,0,$180,$5505  //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
+        ,$30,0,$100,$aaaa,$5507                    //!! WRMEM($30:0,$aaaa);
+        ,$100,$ffff,0,$5502                        //!! Goto($FFFF:0);
+        ,$100,4444,$100,$80ff,$1,$5506             //!! Send($80ff,4444);
+        ,$FFFF);                                   //!! 
+SendMess((Mod*256)+$ff,$AA52,0);                   //!! 
 else
 SendMess((Mod*256)+$ff,$AA51,0                                //!! 
         ,$1f0,0,$100,StartArea0,0,$100,$10000-OS_SIZE0,$5500  //!! COPYMEM($f000:0,<StartArea0>:0,<$10000-OS_SIZE0>)
@@ -234,7 +235,7 @@ SendMess((Mod*256)+$ff,$AA51,0                                //!!
         ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
         ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
         ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
-        ,$FFFF); 
+        ,$FFFF);                                              //!! 
 SendMess((Mod*256)+$ff,$AA52,0);                              //!! 
 
 fi                                             
@@ -263,7 +264,7 @@ SendMess((Mod*256)+$ff,$AA51,0                                //!!
         ,$1f0,$5504                                           //!! CLEARFLASH($f000:0);
         ,$100,startArea0,0,$1f0,0,$180,$5505                  //!! WRITEMEM(<startArea0>:0,$f000:0,$8000);
         ,$100,startArea0+$800,0,$1f8,0,$180,$5505             //!! WRITEMEM(<startArea0+$800>:0,$f800:0,$8000);
-);SendMess((Mod*256)+$ff,$AA51,78                             //!! 
+);SendMess((Mod*256)+$ff,$AA51,86                             //!! 
         ,$30,0,$100,$aaaa,$5507                               //!! WRMEM($30:0,$aaaa);
         ,$100,$ffff,0,$5502                                   //!! Goto($FFFF:0);
         ,$100,4444,$100,$80ff,$1,$5506                        //!! Send($80ff,4444);
