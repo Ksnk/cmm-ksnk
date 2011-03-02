@@ -4,10 +4,21 @@
 
 include gotmod.inc ;
 xmod := mod; mod := mod && $ff ;
+//
+// проверка по сегментному адресу - по какой версии мы стартуем
+//
 setmask($b); sendmess(mod*256,$ff01,2,2,0); if recvmess(a,b,c,d,e,SEG)<=0 then goto fin fi ;
 SEG := SEG+$10; 
 if SEG < $8000 then writeln('Уже в ОЗУ'); goto fin fi ;
-if (SEG && $FFF)<$800 then LEN := $c else LEN := 8 fi ;
+if (SEG && $FFF)<$800 then
+    if(SEG=$F000)then
+		LEN:=$10
+	else	
+		LEN := $c 
+	fi;
+else 
+	LEN := 8 
+fi ;
 RAMADDR := xmod>>8 ;
 if RAMADDR=0 then 
 RAMADDR := $700 ;  { // сюда копируем
@@ -20,14 +31,18 @@ setmask($b); sendmess(mod*256,$ff01,2,6,$40); if recvmess(a,b,c,d,e,VALUE)<=0 th
 VALUE:= VALUE || 8;
 
 writeln('Sending script... ');
-
-SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
-    $0100,SEG,$0000,$0100,RAMADDR,$0000,$01c0,$5500,// 12.   //CopyMem(F800:0,$300:0,$8000);
-    $0100,RAMADDR,$0000,$5502,                  // 6.    CPUGoto($F800:0);
-    $0040,$0006,VALUE,$5507,            // $8C->40:6
-    $FFFF );                            // 2.    finish!  64 bytes total
-SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
-
+lll:=(LEN>>1)*$1000;
+SendMess((Mod*256)+$ff,$AA51,0                                   //!! 
+        ,$100,SEG,0,$100,RAMADDR,0,$100,lll,$5500                //!! CopyMem(<SEG>:0,<RAMADDR>:0,<lll>);
+        ,$100,SEG,$100,lll,$100,RAMADDR,$100,lll,$100,lll,$5500  //!! CopyMem(<SEG>:<lll>,<RAMADDR>:<lll>,<lll>);
+        ,$30,0,$100,$aaaa,$5507                                  //!! WRMEM($30:0,$aaaa);
+        ,$100,RAMADDR,0,$5502                                    //!! Goto(<RAMADDR>:0);
+        ,$100,4444,$100,$80ff,$1,$5506                           //!! Send($80ff,4444);
+        ,$FFFF);                                                 //!! 
+SendMess((Mod*256)+$ff,$AA52,0);  //!! 
+if (Client > $1d) then 
+  SetMask(15+8); SendMess($8000,$FF01, $1f00+Client);  
+fi ;
 writeln('Let''s look');
 
 fin:
