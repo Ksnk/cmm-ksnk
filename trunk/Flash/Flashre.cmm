@@ -8,7 +8,7 @@ if mod > 0 then var:= mod>>8 fi ;
 
 solgo:
 
-  var :=evalasync('~user("Caption","1-проверить состояние секторов. 2-поставить защиту на ВСЕ сектора, 3-убрать защиту со всех секторов, 4 - поставить защиту на  ФПО+ 14 - тавить защиту на сектор $a000, 5-cтавить защиту на виртуальные модули",300,200)');
+  var :=evalasync('~user("Caption","1-проверить состояние секторов. 2-поставить защиту на ВСЕ сектора, 3-убрать защиту со всех секторов, 4 - поставить защиту на  ФПО+ 14 - cтавить защиту на сектор $a000, 5-cтавить защиту на виртуальные модули",300,200)');
   if var = -1 then goto fin fi ;
   protect:=-1;
   if var = 1 then writeln; writeln('смотрим состояние секторов');protect:=0; startsect:=0; finsect:= 23 ;fi ;
@@ -17,6 +17,7 @@ solgo:
   if var = 4 then writeln; writeln('ставим защиту на ФПО');protect:=1; startsect:=8; finsect:= 23 ;fi ;// ставим то, что нужно FPO+Олег
   if var = 5 then writeln; writeln('ставим защиту на виртуальные');protect:=1; startsect:=3; finsect:= 6 ;fi ;// ставим то, что нужно Виртуальные модули
   if var = 14 then writeln; writeln('ставим защиту на ФПО(x)');protect:=1; startsect:=2; finsect:= 2 ;fi ;// ставим то, что нужно FPO+Олег
+  if var = 20 then writeln; writeln('тестируем страницу флеш ');protect:=20; startsect:=8; finsect:= 8 ;fi ;// 
   if protect=-1 then goto fin ; fi ;
 
 //protect:=1; // 1 -  установить защиту
@@ -54,6 +55,17 @@ setmask($b); sendmess(mod*256,$ff01,2,2,0);
 if recvmess(a,b,c,d,e,SEG)<=0 then writeln('зависли? '); goto fin fi ;
 SEG := SEG+$10;
 if SEG > $8000 then writeln('не в ОЗУ'); goto fin fi ;
+//
+// тестирование страницы
+//
+if (protect=20)  then
+
+fi;
+
+//
+// установка защиты
+//
+
 if (protect=1)  then
 //writeln('xxxxxxx!');
 if (h>0) then
@@ -67,10 +79,10 @@ writeln('sector ',addr_real);
 for yy from 0 to 10 do
 if(xxx<>0) then
 SendMess((Mod*256)+$ff,$AA51,0            //!!
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
         ,1,$5501                          //!! delay(1);
-        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:4,$40);
+        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:<xxx>,$40);
         ,$FFFF);                          //!!
 SendMess((Mod*256)+$ff,$AA52,0);          //!!
 {}
@@ -96,10 +108,10 @@ writeln('sector ',addr_real);
 for yy from 0 to 100 do
 if(xxx<>0) then
 SendMess((Mod*256)+$ff,$AA51,0            //!!
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
-//        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
+//        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
         ,1,$5501                          //!! delay(1);
-        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:4,$40);
+        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:<xxx>,$40);
         ,$FFFF);                          //!!
 SendMess((Mod*256)+$ff,$AA52,0);          //!!
 {}
