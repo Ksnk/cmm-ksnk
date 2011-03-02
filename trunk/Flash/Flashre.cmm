@@ -1,0 +1,144 @@
+writeln('для снятия-установки защиты необходим');
+writeln('правильно подключенный источник 12 вольт');
+
+include gotmod.inc;
+
+var := 0 ;
+if mod > 0 then var:= mod>>8 fi ;
+
+solgo:
+
+  var :=evalasync('~user("Caption","1-проверить состояние секторов. 2-поставить защиту на ВСЕ сектора, 3-убрать защиту со всех секторов, 4 - поставить защиту на  ФПО+ 14 - тавить защиту на сектор $a000, 5-cтавить защиту на виртуальные модули",300,200)');
+  if var = -1 then goto fin fi ;
+  protect:=-1;
+  if var = 1 then writeln; writeln('смотрим состояние секторов');protect:=0; startsect:=0; finsect:= 23 ;fi ;
+  if var = 2 then writeln; writeln('ставим защиту на все сектора');protect:=1; startsect:=0; finsect:= 23 ;fi ;
+  if var = 3 then writeln; writeln('снимаем защиту');protect:=2; startsect:=0; finsect:= 23 ;fi ;
+  if var = 4 then writeln; writeln('ставим защиту на ФПО');protect:=1; startsect:=8; finsect:= 23 ;fi ;// ставим то, что нужно FPO+Олег
+  if var = 5 then writeln; writeln('ставим защиту на виртуальные');protect:=1; startsect:=3; finsect:= 6 ;fi ;// ставим то, что нужно Виртуальные модули
+  if var = 14 then writeln; writeln('ставим защиту на ФПО(x)');protect:=1; startsect:=2; finsect:= 2 ;fi ;// ставим то, что нужно FPO+Олег
+  if protect=-1 then goto fin ; fi ;
+
+//protect:=1; // 1 -  установить защиту
+//protect:=2; // 2 - убрать защиту
+//protect:=0; // 0 - просто проверить
+
+if mod>$ff then  mod := mod && $FF fi ;
+
+again:
+// выбрать диапазон
+//for i from 14 to 23 do // Область Олега
+for i from startsect to finsect do // весь диапазон
+
+if (i=14) then  addr_real:= $5e0 fi;
+if (i=15) then  addr_real:= $5e4 fi;
+if (i=16) then  addr_real:= $5e8 fi;
+if (i=17) then  addr_real:= $5ec fi;
+if (i=18) then  addr_real:= $5ee fi;
+if (i=19) then  addr_real:= $5f0 fi;
+if (i=20) then  addr_real:= $5f2 fi;
+if (i=21) then  addr_real:= $5f4 fi;
+if (i=22) then  addr_real:= $5f8 fi;
+if (i=23) then  addr_real:= $5fc fi;
+
+
+if (i<14) then  addr_real:= $500 + i*$10 fi;
+
+
+addr := $6000;
+
+SendMess(mod*256+$ff,$9999,addr >>8,$10,addr_real);
+
+// проверка на корректность...
+setmask($b); sendmess(mod*256,$ff01,2,2,0);
+if recvmess(a,b,c,d,e,SEG)<=0 then writeln('зависли? '); goto fin fi ;
+SEG := SEG+$10;
+if SEG > $8000 then writeln('не в ОЗУ'); goto fin fi ;
+if (protect=1)  then
+//writeln('xxxxxxx!');
+if (h>0) then
+
+write('skip...')
+else
+//writeln('xxx');
+{  protect  !!!!!!!!}
+xxx:=$4;//$c6;
+writeln('sector ',addr_real);
+for yy from 0 to 10 do
+if(xxx<>0) then
+SendMess((Mod*256)+$ff,$AA51,0            //!!
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,1,$5501                          //!! delay(1);
+        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:4,$40);
+        ,$FFFF);                          //!!
+SendMess((Mod*256)+$ff,$AA52,0);          //!!
+{}
+setmask($b);
+SendMess((Mod*256),$FF01,1,xxx,addr);
+
+recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+write('xxx-',f);
+setmask($f);
+xxx:=0;
+//if(f=0) then xxx:=0 fi;
+fi;
+od;
+
+fi ;
+fi;
+
+if protect=2 then
+writeln('xxx');
+{  unprotect  !!!!!!!!}
+xxx:=$84;//$c6;
+writeln('sector ',addr_real);
+for yy from 0 to 100 do
+if(xxx<>0) then
+SendMess((Mod*256)+$ff,$AA51,0            //!!
+        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+//        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:4,$60);
+        ,1,$5501                          //!! delay(1);
+        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:4,$40);
+        ,$FFFF);                          //!!
+SendMess((Mod*256)+$ff,$AA52,0);          //!!
+{}
+setmask($b);
+SendMess((Mod*256),$FF01,1,xxx,addr);
+
+recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+write('xxx-',f);
+setmask($f);
+if(f=0) then xxx:=0 fi;
+fi;
+od;
+fi;
+// now check!!!!
+SendMess((Mod*256)+$ff,$AA51,0            //!!
+        ,$100,addr,$100,2*$555,$aa,$5507  //!! Wrmem(<addr>:<2*$555>,$aa);
+        ,$100,addr,$100,2*$2AA,$55,$5507  //!! Wrmem(<addr>:<2*$2AA>,$55);
+        ,$100,addr,$100,2*$555,$90,$5507  //!! Wrmem(<addr>:<2*$555>,$90);
+        ,$FFFF);                          //!!
+SendMess((Mod*256)+$ff,$AA52,0);          //!!
+
+setmask($b);
+SendMess((Mod*256),$FF01,6,0,addr);
+
+recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+
+write('sector ',e,addr_real);
+if(h>0) then write(' Protected!!!!')
+else write('unprotected!!') fi;
+ writeln(' [', d,e,f,g,h,']');
+setmask($f);
+SendMess((Mod*256)+$ff,$AA51,0            //!!
+        ,$100,addr,$100,2*$555,$f,$5507   //!! Wrmem(<addr>:<2*$555>,$0f);
+        ,$FFFF);                          //!!
+SendMess((Mod*256)+$ff,$AA52,0);          //!!
+
+od ;
+
+goto solgo;
+
+fin:
+// Hello! Wordl!

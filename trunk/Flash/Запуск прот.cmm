@@ -1,0 +1,6 @@
+include gotmod.inc;
+//
+var := 0 ;
+if mod > 0 then var:= mod>>8 fi ;
+
+SendMess(mod*256+$FF,$64,mod*256+$10,$505f);

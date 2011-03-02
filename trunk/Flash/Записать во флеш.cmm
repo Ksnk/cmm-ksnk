@@ -1,0 +1,31 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+if mod = 0 then
+  SetHashFile ('.\Hashes\MyHash.xml');
+  SetHashFile('.\Hashes\Common.xml');
+  mod:=evalasync('~user("Caption","номер модуля XX, адрес страницы YYYY - вводить $XXYYYY ",300,200)');
+
+Addr := mod && $FFFF ;//$8000; 
+mod := mod>>16 ;
+
+  setmask($f);
+  //writeln('mod=',mod);
+  if (GetTaskSocket>=$1d00) then 
+    if (mod =0)||(mod=-1) then
+       SetMask($B);SendMess($8000,$FF01,2,$D,$40);
+       recvmess(a,b,c,d,e,mod)
+    fi;
+  fi;
+  if (mod =0)||(mod=-1) then writeln('невозможно динамически определить модуль') ; goto fin fi ;
+fi  ;
+
+writeln('пишем по адресу', Addr, ':0 в модуле', mod);
+// стирание флешки средствами сообщений 8830
+//writeln('стирание флешки средствами сообщений 8830 ', Addr);
+setmask($d);
+SendMess(mod*256+$ff,$ff01,16,(Addr && $fff)<<4,Addr && $F000,$1111,$1111,$1111,$1111,$1111,$1111,$1111,$1111);
+if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
+//fi ;
+fin:
+

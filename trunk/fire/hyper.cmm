@@ -11,7 +11,7 @@ if (mod <> 0) && (Client < $1d) then goto chknext  fi ;
 chkmod:
     if mod=0 then mod := $80; fi ;
     SetMask(15+8); SendMess(mod*256,$FF01, $1f00+Client); delay(100);
-	 settimeout(1000);
+	settimeout(1000);
     SetMask($B);SendMess(mod*256,$FF01,2,$d,STACK);
     if recvmess(a,b,c,d,e,a1,a2,a3,a4) then
       mod := a1 && $ff  ;
