@@ -17,7 +17,7 @@ solgo:
   if var = 4 then writeln; writeln('ставим защиту на ФПО');protect:=1; startsect:=8; finsect:= 23 ;fi ;// ставим то, что нужно FPO+Олег
   if var = 5 then writeln; writeln('ставим защиту на виртуальные');protect:=1; startsect:=3; finsect:= 6 ;fi ;// ставим то, что нужно Виртуальные модули
   if var = 14 then writeln; writeln('ставим защиту на ФПО(x)');protect:=1; startsect:=2; finsect:= 2 ;fi ;// ставим то, что нужно FPO+Олег
-  if var = 20 then writeln; writeln('тестируем страницу флеш ');protect:=20; startsect:=8; finsect:= 8 ;fi ;// 
+  if var >= 20 then writeln; writeln('тестируем страницу флеш ');protect:=var; startsect:=1; finsect:= 1 ;fi ;// 
   if protect=-1 then goto fin ; fi ;
 
 //protect:=1; // 1 -  установить защиту
@@ -31,123 +31,185 @@ again:
 //for i from 14 to 23 do // Область Олега
 for i from startsect to finsect do // весь диапазон
 
-if (i=14) then  addr_real:= $5e0 fi;
-if (i=15) then  addr_real:= $5e4 fi;
-if (i=16) then  addr_real:= $5e8 fi;
-if (i=17) then  addr_real:= $5ec fi;
-if (i=18) then  addr_real:= $5ee fi;
-if (i=19) then  addr_real:= $5f0 fi;
-if (i=20) then  addr_real:= $5f2 fi;
-if (i=21) then  addr_real:= $5f4 fi;
-if (i=22) then  addr_real:= $5f8 fi;
-if (i=23) then  addr_real:= $5fc fi;
+	if (i=14) then  addr_real:= $5e0 fi;
+	if (i=15) then  addr_real:= $5e4 fi;
+	if (i=16) then  addr_real:= $5e8 fi;
+	if (i=17) then  addr_real:= $5ec fi;
+	if (i=18) then  addr_real:= $5ee fi;
+	if (i=19) then  addr_real:= $5f0 fi;
+	if (i=20) then  addr_real:= $5f2 fi;
+	if (i=21) then  addr_real:= $5f4 fi;
+	if (i=22) then  addr_real:= $5f8 fi;
+	if (i=23) then  addr_real:= $5fc fi;
 
 
-if (i<14) then  addr_real:= $500 + i*$10 fi;
+	if (i<14) then  addr_real:= $500 + i*$10 fi;
 
 
-addr := $6000;
+	addr := $2000;
 
-SendMess(mod*256+$ff,$9999,addr >>8,$10,addr_real);
+	SendMess(mod*256+$ff,$9999,addr >>8,$10,addr_real);
 
-// проверка на корректность...
-setmask($b); sendmess(mod*256,$ff01,2,2,0);
-if recvmess(a,b,c,d,e,SEG)<=0 then writeln('зависли? '); goto fin fi ;
-SEG := SEG+$10;
-if SEG > $8000 then writeln('не в ОЗУ'); goto fin fi ;
-//
-// тестирование страницы
-//
-if (protect=20)  then
+	// проверка на корректность...
+	setmask($b); sendmess(mod*256,$ff01,2,2,0);
+	if recvmess(a,b,c,d,e,SEG)<=0 then writeln('зависли? '); goto fin fi ;
+	SEG := SEG+$10;
+	if SEG > $8000 then writeln('не в ОЗУ'); goto fin fi ;
+	//
+	// тестирование страницы
+	//
+	if (protect=20)  then
+		//
+		//  считаем контрольную сумма страницы 
+		// ff00 - страница чистая
+		// 0 - страница забита нулями
+		//
+		sendmess(mod*256+$ff,$aa0c,0,0,addr,1);
+		recvmess(a,b,c); writeln('i:',i,' adr:',addr_real,' crc:',c);
 
-fi;
+	fi;
+	//
+	// стираем страницу
+	//
+	if (protect=21)  then
+		//
+		//  считаем контрольную сумма страницы
+		//
+		SendMess(mod*256+$ff,$aa11,Addr);
+		if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
 
-//
-// установка защиты
-//
+	fi;
+	//
+	// записываем нули
+	//
+	if (protect=22)  then
+	const := 0;
+		//
+		// fill 10 bytes with 0
+		//
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,16                               //!! push 16
+                                          //!! fill:
+        ,$504                             //!! dup;
+        ,2                                //!! push 2 ;
+        ,$506                             //!! sub
+        ,$30                              //!! push $30;
+        ,$505                             //!! rot
+        ,$100,const,$5507                 //!! WRMEM(*:*,<const>);
+        ,2                                //!! push 2;
+        ,$506                             //!! sub ;
+        ,$504                             //!! dup
+        ,$0503,-26                        //!! jumpif fill;
+                                          //!! drop ;
+        ,0                                //!! push 0
+                                          //!! write:
+        ,$10                              //!! push $10 ;
+        ,$506                             //!! sub
+        ,$504                             //!! dup;
+        ,$30                              //!! push $30;
+        ,$505                             //!! rot
+        ,0                                //!! push $0;
+        ,$505                             //!! rot
+        ,$100,Addr                        //!! push <Addr>;
+        ,$505                             //!! rot
+        ,$10,$5505                        //!! WriteMem(*:*,*:*,$10);
+        ,$504                             //!! dup
+        ,$0503,-30                        //!! jumpif write;
+                                          //!! drop ;
+        ,$100,4444,0,$1,$5506             //!! Send(0,4444);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+		if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
 
-if (protect=1)  then
-//writeln('xxxxxxx!');
-if (h>0) then
+	fi;
 
-write('skip...')
-else
-//writeln('xxx');
-{  protect  !!!!!!!!}
-xxx:=$4;//$c6;
-writeln('sector ',addr_real);
-for yy from 0 to 10 do
-if(xxx<>0) then
-SendMess((Mod*256)+$ff,$AA51,0            //!!
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
+	//
+	// установка защиты
+	//
+
+	if (protect=1)  then
+	//writeln('xxxxxxx!');
+		if (h>0) then
+
+			write('skip...')
+		else
+			//writeln('xxx');
+			{  protect  !!!!!!!!}
+			xxx:=$4;//$c6;
+			writeln('sector ',addr_real);
+			for yy from 0 to 10 do
+				if(xxx<>0) then
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,addr,$100,xxx,$60,$5507     //!! Wrmem(<addr>:<xxx>,$60);
+        ,$100,addr,$100,xxx,$60,$5507     //!! Wrmem(<addr>:<xxx>,$60);
         ,1,$5501                          //!! delay(1);
-        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:<xxx>,$40);
-        ,$FFFF);                          //!!
-SendMess((Mod*256)+$ff,$AA52,0);          //!!
-{}
-setmask($b);
-SendMess((Mod*256),$FF01,1,xxx,addr);
+        ,$100,addr,$100,xxx,$40,$5507     //!! Wrmem(<addr>:<xxx>,$40);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+					{}
+					setmask($b);
+					SendMess((Mod*256),$FF01,1,xxx,addr);
 
-recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
-write('xxx-',f);
-setmask($f);
-xxx:=0;
-//if(f=0) then xxx:=0 fi;
-fi;
-od;
+					recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+					write('xxx-',f);
+					setmask($f);
+					xxx:=0;
+					//if(f=0) then xxx:=0 fi;
+				fi;
+			od;
 
-fi ;
-fi;
+		fi ;
+	fi;
 
-if protect=2 then
-writeln('xxx');
-{  unprotect  !!!!!!!!}
-xxx:=$84;//$c6;
-writeln('sector ',addr_real);
-for yy from 0 to 100 do
-if(xxx<>0) then
-SendMess((Mod*256)+$ff,$AA51,0            //!!
-        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
-//        ,$100,addr,xxx,$60,$5507            //!! Wrmem(<addr>:<xxx>,$60);
+	if protect=2 then
+			writeln('xxx');
+		{  unprotect  !!!!!!!!}
+		xxx:=$84;//$c6;
+		writeln('sector ',addr_real);
+		for yy from 0 to 100 do
+			if(xxx<>0) then
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,addr,$100,xxx,$60,$5507     //!! Wrmem(<addr>:<xxx>,$60);
+        ,$100,addr,$100,xxx,$60,$5507     //!! Wrmem(<addr>:<xxx>,$60);
         ,1,$5501                          //!! delay(1);
-        ,$100,addr,xxx,$40,$5507            //!! Wrmem(<addr>:<xxx>,$40);
-        ,$FFFF);                          //!!
-SendMess((Mod*256)+$ff,$AA52,0);          //!!
-{}
-setmask($b);
-SendMess((Mod*256),$FF01,1,xxx,addr);
+        ,$100,addr,$100,xxx,$40,$5507     //!! Wrmem(<addr>:<xxx>,$40);
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+				{}
+				setmask($b);
+				SendMess((Mod*256),$FF01,1,xxx,addr);
 
-recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
-write('xxx-',f);
-setmask($f);
-if(f=0) then xxx:=0 fi;
-fi;
-od;
-fi;
-// now check!!!!
-SendMess((Mod*256)+$ff,$AA51,0            //!!
+				recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+				write('xxx-',f);
+				setmask($f);
+				if(f=0) then xxx:=0 fi;
+			fi;
+		od;
+	fi;
+	// now check!!!!
+	if(protect<20) then
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
         ,$100,addr,$100,2*$555,$aa,$5507  //!! Wrmem(<addr>:<2*$555>,$aa);
         ,$100,addr,$100,2*$2AA,$55,$5507  //!! Wrmem(<addr>:<2*$2AA>,$55);
         ,$100,addr,$100,2*$555,$90,$5507  //!! Wrmem(<addr>:<2*$555>,$90);
-        ,$FFFF);                          //!!
-SendMess((Mod*256)+$ff,$AA52,0);          //!!
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
 
-setmask($b);
-SendMess((Mod*256),$FF01,6,0,addr);
+		setmask($b);
+		SendMess((Mod*256),$FF01,6,0,addr);
 
-recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
+		recvmess(a,b,c,d,e,f,g,h);// writeln(a,b,c,d,e,f,g,h);
 
-write('sector ',e,addr_real);
-if(h>0) then write(' Protected!!!!')
-else write('unprotected!!') fi;
- writeln(' [', d,e,f,g,h,']');
-setmask($f);
-SendMess((Mod*256)+$ff,$AA51,0            //!!
+		write('sector ',e,addr_real);
+		if(h>0) then write(' Protected!!!!')
+		else write('unprotected!!') fi;
+		 writeln(' [', d,e,f,g,h,']');
+		setmask($f);
+SendMess((Mod*256)+$ff,$AA51,0            //!! 
         ,$100,addr,$100,2*$555,$f,$5507   //!! Wrmem(<addr>:<2*$555>,$0f);
-        ,$FFFF);                          //!!
-SendMess((Mod*256)+$ff,$AA52,0);          //!!
-
+        ,$FFFF);                          //!! 
+SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+	fi;
 od ;
 
 goto solgo;
