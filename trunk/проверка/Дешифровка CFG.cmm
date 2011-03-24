@@ -132,13 +132,13 @@ readnext:
     setmask($b); SendMess(mod*256,$ff01,8,ccpos+2,nnseg); recvmess(a,b,c,d,e,c1,c2,c3,c4); 
     write('  TCP-IP');ccpos := ccpos+3 ;
     if  (c1 && $ff) <>0 then evalwrite('~cd(d[0],d)',c1 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c1 >> 8) <>0 then evalwrite('.~cd(d[0],d)',c1 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c2 && $ff) <>0 then evalwrite('.~cd(d[0],d)',c2 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c2 >> 8) <>0 then evalwrite('.~cd(d[0],d)',c2 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    evalwrite('.~cd(d[0],d)',c1 >> 8);ccpos:=ccpos+1 ;
+    evalwrite('.~cd(d[0],d)',c2 && $ff);ccpos:=ccpos+1;
+    evalwrite('.~cd(d[0],d)',c2 >> 8);ccpos:=ccpos+1;
     if  (c3 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c3 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c3 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c3 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c4 && $ff) <>0 then evalwrite(',~cd(d[0],h)',c4 && $ff);ccpos:=ccpos+1 else writeln;goto readnext fi ;
-    if  (c4 >> 8) <>0 then evalwrite(',~cd(d[0],h)',c4 >> 8);ccpos:=ccpos+1 else writeln;goto readnext fi ;
+    evalwrite(',~cd(d[0],h)',c3 >> 8);ccpos:=ccpos+1 ;
+    evalwrite(',~cd(d[0],h)',c4 && $ff);ccpos:=ccpos+1 ;
+    evalwrite(',~cd(d[0],h)',c4 >> 8);ccpos:=ccpos+1 ;
     writeln;
     goto readnext 
  fi ;
