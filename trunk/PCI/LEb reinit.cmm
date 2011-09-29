@@ -1,0 +1,15 @@
+include gotmod.inc;
+
+setmod(mod);
+REGA:=$cf8;
+REGD:=$cfC;
+
+device:=8;
+bus:=3;
+
+i := $40; data:= $00000001; include wrtPCI.cmm;
+//i := $14; data:= $a1000000; include wrtPCI.cmm;
+//i := $3c; data:= $000000; include wrtPCI.cmm; // clear interrupts
+
+
+
