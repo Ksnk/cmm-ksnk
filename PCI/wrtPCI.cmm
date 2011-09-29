@@ -1,0 +1,8 @@
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100,$7777
+        ,$100, $8000+bus,$100,(device<<11)+i ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100,data>>16,$100,data && $FFFF,$100,REGD,$5510      //!! outlong (<REGD>,data);
+			 ,0,1,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);

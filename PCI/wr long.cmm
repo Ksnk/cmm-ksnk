@@ -1,0 +1,16 @@
+include gotmod.inc;
+
+setmod(mod);
+
+addr := $0;
+data := $01;
+
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100, data >> 16,$100, data && $ffff // data
+        ,$100, addr >> 16,$100, addr && $ffff,$5512      // addr
+        ,$100,$5555
+			 ,0,1,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+  writeln('ok');

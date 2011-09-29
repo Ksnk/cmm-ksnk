@@ -1,0 +1,28 @@
+default := $20;
+include gotmod.inc;
+
+setmod(mod);
+REGA:=$cf8;
+REGD:=$cfC;
+
+device:=0;
+bus:=0;
+disp := $14;
+data  := $70000000;
+data1 := $00680030;
+
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+  //пишем бит разрешения
+        ,$100, $8000+bus,$100,(device<<11)+($f4) ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100, data1>>16,$100,data1 && $FFFF ,$100,REGD,$5510      //!! outlong (<REGA>,$0001);
+  //пишем адрес		
+        ,$100, $8000+bus,$100,(device<<11)+(disp) ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100, data>>16,$100,data && $FFFF ,$100,REGD,$5510      //!! outlong (<REGA>,$0001);
+  //пишем адрес		
+        ,$100,$5555
+        ,0,1,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+  writeln('ok');
+

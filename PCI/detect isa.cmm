@@ -1,0 +1,22 @@
+include gotmod.inc;
+
+setmod(mod);
+REGA:=$cf8;
+REGD:=$cfC;
+
+for j from 0 to 6 do 
+
+for i from 0 to 31 do 
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100, $8000+j,$100,(i<<11)+0 ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100,$5555
+        ,$0,$100,REGD,$5511      //!! inlong (<REGA>,$0001);
+			 ,0,3,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+  if c<>$ffff then
+    writeln('j:',j,'i:',i,'data:',c,d);
+  fi;
+od;
+od;

@@ -1,0 +1,49 @@
+default := $20;
+include gotmod.inc;
+
+//addr:=(evalasync('~user("Caption","„тение по абсолютному адресу $AABBCCDD",300,200)'));
+
+// адрес, по которому будет чтение
+addr := $90000000; 
+
+//********************************************************
+//**** настройки на толопай
+//проключаем адрес на страницу $6f00
+temp := $6f00; // куда будем отображать тестовый кусок
+//vert 
+//virtseg := $8000; virtdisp := $1800;  // смешщение до второй половины первой таблицы
+virtseg := $8000; virtdisp := $3000;  // смешщение до второй таблицы
+//****
+//********************************************************
+
+// запись в таблицу проключений. ѕользоватьс€ 9999 нельз€ из политических соображений.
+setmask($d);
+SendMess(mod*256,$ff01,$4,virtdisp+(temp >>6),virtseg
+	,(addr && $FFFF)+$17,addr >> 16);
+recvmess(a);
+
+// вывод информации
+writeln('reading from :',addr);
+
+for j from 0 to $3f do 
+   k := j*16 ;
+	setmask($b);
+	SendMess(mod*256,$ff01,$16,k,temp);
+  recvmess(a1,a2,a3,a,b,c,d,e,f,g,h,l,m);
+  dig := 4;
+  val := k;include wrt.inc;
+  write(':');
+  val := d && $ffff; include wrt.inc; 
+  val := c && $ffff; include wrt.inc;
+  write('');
+  val := f && $ffff; include wrt.inc; 
+  val := e && $ffff; include wrt.inc;
+  write('');
+  val := h && $ffff; include wrt.inc; 
+  val := g && $ffff; include wrt.inc;
+  write('');
+  val := m && $ffff; include wrt.inc; 
+  val := l && $ffff; include wrt.inc;
+  writeln(' ');
+
+od;	
