@@ -1,6 +1,6 @@
 // Перезапись версии по выбору оператора
 // работает для локального проключения
-
+default := $20;
 SetHashFile ('.\Hashes\MyHash.xml');
 SetHashFile ('.\Hashes\Common.xml');
 Client := GetTaskSocket>>8 ;
@@ -17,9 +17,13 @@ if (mod =0)||(ForseChouseMod=1) then
   if recvmess(a,b,c,d,e,a1,a2,a3,a4) then mod := a4>>8 ;a1 := a1 && $ff else mod := 0 fi ;
   fi ;
 fi;
-if mod = 0 then 
-  goto fin
-fi ;
+if (mod =0)||(mod=-1) then 
+    if default=0 then
+		goto fin
+	else
+	  mod := default;
+	fi;  
+  fi ;
 
 SetMask(19);
 SendMess(Mod*256,$FF01);
