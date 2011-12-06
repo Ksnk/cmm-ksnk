@@ -1,0 +1,23 @@
+
+reset:=1;
+
+mod := $20;
+// include Header.inc;
+
+
+
+hpic 	 := $01c67830;
+bootaddr := $01c40008;
+BOOTCMPLT:= $01c4000c;
+BOOTCFG	 := $01c40014;
+vdd3p3v_pwdn:=$01c40048;
+
+//	addr := bootaddr;	w32:= $23456789;	include writedsp.inc;
+
+	addr := hpic;		include readdsp.inc;
+	addr := BOOTCFG;	include readdsp.inc;
+	addr := bootaddr;	include readdsp.inc;
+	addr := BOOTCMPLT;	include readdsp.inc;
+	addr := vdd3p3v_pwdn;	include readdsp.inc;
+		
+

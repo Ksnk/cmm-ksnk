@@ -1,0 +1,30 @@
+setmod($20); mod := $20;
+addr1:=  $6300;
+addr2:=$01d0;
+
+//sendmess($f00,$ff01,4,4,addr,$0,$cccc); recvmess(a);
+/*
+sendmess($f00,$ff01,4,0,addr,addr2,7800); recvmess(a);
+sendmess($f00,$ff01,4,2,addr,$100,0); recvmess(a);
+sendmess($f00,$ff01,4,4,addr,$1234,0); recvmess(a);
+sendmess($f00,$ff01,4,6,addr,$5678,0); recvmess(a);
+*/
+
+again:
+delay(1000);
+//setmask($d);
+addr := (addr1<<16)+0; data := addr2; include writeword.cmm;
+addr := (addr1<<16)+2; data := $1000; include writeword.cmm;
+
+setmask($b);
+sendmess(mod*256,$ff01,2,4,addr1);
+recvmess(a,b,c,d,e,f,g);
+writeln(a,b,c,d,e,f,g);
+
+setmask($b);
+sendmess(mod*256,$ff01,2,$6,addr1);
+recvmess(a,b,c,d,e,f,g);
+writeln(a,b,c,d,e,f,g);
+
+goto again;
+

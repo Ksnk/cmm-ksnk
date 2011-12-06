@@ -23,27 +23,17 @@ SendMess(mod*256,$ff01,$4,virtdisp+(temp >>6),virtseg
 recvmess(a);
 
 // вывод информации
-writeln('reading from :',addr);
+writeln(mod,'reading from :',addr);
 
-for j from 0 to $3f do 
-   k := j*16 ;
-	setmask($b);
-	SendMess(mod*256,$ff01,$16,k,temp);
-  recvmess(a1,a2,a3,a,b,c,d,e,f,g,h,l,m);
+for j from 0 to $30 do 
+
+  setmask($d);  sendmess(mod*256,$ff01,4,0,temp,j,0); recvmess(a);
+  setmask($b);  sendmess(mod*256,$ff01,4,$10,temp); recvmess(a,b,c,d,e,a1,a2);
   dig := 4;
   val := k;include wrt.inc;
-  write(':');
-  val := d && $ffff; include wrt.inc; 
-  val := c && $ffff; include wrt.inc;
-  write('');
-  val := f && $ffff; include wrt.inc; 
-  val := e && $ffff; include wrt.inc;
-  write('');
-  val := h && $ffff; include wrt.inc; 
-  val := g && $ffff; include wrt.inc;
-  write('');
-  val := m && $ffff; include wrt.inc; 
-  val := l && $ffff; include wrt.inc;
+  write(j,':');
+  val := a2 && $ffff; include wrt.inc; 
+  val := a1 && $ffff; include wrt.inc;
   writeln(' ');
 
 od;	

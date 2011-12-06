@@ -1,0 +1,5 @@
+// 
+SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
+    $100,addr >>16,$100,addr && $ffff,$100,data,$5507,            // $8C->40:6
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script

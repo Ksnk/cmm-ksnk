@@ -1,0 +1,6 @@
+setmod($5); mod := $5;
+addr:=  $3c00;
+data:=$1234;
+SetMask(6);
+sendmess($05fe,4015,addr,data); 
+recvmess(a);

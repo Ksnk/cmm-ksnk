@@ -1,0 +1,21 @@
+// inc использует 3 параметра
+// - номер фреймера
+// - адрес регистра во фреймере
+// - значение регистра
+settimeout( 60000 );
+
+mod:=$20;
+numfr:=1;
+regs:=$94;
+addr:=$6400+(numfr-1)*$100;
+/*
+setmask($b);
+sendmess(mod*256,$ff01,2,regs,addr);
+recvmess(a,b,c,d,e,temp,g,g1,g2);
+writeln('temp= ',temp,' g=',g);
+write(temp && $FF, (temp && $FF00) >>8 );
+*/
+setmask(3);
+sendmess(mod*256+$fe,4013,$4094);
+recvmess(t0,t1, a00,a01,a02,a03,a04,a05);
+writeln(XX,a00,a01,a02,a03,a04,a05);

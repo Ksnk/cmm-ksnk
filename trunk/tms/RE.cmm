@@ -1,0 +1,11 @@
+// ofs , da
+mod:=$40;
+basedsp := $6100;
+
+	setmask($d);
+	SendMess(mod*256,$FF01,04,$0,basedsp,
+		$fffe,$09cc);                   
+	SendMess(mod*256,$FF01,04,$0,basedsp,
+		$ffff,$09cc);                   
+   recvmess(a);recvmess(a);
+

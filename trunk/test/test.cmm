@@ -1,0 +1,15 @@
+mod:=$20;
+seg := $6100;
+data := $201 ;
+SendMess((Mod*256)+$ff,$AA51,0              //!! 
+        ,$100,seg,$100,$14,$100,data ,$5507  //!! Wrmem(<seg>:<$14>,<data>);
+        ,$100,seg,$100,$16,0,$5507          //!! Wrmem(<seg>:<$16>,0);
+        ,$100,seg,$100,$14,$2,$550f         //!! RDMEMC(<seg>:<$14>,$2);
+        ,0,$2,$5506                         //!! send(0,*,*)
+        ,$FFFF);                            //!! 
+SendMess((Mod*256)+$ff,$AA52,0);            //!! 
+
+recvmess(x,s,d);
+writeln (s,d);
+writeln('ello!');
+		

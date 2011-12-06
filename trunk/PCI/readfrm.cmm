@@ -1,0 +1,56 @@
+// скрипт считывает состояние регистров фреймера
+mod:=$20;
+modto:=mod*256+$fe;
+//
+// Контрольные регистры с адресов
+//      0-47h + 60h + 70h-85h+86h + 92h-97h + A1,A2,A8
+//
+// Статусные
+//
+//     4a - номер версии фреймера
+//     4с,4в - регистры состояния тракта
+//     70-7f - то что получаем в CAS канале ( канал должен запрограммирован в CAS)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+setmod(mod);
+//базовый адрес по которому лежит фреймер
+
+muxbase :=$6000;
+
+
+for fr from 1 to 1 do
+frbase:=muxbase+(fr-1)*$400;
+numfr:=fr;
+for tr from 1 to 4 do
+trbase:=(tr-1)*$100;
+
+writeln('module ', mod, 'framer', fr, 'tract', tr);
+write('    ','::');
+for p from 0 to 15 do   write(p);  od;
+writeln;
+write('========================================================    ');
+for p from 0 to 15 do   //15 - quantity lines
+
+writeln;
+write(trbase+p*16,' :: ');
+
+for r from 0 to 7 do
+        regs :=trbase +p*16+r*2;
+        include readfr.inc;
+
+                 od;
+
+od;
+
+writeln;
+od;
+
+od;

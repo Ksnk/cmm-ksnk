@@ -1,0 +1,12 @@
+setmod($20); mod := $20;
+
+numfr:=1; //номер фреймера
+
+//чтобы записать регистр проставить regs и var и добавить строку
+//include writefr.inc;
+regs:=$43; // регистр
+val:=$ab;  // значение регистра
+include writefr.inc;
+
+
+

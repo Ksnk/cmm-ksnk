@@ -1,0 +1,55 @@
+default := $20;
+include gotmod.inc;
+setmod(mod);
+
+basedsp := $6300;
+addr := $1080a100;
+
+writeln(mod,':TMS ',addr );
+for j from 0 to $f do 
+   k := addr +(j*16) ;
+	SendMess(
+		(mod*256)+$ff, 	$AA51,0     // fill script from disp 0
+    	,$100, basedsp,$8,$100, k >> 16,	$5507            		
+    	,$100, basedsp,$a,$100, k && $ffff,	$5507            		
+		,$100,basedsp,$4,$2,$550f      //!! RDMEMC($700f:<x>,$10);
+    	,$100, basedsp,$8,$100, k >> 16,	$5507            		
+    	,$100, basedsp,$a,$100, (k && $ffff)+4,	$5507            		
+		,$100,basedsp,$4,$2,$550f      //!! RDMEMC($700f:<x>,$10);
+	  ,0,$4,$5506
+        		,$FFFF );                       
+
+	SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+	
+  recvmess(a,c,d,e,f);
+	SendMess(
+		(mod*256)+$ff, 	$AA51,0     // fill script from disp 0
+    	,$100, basedsp,$8,$100, k >> 16,	$5507            		
+    	,$100, basedsp,$a,$100, (k && $ffff)+8,	$5507            		
+		,$100,basedsp,$4,$2,$550f      //!! RDMEMC($700f:<x>,$10);
+    	,$100, basedsp,$8,$100, k >> 16,	$5507            		
+    	,$100, basedsp,$a,$100, (k && $ffff)+12,	$5507            		
+		,$100,basedsp,$4,$2,$550f      //!! RDMEMC($700f:<x>,$10);
+	  ,0,$4,$5506
+        		,$FFFF );                       
+
+	SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+	
+  recvmess(a,g,h,l,m);
+  dig := 4;
+  val := k;include wrt.inc;
+  write(':');
+  val := c && $ffff; include wrt.inc;
+  val := d && $ffff; include wrt.inc; 
+  write('');
+  val := e && $ffff; include wrt.inc;
+  val := f && $ffff; include wrt.inc; 
+  write('');
+  val := g && $ffff; include wrt.inc;
+  val := h && $ffff; include wrt.inc; 
+  write('');
+  val := l && $ffff; include wrt.inc;
+  val := m && $ffff; include wrt.inc; 
+  writeln(' ');
+
+od;
