@@ -24,7 +24,7 @@ if recvmess(a)>0 then writeln('Done') else writeln('Fail!') fi ;
 
 {}
 
-{ // стирание флешки средствами встроенного CMM
+{} // стирание флешки средствами встроенного CMM
 writeln('стирание флешки средствами встроенного CMM', Addr);
 SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
     $0100,Addr,$5504,                        // 4.    ClearFlash($f000:0);
@@ -52,7 +52,7 @@ SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
     $FFFF );                  // 2.    finish!  64 bytes total
 SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
 {}
-{} // верифай для amd29lv040b
+{ // верифай для amd29lv040b
 SendMess((Mod*256)+$ff,$AA51,0,     // fill script from disp 0
     $0100,Addr,$0100,2*$555,$AA,$5507,
     $0100,Addr,$0100,2*$2aa,$55,$5507,

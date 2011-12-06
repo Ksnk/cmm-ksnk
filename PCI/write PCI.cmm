@@ -5,10 +5,10 @@ setmod(mod);
 REGA:=$cf8;
 REGD:=$cfC;
 
-device:=0;
-bus:=0;
-disp := $14;
-data  := $70000000;
+device:=$c;
+bus:=3;
+disp := $10;
+data  := $d00ac000;
 data1 := $00680030;
 
   SendMess((Mod*256)+$ff,$AA51,0            //!! 

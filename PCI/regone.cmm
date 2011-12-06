@@ -1,0 +1,10 @@
+mod:=$20;
+modto:=mod*256+$fe;
+
+     port :=$4005;
+    setmask(15);
+
+    sendmess(modto,4012,port);
+    recvmess(t0,t1, a00,a01,a02,a03);
+    writeln(XX,t0,t1,a00,a01,a02,a03);
+

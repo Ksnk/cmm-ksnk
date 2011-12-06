@@ -28,7 +28,7 @@ fi
 //out($a1,$fd);
 //sendmess(mod*256+$ff,$8C83);
 // послать по UDP данные 
-{
+/*{
 sendmess(mod*256+$ff,$8C81, // +11
 		(8+6)*256,  // Length - hi endian
 		$0a00,$039e, 6767,  // IP - Port
@@ -84,11 +84,11 @@ od ; write('#');
 writeln('.');
 goto again ;
 */
-/*
-setmod ($5);
-writeln(in($2017));
-out($2017,$b0);
-*/
+
+setmod ($20);
+writeln(in($21));
+out($21,$6e);
+
 //*
 //sendmess($04ff,$aa0c,4,$1c,$2e68,1);
 //recvmess(a,b,c); writeln(a,b,c);

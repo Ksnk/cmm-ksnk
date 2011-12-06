@@ -1,0 +1,31 @@
+setmod($20); mod := $20;
+addr1:=  $6400;
+offs:=8;
+//addr2:=$4000;
+setmask($d);
+/*
+sendmess($f00,$ff01,4,0,$8324,$4037,$d00b); recvmess(a);
+sendmess($f00,$ff01,4,$10,$9000,$804a,$0a0c); recvmess(a); //
+sendmess($f00,$ff01,4,0,$8324,$0037,$c600); recvmess(a);
+*/
+
+
+
+
+
+//again:
+delay(1000);
+setmask($d);
+sendmess(mod*256,$ff01,1,offs,addr1,$22,$2222); recvmess(a);
+
+
+setmask($b);
+sendmess(mod*256,$ff01,4,offs,addr1);
+recvmess(a,b,c,d,e,f,g);
+writeln(a,b,c,d,e,f,g);
+
+
+//goto again;
+
+
+

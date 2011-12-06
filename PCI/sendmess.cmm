@@ -1,0 +1,3 @@
+mod:=$f;
+//sendmess(mod*256+$ff,$64,mod*256+$10,$4754);
+sendmess(mod*256+$ff,$64,mod*256+$FE,$4754)

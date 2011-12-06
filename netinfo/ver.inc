@@ -105,6 +105,16 @@ if hiver = $322e then // версия .2
     CND_dsp   := 10 ;
     QUEUE_dsp := $10 ;//-CHAN_dsp=-4
   fi ;
+if lover = $3232 then
+    if nowrite=0 then writeln ('обнаружена версия ос 3.222'); fi ;
+    IOMOD_dsp := $18;  // !!!
+    CHAN_dsp  := $14 ;
+    ERR_dsp   := $3f ;
+    ALIVE_dsp := $12A ; // !!!
+    CND_dsp   := 10 ;
+    QUEUE_dsp := $10 ;//-CHAN_dsp=-4
+  fi ;
+
 fi  ;
 
 if IOMOD_dsp = 0 then

@@ -1,0 +1,13 @@
+default := $20;
+include gotmod.inc;
+setmod(mod);
+REGA:=$cf8;
+REGD:=$cfC;
+device:=$0;bus:=0;include rddev.inc;
+device:=$1;bus:=0;include rddev.inc;
+device:=$4;bus:=0;include rddev.inc;
+device:=$1f;bus:=0;include rddev.inc;
+device:=$0;bus:=3;include rddev.inc;
+device:=$8;bus:=3;include rddev.inc;
+
+

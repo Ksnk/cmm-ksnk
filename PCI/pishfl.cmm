@@ -1,0 +1,32 @@
+include gotmod.inc;
+
+setmod(mod);
+//again:
+setmask($d);
+sendmess(mod*256,$ff01,1,$2,$9000,$90);
+recvmess(a);
+
+sendmess(mod*256,$ff01,1,$4,$9000,$0);
+recvmess(a);
+
+setmask($b);
+sendmess(mod*256,$ff01,1,0,$9000);
+recvmess(a,b,c,d,e,f1,g);
+//writeln(a,b,c,d,e,f,g);
+sendmess(mod*256,$ff01,1,0,$9000);
+recvmess(a,b,c,d,e,f2,g);
+//writeln(a,b,c,d,e,f,g);
+sendmess(mod*256,$ff01,1,0,$9000);
+recvmess(a,b,c,d,e,f3,g);
+sendmess(mod*256,$ff01,1,0,$9000);
+recvmess(a,b,c,d,e,f4,g);
+writeln(a,b,c,d,e,f1,g,f2,f3,f4);
+//recvmess(a);
+
+/*
+sendmess(mod*256,$ff01,1,2,$9000,$0);
+recvmess(a);
+*/
+
+//goto again;
+

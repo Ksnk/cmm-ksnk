@@ -1,0 +1,51 @@
+
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+default:= $20;
+include gotmod.inc;
+setmod(mod);
+// читаем где наша ГИПИО
+
+REGA:=$cf8;
+REGD:=$cfC;
+
+device:=31;
+bus:=0; 
+Where:= $90;
+i:=$48;
+CS := 1;
+data := $1111111;
+
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100, $8000+bus+(j*$10),$100,(device<<11)+i ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100,$5555
+        ,$0,$100,REGD,$5511      //!! inlong (<REGA>,$0001);
+			 ,0,3,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+  if (d<>$FFFF) then
+    writeln(j, i*4,':',d, c);
+  else write('.');
+  fi;
+GPIO_base := d-1;
+writeln(GPIO_base);
+  // двигаем ногой
+
+ofs:=$34;
+//agaoin:
+ for i from 0 to $240 do
+writeln(i,in(GPIO_base+i));//out(GPIO_base+ofs,0);
+od ;
+out(GPIO_base+$30,$6);
+out(GPIO_base+$34,$0);
+ for i from 0 to $40 do
+  out(GPIO_base+$38,6);
+  out(GPIO_base+$38,0);
+od ;
+ 
+//goto agaoin;
+fin:
+
+
+

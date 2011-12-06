@@ -1,0 +1,43 @@
+SetHashFile ('.\Hashes\MyHash.xml');
+SetHashFile('.\Hashes\Common.xml');
+
+include gotmod.inc;
+
+REGA:=$cf8;
+REGD:=$cfC;
+device:=8;
+bus:=3; 
+Where:= $90;
+i:=$10;
+CS := 1;
+data := $1111111;
+
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+        ,$100, $8000+bus+(j*$10),$100,(device<<11)+i ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100,$5555
+        ,$0,$100,REGD,$5511      //!! inlong (<REGA>,$0001);
+			 ,0,3,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+  if (d<>$FFFF) then
+    writeln(j, i*4,':',d, c);
+  else write('.');
+  fi;
+c:=(c<<16)+d; writeln(c);
+SendMess(mod*256+$ff,$9999,Where,1,(c>>12) && $FFFF, c>>28);
+
+// read CS
+setmask($b);
+SendMess((Mod*256),$ff01,8,0,Where<<8);            //!! 
+recvmess(a,b,c,d,e,f,i,h,k,l);
+  writeln(f,i,j,k);
+
+// WRITE CS
+setmask($d);
+SendMess((Mod*256),$ff01,4,CS*4,Where<<8, data && $FFFF, data >>16);            //!! 
+recvmess(a,b,c,d,e,f,i,h,k,l);
+
+fin:
+
+

@@ -1,0 +1,18 @@
+setmod($40); mod := $40;
+addr:=  $6100;
+regsw:=$14;
+regsr:=$16;
+
+
+for i from 0 to 6 do
+
+setmask($d);
+sendmess($40*256,$ff01,2,regsw,addr,$01+i*$100); recvmess(a);
+setmask($b);
+sendmess($40*256,$ff01,2,regsr,addr);
+recvmess(a,b,c,d,e,f,g);
+writeln(a,b,c,d,e,f,g);
+
+
+od;
+

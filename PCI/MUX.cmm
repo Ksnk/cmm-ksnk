@@ -1,0 +1,61 @@
+mod := $20;
+
+
+ofs := 8;
+seg := $6100;
+val2:= $AE11;
+val1:= $0000;
+//for trakt from 4 to 4 do
+
+trakt := 5;//out
+slot  := $10;
+
+trakt1 :=5;//in
+slot1  := $18;
+
+  trakt := trakt*256;
+     val1 := trakt + slot;
+
+  trakt1 := trakt1*256;
+     val2 := trakt1 + slot1;
+
+   write('write V = '); write(val1);
+  setMask($d);
+    sendmess(mod*256,$ff01,02,ofs  ,seg, val1,val1);
+    recvmess(a,b,c,d,e,f,g,h);
+
+    sendmess(mod*256,$ff01,02,ofs+2,seg, val2,val2);
+    recvmess(a,b,c,d,e,f,g,h);
+
+    //sendmess(mod*256,$ff01,02,ofs  ,seg, val2,val2);
+   // recvmess(a,b,c,d,e,f,g,h);
+
+  //  sendmess(mod*256,$ff01,02,ofs+2,seg, val1,val1);
+ //   recvmess(a,b,c,d,e,f,g,h);
+    write('.');
+
+ //  setmask($b);
+ //  sendmess(mod*256,$ff01,2, ofs,seg);recvmess(a,b,c,d,e,f);write(c);write(d);write(e);writeln(f);
+
+writeln;
+
+//trakt1 :=0;//in
+//slot1  := $7e;
+//  trakt1 := trakt1*256;
+//     val2 := trakt1 + slot1;
+
+  // write('write V = '); write(val1);
+//  setMask($d);
+//    sendmess(mod*256,$ff01,02,ofs  ,seg, val1,val1);
+//    recvmess(a,b,c,d,e,f,g,h);
+//
+//    sendmess(mod*256,$ff01,02,ofs+2,seg, val2,val2);
+//    recvmess(a,b,c,d,e,f,g,h);
+//trakt := 1;
+//od;
+
+//for i from 0 to 3 do
+//setmask($b);
+//sendmess(mod*256,$ff01,datalen, dataofs+i,dataseg);recvmess(a,b,c,d,e,f);writeln(f);
+//od;
+

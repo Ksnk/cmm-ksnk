@@ -17,7 +17,9 @@ fi  ;
 
 writeln('модуль',mod);
 
-trc_disp:= $300;
+trc_disp:= $30;
+//trc_disp:= $4001;
+
 //atseg := $6100 ;
 AtSeg :=-1;
 include TRC_INIT.inc ;
@@ -66,7 +68,7 @@ else writeln('oops!!',f)fi;
 
 no_correct:
 // setup trace to 0:300
-         SetMask($d);  SendMess(mod*256,$ff01,$2a,trc_disp,$0,$edcb {$1234} ,AtSeg
+         SetMask($d);  SendMess(mod*256,$ff01,$2a,0,trc_disp,{$edcb} $1234 ,AtSeg
                            ,START1,len1
                            ,START2,len2
                            ,START3,len3
@@ -80,7 +82,7 @@ no_correct:
                        );
          RecvMess(t1,t2,t3,t4,t5,A2); 
 // setup trace to 0:300
-         SetMask($d);  SendMess(mod*256,$ff01,$2,$30,AtSeg,$0000  );
+         SetMask($d);  SendMess(mod*256,$ff01,$2,trc_disp,AtSeg,$0000  );
          RecvMess(t1,t2,t3,t4,t5,A2); 
 
 

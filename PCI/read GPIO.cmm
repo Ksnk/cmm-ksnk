@@ -1,0 +1,81 @@
+default:= $20;
+include gotmod.inc;
+REGA:=$cf8;
+REGD:=$cfC;
+
+device:=31;
+bus:=0; 
+ofs:=$48;
+settimeout(10);
+recvmess(a);
+settimeout(3000);
+
+  SendMess((Mod*256)+$ff,$AA51,0          //!! 
+        ,$100, $8000+bus,$100,(device<<11)+ofs ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+//        ,$0,$100,$501 ,$100,REGD,$5510      //!! outlong (<REGA>,$0001);
+//		,$100, $8000+bus,$100,(device<<11)+ofs ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,0,$100,REGD,$5511      //!! inlong (<REGA>);
+			 ,0,1,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);        //!! 
+  recvmess(a,start,e,f);
+start := start -1;
+  
+// инит GPIO ; SEL := 0 ; IN := 1 ;  
+  SendMess((Mod*256)+$ff,$AA51,0          //!! 
+        ,0,$100,start+4,$5511      //!! inlong (<REGA>);
+			 ,0,2,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);        //!! 
+  recvmess(a,a1,a2);
+  data := (a1<<16)+a2;
+  data := data || 
+  SendMess((Mod*256)+$ff,$AA51,0            //!! 
+  //пишем бит разрешения
+        ,$100, $8000+bus,$100,(device<<11)+($f4) ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100, data1>>16,$100,data1 && $FFFF ,$100,REGD,$5510      //!! outlong (<REGA>,$0001);
+  //пишем адрес		
+        ,$100, $8000+bus,$100,(device<<11)+(disp) ,$100,REGA,$5510      //!! outlong (<REGA>,$0001);
+        ,$100, data>>16,$100,data && $FFFF ,$100,REGD,$5510      //!! outlong (<REGA>,$0001);
+  //пишем адрес		
+        ,$100,$5555
+        ,0,1,$5506
+        ,$FFFF);                          //!! 
+  SendMess((Mod*256)+$ff,$AA52,0);          //!! 
+  recvmess(a,b,c,d,e,f);
+
+  
+  writeln('GPIO. модуль ',mod);
+len := $4;  
+// читаем порты
+for i from (start>>4) to (start>>4)+len do
+SendMess((Mod*256)+$ff,$AA51,0,           // fill script from disp 0
+    $0100,$eeee // just to sign
+    ,0,$100,i*$10+$0,$5511  // read register 4A
+    ,0,$100,i*$10+$4,$5511  // read register 4A
+    ,0,$100,i*$10+$8,$5511  // read register 4A
+    ,0,$100,i*$10+$c,$5511  // read register 4A
+
+    ,$0000, 1+8, $5506,   // sendmess 6+1 - ¦ръёшьры№эр  фышэр!!!!!!!!!!!
+
+    $FFFF );                            // 2.    finish!  64 bytes total
+SendMess((Mod*256)+$ff,$AA52,0);    // Run the script
+
+recvmess(a,b,a1,a2,a3,a4,a5,a6,a7,a8); 
+// if i < $10 then write(' ') fi ;
+ dig := 4;
+  val := i*$10;include wrt.inc;
+  write(':');
+  val := a1 && $ffff; include wrt.inc;
+  val := a2 && $ffff; include wrt.inc; 
+  write('');
+  val := a3 && $ffff; include wrt.inc;
+  val := a4 && $ffff; include wrt.inc; 
+  write('');
+  val := a5 && $ffff; include wrt.inc;
+  val := a6 && $ffff; include wrt.inc; 
+  write('');
+  val := a7 && $ffff; include wrt.inc;
+  val := a8 && $ffff; include wrt.inc; 
+  writeln(' ');
+od;
